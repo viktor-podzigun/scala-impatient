@@ -1,0 +1,13 @@
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+*.iml
+.idea
+.project
+.classpath
+.DS_Store
+*.log
