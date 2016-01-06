@@ -126,4 +126,18 @@ object Chapter03 {
    *   (Hint: Look at Scaladoc.)
    */
   def removeDuplicates(a: Array[Int]): Array[Int] = a.distinct
+
+  /**
+   * Task 8:
+   *   Rewrite the example at the end of Section 3.4, "Transforming Arrays", on page 34
+   *   using the drop method for dropping the index of the first match.
+   *   Look the method up in Scaladoc.
+   */
+  def dropNegativesExceptFirst(a: ArrayBuffer[Int]): ArrayBuffer[Int] = {
+    val allNegativeIndexes = for (i <- a.indices if a(i) < 0) yield i
+    val indexes = allNegativeIndexes.drop(1)
+
+    for (j <- indexes.indices.reverse) a.remove(indexes(j))
+    a
+  }
 }
