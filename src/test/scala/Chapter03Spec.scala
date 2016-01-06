@@ -68,4 +68,11 @@ class Chapter03Spec extends FlatSpec with Matchers {
     b shouldBe theSameInstanceAs(a)
     b shouldBe Array(3, 2, 1, 1, 0, -1)
   }
+
+  it should "remove duplicates" in {
+    val a = Array(1, -1, 2, 0, 2, 1)
+    val b = removeDuplicates(a)
+    b shouldNot be theSameInstanceAs a
+    b shouldBe Array(1, -1, 2, 0)
+  }
 }

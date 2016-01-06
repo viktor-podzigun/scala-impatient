@@ -100,7 +100,8 @@ object Chapter03 {
 
   /**
    * Task 6a:
-   *   How do you rearrange the elements of an Array[Int] so that they appear in reverse sorted order?
+   *   How do you rearrange the elements of an Array[Int]
+   *   so that they appear in reverse sorted order?
    */
   def reverseSortArray(a: Array[Int]): Array[Int] = {
     Sorting.quickSort(a)
@@ -109,7 +110,8 @@ object Chapter03 {
 
   /**
    * Task 6b:
-   *   How do you rearrange the elements of an ArrayBuffer[Int] so that they appear in reverse sorted order?
+   *   How do you rearrange the elements of an ArrayBuffer[Int]
+   *   so that they appear in reverse sorted order?
    */
   def reverseSortArrayBuffer(buf: ArrayBuffer[Int]): ArrayBuffer[Int] = {
     val arr: Array[Int] = reverseSortArray(buf.toArray)
@@ -117,4 +119,11 @@ object Chapter03 {
     arr.copyToBuffer(buf)
     buf
   }
+
+  /**
+   * Task 7:
+   *   Write a code snippet that produces all values from an array with duplicates removed.
+   *   (Hint: Look at Scaladoc.)
+   */
+  def removeDuplicates(a: Array[Int]): Array[Int] = a.distinct
 }
