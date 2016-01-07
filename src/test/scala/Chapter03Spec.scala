@@ -1,6 +1,7 @@
 import Chapter03._
 import org.scalatest._
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 class Chapter03Spec extends FlatSpec with Matchers {
@@ -88,5 +89,10 @@ class Chapter03Spec extends FlatSpec with Matchers {
     a.length should be > 0
     a.head(0) shouldBe 'A'
     a.last(0) shouldBe 'Y'
+  }
+
+  it should "return java List as Scala Buffer" in {
+    val a: mutable.Buffer[String] = javaListAsScalaBuffer
+    a.length should be > 0
   }
 }
