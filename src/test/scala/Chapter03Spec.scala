@@ -7,7 +7,7 @@ class Chapter03Spec extends FlatSpec with Matchers {
 
   "Chapter03" should "set a to an array of n random integers" in {
     val n = 5
-    val a = randomIntArray(n)
+    val a: Array[Int] = randomIntArray(n)
     a.length should be (n)
     a.foreach(v => {
       v should be >= 0
@@ -39,7 +39,7 @@ class Chapter03Spec extends FlatSpec with Matchers {
 
   it should "produce new positives then negatives array" in {
     val a = Array(1, -2, 3, 0, 5, -4)
-    val b = positivesThenNegatives(a)
+    val b: Array[Int] = positivesThenNegatives(a)
     b shouldNot be theSameInstanceAs a
     b shouldBe Array(1, 3, 5, -2, 0, -4)
 
@@ -51,35 +51,42 @@ class Chapter03Spec extends FlatSpec with Matchers {
 
   it should "compute the average of an Array[Double]" in {
     val a = Array(1.5, -1.5, 3, 0)
-    val b = computeAverage(a)
+    val b: Double = computeAverage(a)
     b shouldBe 0.75
   }
 
   it should "reverse sort Array[Int] in place" in {
     val a = Array(1, -1, 3, 0, 0, 2, 1)
-    val b = reverseSortArray(a)
+    val b: Array[Int] = reverseSortArray(a)
     b shouldBe theSameInstanceAs(a)
     b shouldBe Array(3, 2, 1, 1, 0, 0, -1)
   }
 
   it should "reverse sort ArrayBuffer[Int] in place" in {
     val a = ArrayBuffer(1, -1, 3, 0, 2, 1)
-    val b = reverseSortArrayBuffer(a)
+    val b: ArrayBuffer[Int] = reverseSortArrayBuffer(a)
     b shouldBe theSameInstanceAs(a)
     b shouldBe ArrayBuffer(3, 2, 1, 1, 0, -1)
   }
 
   it should "remove duplicates" in {
     val a = Array(1, -1, 2, 0, 2, 1)
-    val b = removeDuplicates(a)
+    val b: Array[Int] = removeDuplicates(a)
     b shouldNot be theSameInstanceAs a
     b shouldBe Array(1, -1, 2, 0)
   }
 
   it should "drop negatives except first" in {
     val a = ArrayBuffer(1, -1, -3, 0, -2, 1, -1)
-    val b = dropNegativesExceptFirst(a)
+    val b: ArrayBuffer[Int] = dropNegativesExceptFirst(a)
     b shouldBe theSameInstanceAs(a)
     b shouldBe ArrayBuffer(1, -1, 0, 1)
+  }
+
+  it should "return America time zones" in {
+    val a: Array[String] = americaTimeZones
+    a.length should be > 0
+    a.head(0) shouldBe 'A'
+    a.last(0) shouldBe 'Y'
   }
 }

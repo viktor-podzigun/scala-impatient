@@ -1,3 +1,5 @@
+import java.util.TimeZone
+
 import scala.collection.mutable.ArrayBuffer
 import scala.util.{Random, Sorting}
 
@@ -139,5 +141,16 @@ object Chapter03 {
 
     for (j <- indexes.indices.reverse) a.remove(indexes(j))
     a
+  }
+
+  /**
+   * Task 9:
+   *   Make a collection of all time zones returned by java.util.TimeZone.getAvailableIDs
+   *   that are in America. Strip off the "America/" prefix and sort the result.
+   */
+  def americaTimeZones: Array[String] = {
+    TimeZone.getAvailableIDs.filter(_.startsWith("America/"))
+      .map(_.stripPrefix("America/"))
+      .sorted
   }
 }
