@@ -1,4 +1,6 @@
+import java.util.Scanner
 
+import scala.collection.mutable
 
 object Chapter04 {
 
@@ -14,5 +16,37 @@ object Chapter04 {
       "ScalaDays 2016 Berlin" -> 750)
 
     gizmos.mapValues(price => price - (price / 10))
+  }
+
+  /**
+   * Task 2:
+   *   Write a program that reads words from a file. Use a mutable map to count
+   *   how often each word appears. To read the words, simply use a java.util.Scanner:
+   * <blockquote>
+   *     val in = new java.util.Scanner(new java.io.File("myfile.txt")) <br/>
+   *     while (in.hasNext()) process in.next()
+   * </blockquote>
+   */
+  def countWordsMutableMap(): mutable.Map[String, Int] = {
+    val words = new mutable.HashMap[String, Int]
+
+    processWords(w => words(w) = words.getOrElse(w, 0) + 1)
+    words
+  }
+
+  private def processWords(process: String => Unit): Unit = {
+    val in = new Scanner(getClass.getResourceAsStream("/myfile.txt"))
+    try {
+      while (in.hasNext) {
+        process(in.next())
+      }
+    } finally {
+      in.close()
+    }
+  }
+
+  def main(args: Array[String]) {
+    // task 2
+    println(countWordsMutableMap().mkString("\n"))
   }
 }
