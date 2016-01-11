@@ -45,6 +45,17 @@ object Chapter04 {
     }
   }
 
+  /**
+   * Task 3:
+   *   Repeat the preceding exercise with an immutable map.
+   */
+  def countWordsImmutableMap(): Map[String, Int] = {
+    var words = Map[String, Int]()
+
+    processWords(w => words += w -> (words.getOrElse(w, 0) + 1))
+    words
+  }
+
   def main(args: Array[String]) {
     // task 2
     println(countWordsMutableMap().mkString("\n"))

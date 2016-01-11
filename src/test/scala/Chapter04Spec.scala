@@ -29,4 +29,21 @@ class Chapter04Spec extends FlatSpec with Matchers {
     words("and") shouldBe 1
     words("count") shouldBe 1
   }
+
+  it should "count words using immutable Map" in {
+    val words: Map[String, Int] = countWordsImmutableMap()
+    words.size shouldBe 12
+    words("Simple") shouldBe 1
+    words("text") shouldBe 1
+    words("file") shouldBe 2
+    words("with") shouldBe 1
+    words("example") shouldBe 1
+    words("words.") shouldBe 2
+    words("We") shouldBe 1
+    words("will") shouldBe 1
+    words("parse") shouldBe 1
+    words("the") shouldBe 2
+    words("and") shouldBe 1
+    words("count") shouldBe 1
+  }
 }
