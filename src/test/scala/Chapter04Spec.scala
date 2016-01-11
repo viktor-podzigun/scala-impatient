@@ -46,4 +46,22 @@ class Chapter04Spec extends FlatSpec with Matchers {
     words("and") shouldBe 1
     words("count") shouldBe 1
   }
+
+  it should "count words using sorted Map" in {
+    val words: Map[String, Int] = countWordsSortedMap()
+    words.size shouldBe 12
+    words.toArray shouldBe Array(
+      "Simple" -> 1,
+      "We" -> 1,
+      "and" -> 1,
+      "count" -> 1,
+      "example" -> 1,
+      "file" -> 2,
+      "parse" -> 1,
+      "text" -> 1,
+      "the" -> 2,
+      "will" -> 1,
+      "with" -> 1,
+      "words." -> 2)
+  }
 }

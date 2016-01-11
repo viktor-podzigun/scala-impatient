@@ -1,5 +1,6 @@
 import java.util.Scanner
 
+import scala.collection.immutable.SortedMap
 import scala.collection.mutable
 
 object Chapter04 {
@@ -51,6 +52,18 @@ object Chapter04 {
    */
   def countWordsImmutableMap(): Map[String, Int] = {
     var words = Map[String, Int]()
+
+    processWords(w => words += w -> (words.getOrElse(w, 0) + 1))
+    words
+  }
+
+  /**
+   * Task 4:
+   *   Repeat the preceding exercise with a sorted map,
+   *   so that the words are printed in sorted order.
+   */
+  def countWordsSortedMap(): Map[String, Int] = {
+    var words = SortedMap[String, Int]()
 
     processWords(w => words += w -> (words.getOrElse(w, 0) + 1))
     words
