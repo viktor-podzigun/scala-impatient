@@ -1,5 +1,7 @@
+import java.util
 import java.util.Scanner
 
+import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable
 
@@ -66,6 +68,18 @@ object Chapter04 {
     var words = SortedMap[String, Int]()
 
     processWords(w => words += w -> (words.getOrElse(w, 0) + 1))
+    words
+  }
+
+  /**
+   * Task 5:
+   *   Repeat the preceding exercise with a java.util.TreeMap
+   *   that you adapt to the Scala API.
+   */
+  def countWordsTreeMap(): mutable.Map[String, Int] = {
+    val words = new util.TreeMap[String, Int]()
+
+    processWords(w => words(w) = words.getOrElse(w, 0) + 1)
     words
   }
 
