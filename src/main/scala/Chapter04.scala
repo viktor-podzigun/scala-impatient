@@ -83,6 +83,24 @@ object Chapter04 {
     words
   }
 
+  /**
+   * Task 6:
+   *   Define a linked hash map that maps "Monday" to java.util.Calendar.MONDAY,
+   *   and similarly for the other weekdays. Demonstrate that the elements
+   *   are visited in insertion order.
+   */
+  def weekdaysLinkedHashMap(): mutable.Map[String, Int] = {
+    val weekdays = mutable.LinkedHashMap[String, Int]("Monday" -> util.Calendar.MONDAY)
+    weekdays += ("Tuesday" -> util.Calendar.TUESDAY,
+      "Wednesday" -> util.Calendar.WEDNESDAY,
+      "Thursday" -> util.Calendar.THURSDAY,
+      "Friday" -> util.Calendar.FRIDAY,
+      "Saturday" -> util.Calendar.SATURDAY,
+      "Sunday" -> util.Calendar.SUNDAY)
+
+    weekdays
+  }
+
   def main(args: Array[String]) {
     // task 2
     println(countWordsMutableMap().mkString("\n"))

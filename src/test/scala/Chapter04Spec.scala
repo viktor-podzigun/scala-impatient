@@ -1,3 +1,5 @@
+import java.util
+
 import Chapter04._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -35,6 +37,20 @@ class Chapter04Spec extends FlatSpec with Matchers {
     val words: mutable.Map[String, Int] = countWordsTreeMap()
 
     assertWordsOrderedMap(words.toList)
+  }
+
+  it should "visit weekdays in insertion order" in {
+    val weekdays: mutable.Map[String, Int] = weekdaysLinkedHashMap()
+
+    weekdays.size shouldBe 7
+    weekdays.toList shouldBe List(
+      "Monday" -> util.Calendar.MONDAY,
+      "Tuesday" -> util.Calendar.TUESDAY,
+      "Wednesday" -> util.Calendar.WEDNESDAY,
+      "Thursday" -> util.Calendar.THURSDAY,
+      "Friday" -> util.Calendar.FRIDAY,
+      "Saturday" -> util.Calendar.SATURDAY,
+      "Sunday" -> util.Calendar.SUNDAY)
   }
 
   private def assertWordsMap(words: collection.Map[String, Int]): Unit = {
