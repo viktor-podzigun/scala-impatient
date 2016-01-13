@@ -1,9 +1,10 @@
 import java.util
 import java.util.Scanner
 
-import scala.collection.JavaConversions.mapAsScalaMap
+import scala.collection.JavaConversions.{mapAsScalaMap, propertiesAsScalaMap}
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 object Chapter04 {
 
@@ -25,10 +26,10 @@ object Chapter04 {
    * Task 2:
    *   Write a program that reads words from a file. Use a mutable map to count
    *   how often each word appears. To read the words, simply use a java.util.Scanner:
-   * <blockquote>
+   * <blockquote><code>
    *     val in = new java.util.Scanner(new java.io.File("myfile.txt")) <br/>
    *     while (in.hasNext()) process in.next()
-   * </blockquote>
+   * </code></blockquote>
    */
   def countWordsMutableMap(): mutable.Map[String, Int] = {
     val words = new mutable.HashMap[String, Int]
@@ -101,8 +102,40 @@ object Chapter04 {
     weekdays
   }
 
+  /**
+   * Task 7:
+   *   Print a table of all Java properties, like this:
+   * <blockquote><code>
+   *   java.runtime.name     | Java(TM) SE Runtime Environment <br/>
+   *   sun.boot.library.path | /home/apps/jdk1.6.0_21/jre/lib/i386 <br/>
+   *   java.vm.version       | 17.0-b16 <br/>
+   *   java.vm.vendor        | Sun Microsystems Inc. <br/>
+   *   java.vendor.url       | http://java.sun.com/ <br/>
+   *   path.separator        | : <br/>
+   *   java.vm.name          | Java HotSpot(TM) Server VM <br/>
+   * </code></blockquote>
+   *   You need to find the length of the longest key before you can print the table.
+   */
+  def formatJavaProperties(): List[String] = {
+    val props: collection.Map[String, String] = System.getProperties
+    val maxKeyLen = props.foldLeft(0)((maxLen, entry) => {
+      if (maxLen < entry._1.length) entry._1.length
+      else maxLen
+    })
+
+    val result = ListBuffer[String]()
+    for ((key, value) <- props) {
+      result += key.padTo(maxKeyLen, ' ') + " | " + value
+    }
+
+    result.toList
+  }
+
   def main(args: Array[String]) {
     // task 2
     println(countWordsMutableMap().mkString("\n"))
+
+    // task 7
+    println(formatJavaProperties().mkString("\n"))
   }
 }

@@ -53,6 +53,17 @@ class Chapter04Spec extends FlatSpec with Matchers {
       "Sunday" -> util.Calendar.SUNDAY)
   }
 
+  it should "format Java properties" in {
+    val props: List[String] = formatJavaProperties()
+    props.size should be > 0
+
+    val separatorIndex = props.head.indexOf('|')
+    separatorIndex should be > 0
+    for (prop <- props) {
+      prop.indexOf('|') shouldBe separatorIndex
+    }
+  }
+
   private def assertWordsMap(words: collection.Map[String, Int]): Unit = {
     words.size shouldBe 12
     words("Simple") shouldBe 1
