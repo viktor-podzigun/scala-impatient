@@ -64,6 +64,13 @@ class Chapter04Spec extends FlatSpec with Matchers {
     }
   }
 
+  it should "return min and max values from Array[Int]" in {
+    val (min: Int, max: Int) = minmax(Array(1, -2, 3, 0, 5, 4))
+
+    min shouldBe -2
+    max shouldBe 5
+  }
+
   private def assertWordsMap(words: collection.Map[String, Int]): Unit = {
     words.size shouldBe 12
     words("Simple") shouldBe 1
