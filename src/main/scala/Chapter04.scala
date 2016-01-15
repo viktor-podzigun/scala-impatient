@@ -138,6 +138,26 @@ object Chapter04 {
    */
   def minmax(values: Array[Int]): (Int, Int) = (values.min, values.max)
 
+  /**
+   * Task 9:
+   *   Write a function lteqgt(values: Array[Int], v: Int) that returns a triple containing
+   *   the counts of values less than v , equal to v , and greater than v.
+   */
+  def lteqgt(values: Array[Int], v: Int): (Int, Int, Int) = {
+//    val count = values.count _
+//
+//    (count(_ < v), count(_ == v), count(_ > v))
+    var lt, eq, gt = 0
+
+    for (e <- values) {
+      if (e < v) lt += 1
+      else if (e == v) eq += 1
+      else gt += 1
+    }
+
+    (lt, eq, gt)
+  }
+
   def main(args: Array[String]) {
     // task 2
     println(countWordsMutableMap().mkString("\n"))

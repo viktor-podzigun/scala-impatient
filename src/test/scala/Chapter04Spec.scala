@@ -71,6 +71,14 @@ class Chapter04Spec extends FlatSpec with Matchers {
     max shouldBe 5
   }
 
+  it should "count less than, equal to, and greater than in Array[Int]" in {
+    val (lt: Int, eq: Int, gt: Int) = lteqgt(Array(1, -2, 3, 0, 5, 4), 1)
+
+    lt shouldBe 2
+    eq shouldBe 1
+    gt shouldBe 3
+  }
+
   private def assertWordsMap(words: collection.Map[String, Int]): Unit = {
     words.size shouldBe 12
     words("Simple") shouldBe 1
