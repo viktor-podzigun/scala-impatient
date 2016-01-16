@@ -164,5 +164,8 @@ object Chapter04 {
 
     // task 7
     println(formatJavaProperties().mkString("\n"))
+
+    // task 10
+    println("Hello".zip("World").mkString("\n"))
   }
 }
