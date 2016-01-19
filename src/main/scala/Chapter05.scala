@@ -52,12 +52,27 @@ object Chapter05 {
    *  A Time object should be constructed as new Time(hrs, min), where hrs is in
    *  military time format (between 0 and 23).
    */
-  class Time03(val hours: Int, val minutes: Int) {
+  class Time03(private val hours: Int, private val minutes: Int) {
 
     def before(other: Time03): Boolean = {
       if (hours < other.hours) true
       else if (hours == other.hours && minutes < other.minutes) true
       else false
+    }
+  }
+
+  /**
+   * Task 4:
+   *  Reimplement the Time class from the preceding exercise so that the internal
+   *  representation is the number of minutes since midnight (between 0 and 24 × 60 – 1).
+   *  Do not change the public interface. That is, client code should be unaffected by your change.
+   */
+  class Time04(hrs: Int, min: Int) {
+
+    private val minutes: Int = (hrs * 60) + min
+
+    def before(other: Time04): Boolean = {
+      minutes < other.minutes
     }
   }
 }
