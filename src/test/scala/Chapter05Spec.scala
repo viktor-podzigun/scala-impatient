@@ -25,4 +25,12 @@ class Chapter05Spec extends FlatSpec with Matchers {
     account.withdraw(7)
     account.balance shouldBe 3
   }
+
+  "Chapter05.Time03" should "check before" in {
+    new Time03(0, 0).before(new Time03(0, 0)) shouldBe false
+    new Time03(1, 1).before(new Time03(1, 1)) shouldBe false
+    new Time03(1, 5).before(new Time03(1, 10)) shouldBe true
+    new Time03(1, 5).before(new Time03(2, 10)) shouldBe true
+    new Time03(1, 50).before(new Time03(1, 10)) shouldBe false
+  }
 }
