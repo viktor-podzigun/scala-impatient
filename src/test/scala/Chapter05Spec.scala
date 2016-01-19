@@ -14,4 +14,15 @@ class Chapter05Spec extends FlatSpec with Matchers {
       counter.increment()
     }
   }
+
+  "Chapter05.BankAccount02" should "deposit, withdraw and check balance" in {
+    val account = new BankAccount02
+    account.balance shouldBe 0
+
+    account.deposit(10)
+    account.balance shouldBe 10
+
+    account.withdraw(7)
+    account.balance shouldBe 3
+  }
 }

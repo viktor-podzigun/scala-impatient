@@ -20,4 +20,26 @@ object Chapter05 {
 
     def current: Int = value
   }
+
+  /**
+   * Task 2:
+   *  Write a class BankAccount with methods deposit and withdraw,
+   *  and a read-only property balance.
+   */
+  class BankAccount02 {
+
+    private var amount: Int = 0
+
+    def deposit(sum: Int): Unit = {
+      amount += sum
+    }
+
+    def withdraw(sum: Int): Unit = {
+      amount -= sum
+    }
+
+    def balance: Int = {
+      amount
+    }
+  }
 }
