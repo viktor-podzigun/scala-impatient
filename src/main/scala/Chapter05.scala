@@ -141,19 +141,22 @@ object Chapter05 {
    */
   class Car08(val manufacturer: String,
               val modelName: String,
-              val modelYear: Int,
-              val licensePlate: String) {
+              val modelYear: Int = -1,
+              val licensePlate: String = "") {
 
     def this(manufacturer: String, modelName: String, licensePlate: String) {
       this(manufacturer, modelName, -1, licensePlate)
     }
 
-    def this(manufacturer: String, modelName: String, modelYear: Int) {
-      this(manufacturer, modelName, modelYear, "")
-    }
-
-    def this(manufacturer: String, modelName: String) {
-      this(manufacturer, modelName, -1)
-    }
+// Can be removed
+//   see http://stackoverflow.com/questions/24480989/scala-auxilliary-constructor-behavior
+//
+//    def this(manufacturer: String, modelName: String, modelYear: Int) {
+//      this(manufacturer, modelName, modelYear, "")
+//    }
+//
+//    def this(manufacturer: String, modelName: String) {
+//      this(manufacturer, modelName, -1)
+//    }
   }
 }
