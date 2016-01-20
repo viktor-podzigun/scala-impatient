@@ -41,4 +41,13 @@ class Chapter05Spec extends FlatSpec with Matchers {
     new Time04(1, 5).before(new Time04(2, 10)) shouldBe true
     new Time04(1, 50).before(new Time04(1, 10)) shouldBe false
   }
+
+  "Student05" should "call the JavaBeans getters and setters in Scala" in {
+    val student = new Student05
+    student.setName("Viktor")
+    student.setId(23)
+
+    student.getName shouldBe "Viktor"
+    student.getId shouldBe 23
+  }
 }

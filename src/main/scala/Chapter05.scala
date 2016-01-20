@@ -1,4 +1,4 @@
-
+import scala.beans.BeanProperty
 
 object Chapter05 {
 
@@ -74,5 +74,20 @@ object Chapter05 {
     def before(other: Time04): Boolean = {
       minutes < other.minutes
     }
+  }
+
+  /**
+   * Task 5:
+   *  Make a class Student with read-write JavaBeans properties name (of type String )
+   *  and id (of type Long ). What methods are generated? (Use javap to check.)
+   *  Can you call the JavaBeans getters and setters in Scala? Should you?
+   */
+  class Student05 {
+
+    @BeanProperty
+    var name: String = ""
+
+    @BeanProperty
+    var id: Long = 0
   }
 }
