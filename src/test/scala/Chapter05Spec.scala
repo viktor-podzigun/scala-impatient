@@ -93,4 +93,10 @@ class Chapter05Spec extends FlatSpec with Matchers {
     car4.modelYear shouldBe 2005
     car4.licensePlate shouldBe "license"
   }
+
+  "Employee10" should "use explicit fields and a default primary constructor" in {
+    val employee = new Employee10
+    employee.name shouldBe "John Q. Public"
+    employee.salary shouldBe 0.0
+  }
 }
