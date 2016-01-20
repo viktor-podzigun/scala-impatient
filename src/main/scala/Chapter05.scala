@@ -159,4 +159,11 @@ object Chapter05 {
 //      this(manufacturer, modelName, -1)
 //    }
   }
+
+  /**
+   * Task 9:
+   *  Reimplement the class of the preceding exercise in Java, C#, or C++ (your choice).
+   *  How much shorter is the Scala class?
+   */
+  // see src/main/java/Chapter05Car.java
 }
