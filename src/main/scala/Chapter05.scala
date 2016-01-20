@@ -90,4 +90,14 @@ object Chapter05 {
     @BeanProperty
     var id: Long = 0
   }
+
+  /**
+   * Task 6:
+   *  In the Person class of Section 5.1, "Simple Classes and Parameterless Methods,"
+   *  on page 51, provide a primary constructor that turns negative ages to 0.
+   */
+  class Person06(inAge: Int) {
+
+    var age: Int = if (inAge < 0) 0 else inAge
+  }
 }

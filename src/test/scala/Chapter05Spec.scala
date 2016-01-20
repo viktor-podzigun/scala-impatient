@@ -50,4 +50,12 @@ class Chapter05Spec extends FlatSpec with Matchers {
     student.getName shouldBe "Viktor"
     student.getId shouldBe 23
   }
+
+  "Person06" should "turn negative ages in constructor to 0" in {
+    new Person06(-5).age shouldBe 0
+    new Person06(-1).age shouldBe 0
+    new Person06(0).age shouldBe 0
+    new Person06(1).age shouldBe 1
+    new Person06(5).age shouldBe 5
+  }
 }
