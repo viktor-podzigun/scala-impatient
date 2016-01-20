@@ -60,11 +60,37 @@ class Chapter05Spec extends FlatSpec with Matchers {
   }
 
   "Person07" should "split name into firstName and lastName" in {
-    val person: Person07 = new Person07("Fred Smith")
+    val person = new Person07("Fred Smith")
     person.firstName shouldBe "Fred"
     person.lastName shouldBe "Smith"
     a [IllegalArgumentException] should be thrownBy {
       new Person07("SingleName")
     }
+  }
+
+  "Car08" should "provide 4 constructors" in {
+    val car1 = new Car08("BMW", "X5")
+    car1.manufacturer shouldBe "BMW"
+    car1.modelName shouldBe "X5"
+    car1.modelYear shouldBe -1
+    car1.licensePlate shouldBe ""
+
+    val car2 = new Car08("BMW", "X5", 2005)
+    car2.manufacturer shouldBe "BMW"
+    car2.modelName shouldBe "X5"
+    car2.modelYear shouldBe 2005
+    car2.licensePlate shouldBe ""
+
+    val car3 = new Car08("BMW", "X5", "license")
+    car3.manufacturer shouldBe "BMW"
+    car3.modelName shouldBe "X5"
+    car3.modelYear shouldBe -1
+    car3.licensePlate shouldBe "license"
+
+    val car4 = new Car08("BMW", "X5", 2005, "license")
+    car4.manufacturer shouldBe "BMW"
+    car4.modelName shouldBe "X5"
+    car4.modelYear shouldBe 2005
+    car4.licensePlate shouldBe "license"
   }
 }
