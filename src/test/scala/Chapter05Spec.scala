@@ -58,4 +58,13 @@ class Chapter05Spec extends FlatSpec with Matchers {
     new Person06(1).age shouldBe 1
     new Person06(5).age shouldBe 5
   }
+
+  "Person07" should "split name into firstName and lastName" in {
+    val person: Person07 = new Person07("Fred Smith")
+    person.firstName shouldBe "Fred"
+    person.lastName shouldBe "Smith"
+    a [IllegalArgumentException] should be thrownBy {
+      new Person07("SingleName")
+    }
+  }
 }

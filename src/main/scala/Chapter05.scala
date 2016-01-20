@@ -100,4 +100,33 @@ object Chapter05 {
 
     var age: Int = if (inAge < 0) 0 else inAge
   }
+
+  /**
+   * Task 7:
+   *  Write a class Person with a primary constructor that accepts a string containing
+   *  a first name, a space, and a last name, such as new Person("Fred Smith").
+   *  Supply read-only properties firstName and lastName.
+   *  Should the primary constructor parameter be a var, a val, or a plain parameter? Why?
+   */
+  class Person07 private(names: Array[String]) {
+
+    val firstName: String = names(0)
+    val lastName: String = names(1)
+
+    def this(name: String) {
+      this(Person07.parseName(name))
+    }
+  }
+
+  private object Person07 {
+    def parseName(name: String): Array[String] = {
+      val names = name.split(" ")
+      if (names.length < 2) {
+        throw new IllegalArgumentException("name should contain a first name, a space" +
+          ", and a last name, such as \"Fred Smith\"")
+      }
+
+      names
+    }
+  }
 }
