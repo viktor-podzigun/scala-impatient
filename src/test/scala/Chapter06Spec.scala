@@ -1,5 +1,8 @@
-import Chapter06._
+import java.io.File
+
 import org.scalatest.{FlatSpec, Matchers}
+
+import scala.io.Source
 
 class Chapter06Spec extends FlatSpec with Matchers {
 
@@ -24,5 +27,24 @@ class Chapter06Spec extends FlatSpec with Matchers {
     val point = Point(3, 4)
     point.x shouldBe 3
     point.y shouldBe 4
+  }
+
+  "Reverse" should "print the command-line arguments in reverse order" in {
+    //given
+    val processBuilder = new ProcessBuilder("java",
+      "-cp", System.getProperty("user.home") +
+        "/.m2/repository/org/scala-lang/scala-library/2.11.7/scala-library-2.11.7.jar" +
+        File.pathSeparator + "./target/classes",
+      "Reverse", "Hello", "World")
+    processBuilder.redirectErrorStream(true)
+
+    //when
+    val process = processBuilder.start()
+    val result = Source.fromInputStream(process.getInputStream).getLines().mkString("\n")
+    process.waitFor()
+
+    //then
+    process.exitValue() shouldBe 0
+    result shouldBe "World Hello"
   }
 }
