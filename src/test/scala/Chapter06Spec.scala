@@ -19,4 +19,10 @@ class Chapter06Spec extends FlatSpec with Matchers {
     val milesToKilometers: UnitConversion = MilesToKilometers
     milesToKilometers.convert(1).formatted("%.6f") shouldBe "1.609347"
   }
+
+  "Point" should "construct instances without using new" in {
+    val point = Point(3, 4)
+    point.x shouldBe 3
+    point.y shouldBe 4
+  }
 }

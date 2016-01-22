@@ -49,4 +49,16 @@ object Chapter06 {
   object Origin extends java.awt.Point {
     // Its not a good idea since java.awt.Point class is mutable.
   }
+
+  /**
+   * Task 4:
+   *   Define a Point class with a companion object so that you can construct Point
+   *   instances as Point(3, 4), without using new.
+   */
+  class Point private(val x: Int, val y: Int) {
+  }
+
+  object Point {
+    def apply(x: Int, y: Int) = new Point(x, y)
+  }
 }
