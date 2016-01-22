@@ -40,4 +40,13 @@ object Chapter06 {
 
     override def convert(miles: Double) = miles / 0.62137
   }
+
+  /**
+   * Task 3:
+   *  Define an Origin object that extends java.awt.Point. Why is this not actually a good idea?
+   *  (Have a close look at the methods of the Point class.)
+   */
+  object Origin extends java.awt.Point {
+    // Its not a good idea since java.awt.Point class is mutable.
+  }
 }
