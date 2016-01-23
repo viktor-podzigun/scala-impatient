@@ -75,3 +75,16 @@ object Point {
 object Reverse extends App {
   println(args.reverse.mkString(" "))
 }
+
+/**
+ * Task 6:
+ *  Write an enumeration describing the four playing card suits so that the toString method
+ *  returns ♣, ♦, ♥, or ♠.
+ */
+object PlayingCard extends Enumeration {
+
+  val Clubs = Value("♣")
+  val Diams = Value("♦")
+  val Hearts = Value("♥")
+  val Spades = Value("♠")
+}

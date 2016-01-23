@@ -47,4 +47,11 @@ class Chapter06Spec extends FlatSpec with Matchers {
     process.exitValue() shouldBe 0
     result shouldBe "World Hello"
   }
+
+  "PlayingCard" should "describe the four playing card suits" in {
+    PlayingCard.Clubs.toString shouldBe "♣"
+    PlayingCard.Diams.toString shouldBe "♦"
+    PlayingCard.Hearts.toString shouldBe "♥"
+    PlayingCard.Spades.toString shouldBe "♠"
+  }
 }
