@@ -61,4 +61,20 @@ class Chapter06Spec extends FlatSpec with Matchers {
     PlayingCard.isRed(PlayingCard.Hearts) shouldBe true
     PlayingCard.isRed(PlayingCard.Spades) shouldBe false
   }
+
+  "RGB" should "describe the eight corners of the RGB color cube" in {
+    assertRGB(RGB.Black, 0x000000, "Black")
+    assertRGB(RGB.White, 0xffffff, "White")
+    assertRGB(RGB.Red, 0xff0000, "Red")
+    assertRGB(RGB.Lime, 0x00ff00, "Lime")
+    assertRGB(RGB.Blue, 0x0000ff, "Blue")
+    assertRGB(RGB.Yellow, 0xffff00, "Yellow")
+    assertRGB(RGB.Cyan, 0x00ffff, "Cyan")
+    assertRGB(RGB.Magenta, 0xff00ff, "Magenta")
+  }
+
+  private def assertRGB(rgb: RGB.Value, id: Int, name: String): Unit = {
+    rgb.id shouldBe id
+    rgb.toString shouldBe name
+  }
 }
