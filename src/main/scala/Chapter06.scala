@@ -84,7 +84,16 @@ object Reverse extends App {
 object PlayingCard extends Enumeration {
 
   val Clubs = Value("♣")
-  val Diams = Value("♦")
+  val Diamonds = Value("♦")
   val Hearts = Value("♥")
   val Spades = Value("♠")
+
+  /**
+   * Task 7:
+   *   Implement a function that checks whether a card suit value from the preceding exercise
+   *   is red.
+   */
+  def isRed(card: PlayingCard.Value): Boolean = {
+    card == Hearts || card == Diamonds
+  }
 }

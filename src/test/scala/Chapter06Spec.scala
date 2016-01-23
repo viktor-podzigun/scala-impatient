@@ -50,8 +50,15 @@ class Chapter06Spec extends FlatSpec with Matchers {
 
   "PlayingCard" should "describe the four playing card suits" in {
     PlayingCard.Clubs.toString shouldBe "♣"
-    PlayingCard.Diams.toString shouldBe "♦"
+    PlayingCard.Diamonds.toString shouldBe "♦"
     PlayingCard.Hearts.toString shouldBe "♥"
     PlayingCard.Spades.toString shouldBe "♠"
+  }
+
+  it should "implement isRed function" in {
+    PlayingCard.isRed(PlayingCard.Clubs) shouldBe false
+    PlayingCard.isRed(PlayingCard.Diamonds) shouldBe true
+    PlayingCard.isRed(PlayingCard.Hearts) shouldBe true
+    PlayingCard.isRed(PlayingCard.Spades) shouldBe false
   }
 }
