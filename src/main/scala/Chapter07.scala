@@ -36,3 +36,18 @@ package com {
     }
   }
 }
+
+/**
+ * Task 2:
+ *
+ * <p>Write a puzzler that baffles your Scala friends, using a package <code>com</code>
+ * that isn’t at the top level.
+ */
+package puzzler {
+
+  package com {
+    object FromCom {
+      val value = 21
+    }
+  }
+}
