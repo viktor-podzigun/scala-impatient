@@ -100,3 +100,30 @@ package object random {
  * </ul>
  */
 
+/**
+ * Task 5:
+ *
+ * <p>What is the meaning of <code>private[com] def giveRaise(rate: Double)</code>?
+ * Is it useful?
+ */
+package com {
+
+  /**
+   * <code>private[com]</code> makes definition package-private, meaning it is visible within
+   * the same package and all sub-packages.
+   */
+  object VisibilityDef {
+    private[com] def giveRaise(rate: Double): Double = rate * 0.5
+  }
+
+  object VisibilityUsage {
+    println(VisibilityDef.giveRaise(1))
+  }
+
+  package horstmann {
+
+    object VisibilityUsage {
+      println(VisibilityDef.giveRaise(1))
+    }
+  }
+}
