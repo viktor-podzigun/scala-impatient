@@ -174,6 +174,30 @@ object Chapter0708 {
   /**
    * Since we imported everything from java package, we can use sub-packages.
    */
-  def doSomething(evt: util.List) {
+  def doSomething(list: util.List[String]) {
   }
+}
+
+/**
+ * Task 9:
+ *
+ * <p>Write a program that imports the <code>java.lang.System</code> class,
+ * reads the user name from the <code>user.name</code> system property,
+ * reads a password from the <code>Console</code> object, and prints a message
+ * to the standard error stream if the password is not "secret".
+ * Otherwise, print a greeting to the standard output stream.
+ * Do not use any other imports, and do not use any qualified names (with dots).
+ */
+object Chapter0709 extends App {
+  //import java.lang.System
+
+  def authenticate(): Unit = {
+    val userName = System.getProperty("user.name")
+    val pwd: String = readLine("Please, enter password: ")
+
+    if (pwd != "secret") error("Wrong password!")
+    else println("Welcome " + userName)
+  }
+
+  authenticate()
 }
