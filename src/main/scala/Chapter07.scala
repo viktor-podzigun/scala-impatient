@@ -51,3 +51,34 @@ package puzzler {
     }
   }
 }
+
+/**
+ * Task 3:
+ *
+ * <p>Write a package random with functions
+ * nextInt(): Int,
+ * nextDouble(): Double,
+ * and setSeed(seed: Int): Unit.
+ *
+ * <p>To generate random numbers, use the linear congruential generator
+ * next = previous × a + b mod 2n,
+ * where a = 1664525, b = 1013904223, and n = 32.
+ */
+package object random {
+
+  private val addition: Int = (1013904223 % (1L << 32)).toInt
+  private var seed : Int = 0
+
+  def nextInt(): Int = {
+    seed = (seed * 1664525) + addition
+
+    if (seed < 0) ~seed
+    else seed
+  }
+
+  def nextDouble(): Double = {
+    nextInt() / (Int.MaxValue + 1.0)
+  }
+
+  def setSeed(seed: Int): Unit = this.seed = seed
+}
