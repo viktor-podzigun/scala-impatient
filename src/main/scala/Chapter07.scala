@@ -127,3 +127,27 @@ package com {
     }
   }
 }
+
+/**
+ * Task 6:
+ *
+ * <p>Write a program that copies all elements from a Java hash map into a Scala hash map.
+ * Use imports to rename both classes.
+ */
+object Chapter0706 {
+
+  import java.util.{HashMap => JavaHashMap}
+
+  import scala.collection.mutable.{HashMap => ScalaHashMap}
+
+  def fromJavaHashMap(javaHashMap: JavaHashMap[String, Int]): ScalaHashMap[String, Int] = {
+    import scala.collection.JavaConversions.iterableAsScalaIterable
+
+    val result = new ScalaHashMap[String, Int]
+    for (entry <- javaHashMap.entrySet()) {
+      result(entry.getKey) = entry.getValue
+    }
+
+    result
+  }
+}

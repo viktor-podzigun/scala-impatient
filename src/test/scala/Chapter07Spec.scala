@@ -1,5 +1,7 @@
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.collection.mutable
+
 class Chapter07Spec extends FlatSpec with Matchers {
 
   "puzzler" should "use a package com that isn’t at the top level" in {
@@ -15,5 +17,22 @@ class Chapter07Spec extends FlatSpec with Matchers {
 
     random.setSeed(1)
     random.nextInt() shouldBe 1015568748
+  }
+
+  "Chapter0706" should "copy all elements from a Java hash map into a Scala hash map" in {
+    //given
+    val javaHashMap = new java.util.HashMap[String, Int]
+    javaHashMap.put("A", 1)
+    javaHashMap.put("B", 2)
+    javaHashMap.put("C", 3)
+
+    //when
+    val scalaHashMap: mutable.HashMap[String, Int] = Chapter0706.fromJavaHashMap(javaHashMap)
+
+    //then
+    scalaHashMap.size shouldBe javaHashMap.size
+    scalaHashMap("A") shouldBe 1
+    scalaHashMap("B") shouldBe 2
+    scalaHashMap("C") shouldBe 3
   }
 }
