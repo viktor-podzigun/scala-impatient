@@ -156,3 +156,24 @@ object Chapter0706 {
     result
   }
 }
+
+/**
+ * Task 8:
+ *
+ * <p>What is the effect of
+ * <blockquote><code>
+ *   import java._ <br/>
+ *   import javax._ <br/>
+ * </code></blockquote>
+ * Is this a good idea?
+ */
+object Chapter0708 {
+
+  import java._
+
+  /**
+   * Since we imported everything from java package, we can use sub-packages.
+   */
+  def doSomething(evt: util.List) {
+  }
+}
