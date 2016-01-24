@@ -82,3 +82,21 @@ package object random {
 
   def setSeed(seed: Int): Unit = this.seed = seed
 }
+
+/**
+ * Task 4:
+ *
+ * <p>Why do you think the Scala language designers provided the package object syntax instead
+ * of simply letting you add functions and variables to a package?
+ *
+ * <p>Solution: <br/>
+ * They decided to make it explicit by adding just one word "object" to package declaration,
+ * in my opinion, for a couple of reasons:
+ * <ul>
+ *   <li>since its possible to have package declarations in different files, it would be hard
+ *   to maintain functions and variable in different places for the same package</li>
+ *   <li>because variables in package object are global (singletons) they didn't want to make it
+ *   available by default</li>
+ * </ul>
+ */
+
