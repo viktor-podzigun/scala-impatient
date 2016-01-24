@@ -136,6 +136,11 @@ package com {
  */
 object Chapter0706 {
 
+  /**
+   * Task 7:
+   *
+   * <p>In the preceding exercise, move all imports into the innermost scope possible.
+   */
   import java.util.{HashMap => JavaHashMap}
 
   import scala.collection.mutable.{HashMap => ScalaHashMap}
