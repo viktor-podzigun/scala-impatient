@@ -35,4 +35,29 @@ class Chapter07Spec extends FlatSpec with Matchers {
     scalaHashMap("B") shouldBe 2
     scalaHashMap("C") shouldBe 3
   }
+
+  "Chapter0709" should "print to error stream if password is not secret" in {
+    //given
+    val password = "wrong"
+
+    //when
+    val (exit, _, err) = TestUtils.runAppWithInput(password, "Chapter0709")
+
+    //then
+    exit shouldBe 1
+    err.contains("Wrong password!") shouldBe true
+  }
+
+  it should "print greeting to standard output if password is secret" in {
+    //given
+    val password = "secret"
+
+    //when
+    val (exit, out, err) = TestUtils.runAppWithInput(password, "Chapter0709")
+
+    //then
+    exit shouldBe 0
+    out.contains("Welcome " + System.getProperty("user.name")) shouldBe true
+    err shouldBe ""
+  }
 }

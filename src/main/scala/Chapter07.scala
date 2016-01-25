@@ -191,13 +191,9 @@ object Chapter0708 {
 object Chapter0709 extends App {
   //import java.lang.System
 
-  def authenticate(): Unit = {
-    val userName = System.getProperty("user.name")
-    val pwd: String = readLine("Please, enter password: ")
+  val userName = System.getProperty("user.name")
+  val password: String = readLine("Please, enter password: ")
 
-    if (pwd != "secret") error("Wrong password!")
-    else println("Welcome " + userName)
-  }
-
-  authenticate()
+  if (password != "secret") error("Wrong password!")
+  else println("Welcome " + userName)
 }

@@ -1,8 +1,4 @@
-import java.io.File
-
 import org.scalatest.{FlatSpec, Matchers}
-
-import scala.io.Source
 
 class Chapter06Spec extends FlatSpec with Matchers {
 
@@ -30,22 +26,13 @@ class Chapter06Spec extends FlatSpec with Matchers {
   }
 
   "Reverse" should "print the command-line arguments in reverse order" in {
-    //given
-    val processBuilder = new ProcessBuilder("java",
-      "-cp", System.getProperty("user.home") +
-        "/.m2/repository/org/scala-lang/scala-library/2.11.7/scala-library-2.11.7.jar" +
-        File.pathSeparator + "./target/classes",
-      "Reverse", "Hello", "World")
-    processBuilder.redirectErrorStream(true)
-
     //when
-    val process = processBuilder.start()
-    val result = Source.fromInputStream(process.getInputStream).getLines().mkString("\n")
-    process.waitFor()
+    val (exit: Int, out: String, err: String) = TestUtils.runApp("Reverse", "Hello", "World")
 
     //then
-    process.exitValue() shouldBe 0
-    result shouldBe "World Hello"
+    exit shouldBe 0
+    out shouldBe "World Hello"
+    err shouldBe ""
   }
 
   "PlayingCard" should "describe the four playing card suits" in {
