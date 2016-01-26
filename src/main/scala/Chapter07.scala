@@ -197,3 +197,22 @@ object Chapter0709 extends App {
   if (password != "secret") error("Wrong password!")
   else println("Welcome " + userName)
 }
+
+/**
+ * Task 10:
+ *
+ * <p>Apart from StringBuilder, what other members of java.lang does the scala package override?
+ */
+object JavaLangOverrides extends App {
+
+  val overrides = List(Boolean.getClass,
+    Byte.getClass,
+    Double.getClass,
+    Float.getClass,
+    Iterable.getClass,
+    Long.getClass,
+    Short.getClass,
+    StringBuilder.getClass)
+
+  println(overrides.mkString("\n"))
+}
