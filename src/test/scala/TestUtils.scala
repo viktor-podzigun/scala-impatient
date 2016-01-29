@@ -17,10 +17,12 @@ object TestUtils {
   }
 
   def runAppWithInput(input: String, mainObj: String, args: String*): (Int, String, String) = {
+    val jars: String = System.getProperty("user.home") + "/.ivy2/cache"
     val cmd = mutable.Buffer("java",
-      "-cp", System.getProperty("user.home") + "/.m2/repository/org/scala-lang/scala-library/" +
-        ScalaVersion + "/scala-library-" + ScalaVersion + ".jar" +
-        File.pathSeparator + "./target/classes")
+      "-cp", jars + "/org.scala-lang/scala-library/jars/scala-library-" + ScalaVersion + ".jar" +
+        File.pathSeparator + jars +
+        "/org.scoverage/scalac-scoverage-runtime_2.11/jars/scalac-scoverage-runtime_2.11-1.1.1.jar" +
+        File.pathSeparator + "./target/scala-2.11/classes")
     cmd += mainObj
     cmd ++= args
     
