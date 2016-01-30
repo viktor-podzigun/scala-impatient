@@ -1,3 +1,4 @@
+import scala.collection.mutable.ListBuffer
 
 /**
  * Task 1:
@@ -123,5 +124,59 @@ object Shapes extends App {
   def cleanAndPaint(shape: Shape): Unit = {
     shape.erase()
     shape.draw()
+  }
+}
+
+/**
+ * Task 4:
+ *
+ * Define an abstract class `Item` with methods `price` and `description`. A `SimpleItem`
+ * is an item whose `price` and `description` are specified in the constructor. Take advantage
+ * of the fact that a val can override a def. A `Bundle` is an item that contains other items.
+ * Its price is the sum of the prices in the bundle. Also provide a mechanism for adding items
+ * to the bundle and a suitable description method.
+ */
+abstract class Item {
+
+  /** Price in minor units */
+  def price: Int
+
+  def description: String
+}
+
+class SimpleItem(inPrice: Int, inDescription: String) extends Item {
+
+  override val price: Int = inPrice
+
+  override val description: String = inDescription
+}
+
+class Bundle extends Item {
+
+  private val items = new ListBuffer[Item]
+
+  def addItem(item: Item): Bundle = {
+    items += item
+    this
+  }
+
+  override def price: Int = {
+    items.foldLeft(0)((sum, item) => sum + item.price)
+  }
+
+  override def description: String = {
+    val sb = new StringBuilder
+    var num = 1
+    for (item <- items) {
+      if (num > 1) {
+        sb.append("\n")
+      }
+
+      sb.append("Item ").append(num).append(":\n")
+        .append(item.description).append("\n")
+      num += 1
+    }
+
+    sb.toString()
   }
 }

@@ -19,4 +19,19 @@ class Chapter08Spec extends FlatSpec with Matchers {
     account.getBalance shouldBe 101
     account.withdraw(5) shouldBe 96
   }
+
+  "Item" should "has SimpleItem and Bundle implementations" in {
+    val item: Item = new SimpleItem(500, "iPhone 5s")
+    item.price shouldBe 500
+    item.description shouldBe "iPhone 5s"
+
+    val bundle: Bundle = new Bundle
+    bundle.isInstanceOf[Item] shouldBe true
+    bundle.price shouldBe 0
+    bundle.description shouldBe ""
+
+    bundle.addItem(item).addItem(new SimpleItem(700, "iPhone 6"))
+    bundle.price shouldBe 1200
+    bundle.description shouldBe "Item 1:\niPhone 5s\n\nItem 2:\niPhone 6\n"
+  }
 }
