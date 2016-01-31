@@ -32,6 +32,6 @@ class Chapter08Spec extends FlatSpec with Matchers {
 
     bundle.addItem(item).addItem(new SimpleItem(700, "iPhone 6"))
     bundle.price shouldBe 1200
-    bundle.description shouldBe "Item 1:\niPhone 5s\n\nItem 2:\niPhone 6\n"
+    bundle.description shouldBe "iPhone 5s\n\niPhone 6"
   }
 }

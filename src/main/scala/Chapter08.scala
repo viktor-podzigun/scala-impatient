@@ -144,12 +144,7 @@ abstract class Item {
   def description: String
 }
 
-class SimpleItem(inPrice: Int, inDescription: String) extends Item {
-
-  override val price: Int = inPrice
-
-  override val description: String = inDescription
-}
+class SimpleItem(override val price: Int, override val description: String) extends Item
 
 class Bundle extends Item {
 
@@ -160,23 +155,7 @@ class Bundle extends Item {
     this
   }
 
-  override def price: Int = {
-    items.foldLeft(0)((sum, item) => sum + item.price)
-  }
+  override def price = items.foldLeft(0)((sum, item) => sum + item.price)
 
-  override def description: String = {
-    val sb = new StringBuilder
-    var num = 1
-    for (item <- items) {
-      if (num > 1) {
-        sb.append("\n")
-      }
-
-      sb.append("Item ").append(num).append(":\n")
-        .append(item.description).append("\n")
-      num += 1
-    }
-
-    sb.toString()
-  }
+  override def description = items.map(_.description).mkString("\n\n")
 }
