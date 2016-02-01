@@ -82,6 +82,8 @@ class SavingsAccount(initialBalance: Double) extends BankAccount(initialBalance)
   }
 }
 
+package task0803 {
+
 /**
  * Task 3:
  *
@@ -91,6 +93,7 @@ class SavingsAccount(initialBalance: Double) extends BankAccount(initialBalance)
  */
 abstract class Shape {
   def draw(): Unit
+
   def erase(): Unit
 }
 
@@ -127,6 +130,10 @@ object Shapes extends App {
   }
 }
 
+}
+
+package task0804 {
+
 /**
  * Task 4:
  *
@@ -158,4 +165,24 @@ class Bundle extends Item {
   override def price = items.foldLeft(0)((sum, item) => sum + item.price)
 
   override def description = items.map(_.description).mkString("\n\n")
+}
+
+}
+
+package task0805 {
+
+/**
+ * Task 5:
+ *
+ * Design a class `Point` whose x and y coordinate values can be provided in a constructor.
+ * Provide a subclass `LabeledPoint` whose constructor takes a `label` value and `x` and `y`
+ * coordinates, such as
+ * {{{
+ *   new LabeledPoint("Black Thursday", 1929, 230.07)
+ * }}}
+ */
+class Point(val x: Double, val y: Double)
+
+class LabeledPoint(val label: String, x: Double, y: Double) extends Point(x, y)
+
 }

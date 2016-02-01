@@ -1,4 +1,6 @@
 import org.scalatest.{FlatSpec, Matchers}
+import task0804.{Bundle, SimpleItem, Item}
+import task0805.LabeledPoint
 
 class Chapter08Spec extends FlatSpec with Matchers {
 
@@ -33,5 +35,14 @@ class Chapter08Spec extends FlatSpec with Matchers {
     bundle.addItem(item).addItem(new SimpleItem(700, "iPhone 6"))
     bundle.price shouldBe 1200
     bundle.description shouldBe "iPhone 5s\n\niPhone 6"
+  }
+
+  "Point" should "has LabeledPoint subclass" in {
+    val point: LabeledPoint = new LabeledPoint("Black Thursday", 1929, 230.07)
+
+    point.isInstanceOf[task0805.Point] shouldBe true
+    point.label shouldBe "Black Thursday"
+    point.x shouldBe 1929
+    point.y shouldBe 230.07
   }
 }
