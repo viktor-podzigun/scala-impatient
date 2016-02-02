@@ -1,4 +1,5 @@
 import org.scalatest.{FlatSpec, Matchers}
+import task0604.Point
 
 class Chapter06Spec extends FlatSpec with Matchers {
 

@@ -1,6 +1,7 @@
 import org.scalatest.{FlatSpec, Matchers}
-import task0804.{Bundle, SimpleItem, Item}
-import task0805.LabeledPoint
+import task0804.{Bundle, Item, SimpleItem}
+import task0805.{LabeledPoint, Point}
+import task0806.{Circle, Rectangle, Shape}
 
 class Chapter08Spec extends FlatSpec with Matchers {
 
@@ -44,5 +45,17 @@ class Chapter08Spec extends FlatSpec with Matchers {
     point.label shouldBe "Black Thursday"
     point.x shouldBe 1929
     point.y shouldBe 230.07
+  }
+
+  "Shape06" should "has Rectangle and Circle subclasses" in {
+    val circle: Shape = new Circle(new Point(1, 2), 3)
+    val circleCenter: Point = circle.centerPoint
+    circleCenter.x shouldBe 1
+    circleCenter.y shouldBe 2
+
+    val rectangle: Shape = new Rectangle(1, 2, 3, 4)
+    val rectangleCenter: Point = rectangle.centerPoint
+    rectangleCenter.x shouldBe ((1 + 3) / 2)
+    rectangleCenter.y shouldBe ((2 + 4) / 2)
   }
 }
