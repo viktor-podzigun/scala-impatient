@@ -9,7 +9,12 @@ scalaVersion := "2.11.7"
 
 //fork := false
 
-coverageEnabled := true
+// to run coverage tests use:
+//
+// activator clean coverage test coverageReport
+//
+//
+//coverageEnabled := true
 
 coverageMinimum := 80
 

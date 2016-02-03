@@ -3,6 +3,7 @@ import task0804.{Bundle, Item, SimpleItem}
 import task0805.{LabeledPoint, Point}
 import task0806.{Circle, Rectangle, Shape}
 import task0807.Square
+import task0808.{Person, SecretAgent}
 
 class Chapter08Spec extends FlatSpec with Matchers {
 
@@ -80,5 +81,11 @@ class Chapter08Spec extends FlatSpec with Matchers {
     square3.y shouldBe 0
     square3.width shouldBe 0
     square3.height shouldBe 0
+  }
+
+  "SecretAgent" should "extend Person and hide name" in {
+    val person: Person = new SecretAgent("Bond")
+    person.name shouldBe "secret"
+    person.toString shouldBe "secret"
   }
 }
