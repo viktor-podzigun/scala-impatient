@@ -2,6 +2,7 @@ import org.scalatest.{FlatSpec, Matchers}
 import task0804.{Bundle, Item, SimpleItem}
 import task0805.{LabeledPoint, Point}
 import task0806.{Circle, Rectangle, Shape}
+import task0807.Square
 
 class Chapter08Spec extends FlatSpec with Matchers {
 
@@ -57,5 +58,27 @@ class Chapter08Spec extends FlatSpec with Matchers {
     val rectangleCenter: Point = rectangle.centerPoint
     rectangleCenter.x shouldBe ((1 + 3) / 2)
     rectangleCenter.y shouldBe ((2 + 4) / 2)
+  }
+
+  "Square" should "extend java.awt.Rectangle and has three constructors" in {
+    import java.awt.Rectangle
+
+    val square1: Rectangle = new Square(1, 2, 3)
+    square1.x shouldBe 1
+    square1.y shouldBe 2
+    square1.width shouldBe 3
+    square1.height shouldBe 3
+
+    val square2: Rectangle = new Square(4)
+    square2.x shouldBe 0
+    square2.y shouldBe 0
+    square2.width shouldBe 4
+    square2.height shouldBe 4
+
+    val square3: Rectangle = new Square()
+    square3.x shouldBe 0
+    square3.y shouldBe 0
+    square3.width shouldBe 0
+    square3.height shouldBe 0
   }
 }
