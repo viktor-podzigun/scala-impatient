@@ -59,4 +59,23 @@ object Chapter09 {
       writer.close()
     }
   }
+
+  /**
+   * Task 3:
+   *
+   * Write a Scala code snippet that reads a file and prints all words with more than
+   * 12 characters to the console. Extra credit if you can do this in a single line.
+   */
+  def printLongWords(file: String, maxWordLength: Int = 12): Unit = {
+    Source.fromFile(file).mkString.split("\\s+").filter(_.length > maxWordLength).foreach(println)
+  }
+}
+
+object PrintLongWordsApp extends App {
+  if (args.length < 1) {
+    println("Expect file name as first argument")
+    System.exit(1)
+  }
+
+  Chapter09.printLongWords(args(0))
 }

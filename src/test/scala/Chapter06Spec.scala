@@ -32,7 +32,7 @@ class Chapter06Spec extends FlatSpec with Matchers {
 
     //then
     exit shouldBe 0
-    out shouldBe "World Hello"
+    out shouldBe "World Hello\n"
     err shouldBe ""
   }
 

@@ -50,4 +50,25 @@ class Chapter09Spec extends FlatSpec with Matchers {
                                        |      text  text2 text3
                                        |""".stripMargin
   }
+
+  "printLongWords" should "read a file and print all words longer than 12 chars" in {
+    //given
+    val file = File.createTempFile("printLongWords", "txt")
+    val writer = new PrintWriter(file)
+    try {
+      writer.print("text toooooooolong text2 text3texttext2text3")
+    }
+    finally {
+      writer.close()
+    }
+
+    //when
+    val (exit: Int, out: String, err: String) = TestUtils.runApp("PrintLongWordsApp",
+      file.getAbsolutePath)
+
+    //then
+    exit shouldBe 0
+    out shouldBe "toooooooolong\ntext3texttext2text3\n"
+    err shouldBe ""
+  }
 }

@@ -33,8 +33,8 @@ object TestUtils {
       writer.flush()
     }
 
-    val out = Source.fromInputStream(process.getInputStream).getLines().mkString("\n")
-    val err = Source.fromInputStream(process.getErrorStream).getLines().mkString("\n")
+    val out = Source.fromInputStream(process.getInputStream).mkString
+    val err = Source.fromInputStream(process.getErrorStream).mkString
     process.waitFor()
 
     (process.exitValue(), out, err)
