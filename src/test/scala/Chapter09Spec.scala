@@ -1,9 +1,9 @@
-import java.io.{PrintWriter, File}
+import java.io.{File, PrintWriter}
 
-import org.scalatest.{FlatSpec, Matchers}
 import Chapter09._
+import org.scalatest.{FlatSpec, Matchers}
 
-import scala.io.Source
+import scala.io.Source.fromFile
 
 class Chapter09Spec extends FlatSpec with Matchers {
 
@@ -24,7 +24,30 @@ class Chapter09Spec extends FlatSpec with Matchers {
     reverseLines(file)
 
     //then
-    val lines = Source.fromFile(file).getLines().mkString("\n")
-    lines shouldBe "line 3\nline 2\nline 1"
+    fromFile(file).mkString shouldBe "line 3\nline 2\nline 1\n"
+  }
+
+  "replaceTabs" should "replace tabs with spaces using column boundaries" in {
+    //given
+    val file = File.createTempFile("replaceTabs", "txt")
+    val writer = new PrintWriter(file)
+    try {
+      writer.print("""text	text2	text3
+                     |	text	text2	text3
+                     |		text	text2	text3
+                     |""".stripMargin)
+    }
+    finally {
+      writer.close()
+    }
+
+    //when
+    replaceTabs(file, 3)
+
+    //then
+    fromFile(file).mkString shouldBe """text  text2 text3
+                                       |   text  text2 text3
+                                       |      text  text2 text3
+                                       |""".stripMargin
   }
 }
