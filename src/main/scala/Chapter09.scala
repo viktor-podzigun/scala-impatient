@@ -69,13 +69,46 @@ object Chapter09 {
   def printLongWords(file: String, maxWordLength: Int = 12): Unit = {
     Source.fromFile(file).mkString.split("\\s+").filter(_.length > maxWordLength).foreach(println)
   }
+
+  /**
+   * Task 4:
+   *
+   * Write a Scala program that reads a text file containing only floating-point numbers.
+   * Print the sum, average, maximum, and minimum of the numbers in the file.
+   */
+  def printNumbersStat(file: String): Unit = {
+    var count: Int = 0
+    var sum: Double = 0.0
+    var min: Double = Double.MaxValue
+    var max: Double = Double.MinValue
+    for (token <- Source.fromFile(file).mkString.split("\\s+"); num = token.toDouble) {
+      count += 1
+      sum += num
+      if (num < min) min = num
+      if (num > max) max = num
+    }
+
+    printf("sum:     %.3f\n", sum)
+    printf("average: %.3f\n", sum / count)
+    printf("minimum: %.3f\n", min)
+    printf("maximum: %.3f\n", max)
+  }
 }
 
 object PrintLongWordsApp extends App {
   if (args.length < 1) {
-    println("Expect file name as first argument")
+    sys.error("Expect file name as first argument")
     System.exit(1)
   }
 
   Chapter09.printLongWords(args(0))
+}
+
+object PrintNumbersStatApp extends App {
+  if (args.length < 1) {
+    sys.error("Expect file name as first argument")
+    System.exit(1)
+  }
+
+  Chapter09.printNumbersStat(args(0))
 }

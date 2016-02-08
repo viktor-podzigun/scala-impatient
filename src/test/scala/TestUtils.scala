@@ -1,4 +1,4 @@
-import java.io.{PrintWriter, File}
+import java.io.{File, PrintWriter}
 
 import scala.collection.JavaConversions.bufferAsJavaList
 import scala.collection.mutable
@@ -38,5 +38,17 @@ object TestUtils {
     process.waitFor()
 
     (process.exitValue(), out, err)
+  }
+
+  def printToTmpFile(fileName: String, text: String): File = {
+    val file = File.createTempFile(fileName, "txt")
+    val writer = new PrintWriter(file)
+    try {
+      writer.print(text)
+      file
+    }
+    finally {
+      writer.close()
+    }
   }
 }
