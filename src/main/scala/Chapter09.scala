@@ -1,5 +1,4 @@
 import java.io.{File, PrintWriter}
-
 import scala.collection.mutable.ArrayBuffer
 import scala.io.{BufferedSource, Source}
 
@@ -92,6 +91,30 @@ object Chapter09 {
     printf("average: %.3f\n", sum / count)
     printf("minimum: %.3f\n", min)
     printf("maximum: %.3f\n", max)
+  }
+
+  /**
+   * Task 5:
+   *
+   * Write a Scala program that writes the powers of 2 and their reciprocals to a file,
+   * with the exponent ranging from 0 to 20. Line up the columns:
+   * {{{
+   *      1     1
+   *      2     0.5
+   *      4     0.25
+   *      ...   ...
+   * }}}
+   */
+  def printPowersOf2(file: File): Unit = {
+    val writer = new PrintWriter(file)
+    try {
+      for (i <- 0 to 20) {
+        writer.println("%8.0f  %f".format(math.pow(2.0, i), math.pow(2.0, -i)))
+      }
+    }
+    finally {
+      writer.close()
+    }
   }
 }
 

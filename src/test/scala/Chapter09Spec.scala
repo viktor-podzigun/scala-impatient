@@ -1,7 +1,7 @@
 import Chapter09._
 import TestUtils.{printToTmpFile, runApp}
+import java.io.File
 import org.scalatest.{FlatSpec, Matchers}
-
 import scala.io.Source.fromFile
 
 class Chapter09Spec extends FlatSpec with Matchers {
@@ -70,5 +70,21 @@ class Chapter09Spec extends FlatSpec with Matchers {
                    |minimum: -5.000
                    |maximum: 25.500
                    |""".stripMargin
+  }
+
+  "printPowersOf2" should "print powers of 2 and their reciprocals to a file" in {
+    //given
+    val file = File.createTempFile("printPowersOf2", "txt")
+
+    //when
+    printPowersOf2(file)
+
+    //then
+    val res = new StringBuilder
+    for (i <- 0 to 20) {
+      res.append("%8.0f  %f\n".format(math.pow(2.0, i), math.pow(2.0, -i)))
+    }
+
+    fromFile(file).mkString shouldBe res.toString
   }
 }
