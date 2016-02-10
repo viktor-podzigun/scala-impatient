@@ -65,7 +65,8 @@ object Chapter09 {
    * Write a Scala code snippet that reads a file and prints all words with more than
    * 12 characters to the console. Extra credit if you can do this in a single line.
    */
-  def printLongWords(file: String, maxWordLength: Int = 12): Unit = {
+  def printLongWords(file: String): Unit = {
+    val maxWordLength: Int = 12
     Source.fromFile(file).mkString.split("\\s+").filter(_.length > maxWordLength).foreach(println)
   }
 
@@ -116,22 +117,36 @@ object Chapter09 {
       writer.close()
     }
   }
+
+  /**
+   * Task 6:
+   *
+   * Make a regular expression searching for quoted strings "like this, maybe with \" or \\"
+   * in a Java or C++ program. Write a Scala program that prints out all such strings
+   * in a source file.
+   */
+  def printQuotedStrings(file: String): Unit = {
+    // got from here:
+    // http://stackoverflow.com/questions/2498635/java-regex-for-matching-quoted-string-with-escaped-quotes
+    val pattern = "\"(([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"".r
+
+    for (pattern(s, _, _) <- pattern.findAllIn(Source.fromFile(file).mkString)) {
+      println(s)
+    }
+  }
 }
 
-object PrintLongWordsApp extends App {
+object PrintLongWordsApp extends FileApp(Chapter09.printLongWords)
+
+object PrintNumbersStatApp extends FileApp(Chapter09.printNumbersStat)
+
+object PrintQuotedStringsApp extends FileApp(Chapter09.printQuotedStrings)
+
+sealed class FileApp(process: String => Unit) extends App {
   if (args.length < 1) {
     sys.error("Expect file name as first argument")
     System.exit(1)
   }
 
-  Chapter09.printLongWords(args(0))
-}
-
-object PrintNumbersStatApp extends App {
-  if (args.length < 1) {
-    sys.error("Expect file name as first argument")
-    System.exit(1)
-  }
-
-  Chapter09.printNumbersStat(args(0))
+  process(args(0))
 }

@@ -87,4 +87,27 @@ class Chapter09Spec extends FlatSpec with Matchers {
 
     fromFile(file).mkString shouldBe res.toString
   }
+
+  "printQuotedStrings" should "read numbers from file and print sum, average, min, max" in {
+    //given
+    val file = "src/main/scala/Chapter09.scala"
+
+    //when
+    val (exit, out, err) = runApp("PrintQuotedStringsApp", file)
+
+    //then
+    exit shouldBe 0
+    err shouldBe ""
+    out shouldBe """\\s+
+                   |\\s+
+                   |sum:     %.3f\n
+                   |average: %.3f\n
+                   |minimum: %.3f\n
+                   |maximum: %.3f\n
+                   |%8.0f  %f
+                   |like this, maybe with \" or \\
+                   |\"(([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"
+                   |Expect file name as first argument
+                   |""".stripMargin
+  }
 }
