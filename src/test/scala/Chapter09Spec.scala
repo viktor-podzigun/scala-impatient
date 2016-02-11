@@ -107,7 +107,24 @@ class Chapter09Spec extends FlatSpec with Matchers {
                    |%8.0f  %f
                    |like this, maybe with \" or \\
                    |\"(([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"
+                   |(?![\\d]+(\\.[\\d]+)?)\\w+
                    |Expect file name as first argument
+                   |""".stripMargin
+  }
+
+  "printNonNumberTokens" should "print tokens from file that are not floating-point numbers" in {
+    //given
+    val file = printToTmpFile("printNonNumberTokens", "1 first 2.34 second -5 0.0 1.234 third")
+
+    //when
+    val (exit, out, err) = runApp("PrintNonNumberTokensApp", file.getAbsolutePath)
+
+    //then
+    exit shouldBe 0
+    err shouldBe ""
+    out shouldBe """first
+                   |second
+                   |third
                    |""".stripMargin
   }
 }

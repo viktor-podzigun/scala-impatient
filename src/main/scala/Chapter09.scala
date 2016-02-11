@@ -134,6 +134,20 @@ object Chapter09 {
       println(s)
     }
   }
+
+  /**
+   * Task 7:
+   *
+   * Write a Scala program that reads a text file and prints all tokens in the file
+   * that are not floating-point numbers. Use a regular expression.
+   */
+  def printNonNumberTokens(file: String): Unit = {
+    val pattern = "(?![\\d]+(\\.[\\d]+)?)\\w+".r
+
+    for (s <- pattern.findAllIn(Source.fromFile(file).mkString)) {
+      println(s)
+    }
+  }
 }
 
 object PrintLongWordsApp extends FileApp(Chapter09.printLongWords)
@@ -141,6 +155,8 @@ object PrintLongWordsApp extends FileApp(Chapter09.printLongWords)
 object PrintNumbersStatApp extends FileApp(Chapter09.printNumbersStat)
 
 object PrintQuotedStringsApp extends FileApp(Chapter09.printQuotedStrings)
+
+object PrintNonNumberTokensApp extends FileApp(Chapter09.printNonNumberTokens)
 
 sealed class FileApp(process: String => Unit) extends App {
   if (args.length < 1) {
