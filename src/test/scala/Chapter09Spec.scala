@@ -108,6 +108,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
                    |like this, maybe with \" or \\
                    |\"(([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"
                    |(?![\\d]+(\\.[\\d]+)?)\\w+
+                   |(?i)<img\\s+(.*?\\s+)?src\\s*=\\s*\"([^\"]+)\"
                    |Expect file name as first argument
                    |""".stripMargin
   }
@@ -125,6 +126,27 @@ class Chapter09Spec extends FlatSpec with Matchers {
     out shouldBe """first
                    |second
                    |third
+                   |""".stripMargin
+  }
+
+  "printSrcOfImageTags" should "replace tabs with spaces using column boundaries" in {
+    //given
+    val file = printToTmpFile("printSrcOfImageTags",
+      """<!DOCTYPE html>
+        |<html>
+        |<body>
+        |  <IMG alt="scala logo" src="http://scala-lang.org/resources/img/scala-logo-white.png"/>
+        |</body>
+        |</html>
+        |""".stripMargin)
+
+    //when
+    val (exit, out, err) = runApp("PrintSrcOfImageTagsApp", file.getAbsolutePath)
+
+    //then
+    exit shouldBe 0
+    err shouldBe ""
+    out shouldBe """http://scala-lang.org/resources/img/scala-logo-white.png
                    |""".stripMargin
   }
 }
