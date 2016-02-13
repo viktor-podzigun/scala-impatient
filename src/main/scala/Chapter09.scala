@@ -1,6 +1,9 @@
 import java.io.{File, PrintWriter}
+import java.nio.file._
+import java.nio.file.attribute.BasicFileAttributes
 import scala.collection.mutable.ArrayBuffer
 import scala.io.{BufferedSource, Source}
+import scala.language.implicitConversions
 
 object Chapter09 {
 
@@ -161,6 +164,27 @@ object Chapter09 {
     for (pattern(_, s) <- pattern.findAllIn(Source.fromFile(file).mkString)) {
       println(s)
     }
+  }
+
+  /**
+   * Task 9:
+   *
+   * Write a Scala program that counts how many files with `.class` extension
+   * are in a given directory and its subdirectories.
+   */
+  def countClassFiles(dir: String): Int = {
+    var count = 0
+    Files.walkFileTree(new File(dir).toPath, (f: Path) => {
+      if (f.toString.endsWith(".class")) count += 1
+    })
+
+    count
+  }
+
+  implicit def makeFileVisitor(f: (Path) => Unit): FileVisitor[Path] = new SimpleFileVisitor[Path] {
+    override def visitFile(p: Path, attrs: BasicFileAttributes) = {
+      f(p)
+      FileVisitResult.CONTINUE }
   }
 }
 

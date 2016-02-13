@@ -109,6 +109,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
                    |\"(([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"
                    |(?![\\d]+(\\.[\\d]+)?)\\w+
                    |(?i)<img\\s+(.*?\\s+)?src\\s*=\\s*\"([^\"]+)\"
+                   |.class
                    |Expect file name as first argument
                    |""".stripMargin
   }
@@ -148,5 +149,16 @@ class Chapter09Spec extends FlatSpec with Matchers {
     err shouldBe ""
     out shouldBe """http://scala-lang.org/resources/img/scala-logo-white.png
                    |""".stripMargin
+  }
+
+  "countClassFiles" should "count .class files in directory and all sub-directories" in {
+    //given
+    val dir = "target/scala-2.11/classes/com"
+
+    //when
+    val count = countClassFiles(dir)
+
+    //then
+    count shouldBe 16
   }
 }
