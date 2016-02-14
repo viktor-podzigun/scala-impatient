@@ -88,7 +88,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
     fromFile(file).mkString shouldBe res.toString
   }
 
-  "printQuotedStrings" should "read numbers from file and print sum, average, min, max" in {
+  "printQuotedStrings" should "read source file and print all double quoted strings" in {
     //given
     val file = "src/main/scala/Chapter09.scala"
 
@@ -160,5 +160,33 @@ class Chapter09Spec extends FlatSpec with Matchers {
 
     //then
     count shouldBe 16
+  }
+
+  "Person" should "be serializable" in {
+    //given
+    val file = File.createTempFile("personSerialization", "bin")
+    val fred = new Person("Fred")
+    val bob = new Person("Bob")
+    val john = new Person("John")
+    fred.addFriend(bob)
+    fred.addFriend(john)
+    bob.addFriend(fred)
+    bob.addFriend(john)
+    john.addFriend(fred)
+    john.addFriend(bob)
+    val friends = Array[Person](fred, bob, john, new Person("Dummy"))
+
+    //when
+    savePersons(file, friends)
+    val result: Array[Person] = readPersons(file)
+
+    //then
+    result.length shouldBe friends.length
+    for ((person, friend) <- result.zip(friends)) {
+      person.size shouldBe friend.size
+      for ((p, f) <- person.zip(friend)) {
+        p.name shouldBe f.name
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-import java.io.{File, PrintWriter}
+import java.io._
 import java.nio.file._
 import java.nio.file.attribute.BasicFileAttributes
 import scala.collection.mutable.ArrayBuffer
@@ -185,6 +185,44 @@ object Chapter09 {
     override def visitFile(p: Path, attrs: BasicFileAttributes) = {
       f(p)
       FileVisitResult.CONTINUE }
+  }
+
+  /**
+   * Task 10:
+   *
+   * Expand the example with the serializable `Person` class that stores a collection of friends.
+   * Construct a few `Person` objects, make some of them friends of another, and then
+   * save an `Array[Person]` to a file. Read the array back in and verify that the friend
+   * relations are intact.
+   */
+  class Person(val name: String) extends Serializable with Iterable[Person] {
+
+    private val friends = new ArrayBuffer[Person]
+
+    def addFriend(friend: Person): Person = {
+      friends += friend
+      this
+    }
+
+    override def iterator: Iterator[Person] = friends.toIterator
+  }
+
+  def savePersons(file: File, persons: Array[Person]): Unit = {
+    val out = new ObjectOutputStream(new FileOutputStream(file))
+    try {
+      out.writeObject(persons)
+    } finally {
+      out.close()
+    }
+  }
+
+  def readPersons(file: File): Array[Person] = {
+    val in = new ObjectInputStream(new FileInputStream(file))
+    try {
+      in.readObject().asInstanceOf[Array[Person]]
+    } finally {
+      in.close()
+    }
   }
 }
 
