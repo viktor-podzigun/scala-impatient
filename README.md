@@ -16,3 +16,4 @@ activator clean coverage test coverageReport
 7. [Packages and Imports](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter07.scala)
 8. [Inheritance](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter08.scala)
 9. [Files and Regular Expressions](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter09.scala)
+10. [Traits](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter10.scala)
