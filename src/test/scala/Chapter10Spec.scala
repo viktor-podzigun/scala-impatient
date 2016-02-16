@@ -21,4 +21,15 @@ class Chapter10Spec extends FlatSpec with Matchers {
     egg.getWidth shouldBe 40
     egg.getHeight shouldBe 70
   }
+
+  "OrderedPoint" should "use lexicographic ordering" in {
+    //when & then
+    new OrderedPoint(1, 1).compare(new OrderedPoint(2, 2)) shouldBe -1
+    new OrderedPoint(1, 1).compare(new OrderedPoint(2, 1)) shouldBe -1
+    new OrderedPoint(1, 1).compare(new OrderedPoint(1, 2)) shouldBe -1
+    new OrderedPoint(1, 1).compare(new OrderedPoint(1, 1)) shouldBe 0
+    new OrderedPoint(1, 1).compare(new OrderedPoint(0, 1)) shouldBe 1
+    new OrderedPoint(1, 1).compare(new OrderedPoint(1, 0)) shouldBe 1
+    new OrderedPoint(1, 1).compare(new OrderedPoint(0, 0)) shouldBe 1
+  }
 }

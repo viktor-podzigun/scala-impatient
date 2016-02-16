@@ -1,3 +1,4 @@
+import java.awt.Point
 
 object Chapter10 {
 
@@ -112,6 +113,21 @@ object Chapter10 {
       }
 
       setFrame(x0, y0, x1, y1)
+    }
+  }
+
+  /**
+   * Task 2:
+   *
+   * Define a class `OrderedPoint` by mixing `scala.math.Ordered[Point]` into `java.awt.Point`.
+   * Use lexicographic ordering, i e. (x, y) < (x’, y’) if x < x’ or x = x’ and y < y’.
+   */
+  class OrderedPoint(x: Int, y: Int) extends Point(x, y) with scala.math.Ordered[Point] {
+
+    override def compare(that: Point): Int = {
+      if (x < that.x || (x == that.x && y < that.y)) -1
+      else if (x == that.x && y == that.y) 0
+      else 1
     }
   }
 }
