@@ -130,4 +130,85 @@ object Chapter10 {
       else 1
     }
   }
+
+  /**
+   * Task 3:
+   *
+   * Look at the BitSet class, and make a diagram of all its superclasses and traits.
+   * Ignore the type parameters (everything inside the [...]).
+   * Then give the linearization of the traits.
+   *
+   * Solution:
+   * {{{
+   * Classes:
+   * -------------------------------------------------------------------------
+   * mutable.BitSet extends mutable.AbstractSet
+   *                   with mutable.SortedSet
+   *                   with BitSet
+   *                   with BitSetLike
+   *                   with mutable.SetLike
+   *                   with scala.Serializable
+   *
+   * mutable.AbstractSet extends mutable.AbstractIterable
+   *                        with mutable.Set
+   *
+   * mutable.AbstractIterable extends AbstractIterable
+   *                             with mutable.Iterable
+   *
+   * AbstractIterable extends AbstractTraversable
+   *                     with Iterable
+   *
+   * AbstractTraversable extends AnyRef
+   *                        with Traversable
+   *
+   * Traits:
+   * -------------------------------------------------------------------------
+   * mutable.Set with mutable.Iterable
+   *             with Set
+   *             with generic.GenericSetTemplate
+   *             with mutable.SetLike
+   *
+   * mutable.SetLike with SetLike
+   *                 with script.Scriptable
+   *                 with mutable.Builder
+   *                 with generic.Growable
+   *                 with generic.Shrinkable
+   *                 with mutable.Cloneable
+   *                 with Parallelizable
+   *
+   * mutable.Iterable with mutable.Traversable
+   *                  with Iterable
+   *                  with generic.GenericTraversableTemplate
+   *                  with IterableLike
+   *                  with Parallelizable
+   *
+   * mutable.SortedSet with SortedSet
+   *                   with SortedSetLike
+   *                   with mutable.Set
+   *                   with mutable.SetLike
+   *
+   * Set with Function1
+   *     with Iterable
+   *     with GenSet
+   *     with generic.GenericSetTemplate
+   *     with SetLike
+   *
+   * Iterable with Traversable
+   *          with GenIterable
+   *          with generic.GenericTraversableTemplate
+   *          with IterableLike
+   *
+   * Traversable with TraversableLike
+   *             with GenTraversable
+   *             with TraversableOnce
+   *             with generic.GenericTraversableTemplate
+   *
+   * BitSet with SortedSet
+   *        with BitSetLike
+   *
+   * BitSetLike with SortedSetLike
+   *
+   * scala.Serializable with java.io.Serializable
+   * }}}
+   */
 }
