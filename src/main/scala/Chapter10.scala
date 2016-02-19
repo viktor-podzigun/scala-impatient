@@ -1,4 +1,6 @@
 import java.awt.Point
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 object Chapter10 {
 
@@ -137,78 +139,136 @@ object Chapter10 {
    * Look at the BitSet class, and make a diagram of all its superclasses and traits.
    * Ignore the type parameters (everything inside the [...]).
    * Then give the linearization of the traits.
-   *
-   * Solution:
-   * {{{
-   * Classes:
-   * -------------------------------------------------------------------------
-   * mutable.BitSet extends mutable.AbstractSet
-   *                   with mutable.SortedSet
-   *                   with BitSet
-   *                   with BitSetLike
-   *                   with mutable.SetLike
-   *                   with scala.Serializable
-   *
-   * mutable.AbstractSet extends mutable.AbstractIterable
-   *                        with mutable.Set
-   *
-   * mutable.AbstractIterable extends AbstractIterable
-   *                             with mutable.Iterable
-   *
-   * AbstractIterable extends AbstractTraversable
-   *                     with Iterable
-   *
-   * AbstractTraversable extends AnyRef
-   *                        with Traversable
-   *
-   * Traits:
-   * -------------------------------------------------------------------------
-   * mutable.Set with mutable.Iterable
-   *             with Set
-   *             with generic.GenericSetTemplate
-   *             with mutable.SetLike
-   *
-   * mutable.SetLike with SetLike
-   *                 with script.Scriptable
-   *                 with mutable.Builder
-   *                 with generic.Growable
-   *                 with generic.Shrinkable
-   *                 with mutable.Cloneable
-   *                 with Parallelizable
-   *
-   * mutable.Iterable with mutable.Traversable
-   *                  with Iterable
-   *                  with generic.GenericTraversableTemplate
-   *                  with IterableLike
-   *                  with Parallelizable
-   *
-   * mutable.SortedSet with SortedSet
-   *                   with SortedSetLike
-   *                   with mutable.Set
-   *                   with mutable.SetLike
-   *
-   * Set with Function1
-   *     with Iterable
-   *     with GenSet
-   *     with generic.GenericSetTemplate
-   *     with SetLike
-   *
-   * Iterable with Traversable
-   *          with GenIterable
-   *          with generic.GenericTraversableTemplate
-   *          with IterableLike
-   *
-   * Traversable with TraversableLike
-   *             with GenTraversable
-   *             with TraversableOnce
-   *             with generic.GenericTraversableTemplate
-   *
-   * BitSet with SortedSet
-   *        with BitSetLike
-   *
-   * BitSetLike with SortedSetLike
-   *
-   * scala.Serializable with java.io.Serializable
-   * }}}
    */
+  def bitSetLinearization: List[String] = {
+    val diagram = Map(
+      "scala.collection.BitSet" -> List("scala.AnyRef",
+        "scala.collection.SortedSet",
+        "scala.collection.BitSetLike"),
+
+      "scala.collection.SortedSet" -> List("scala.AnyRef",
+        "scala.collection.Set",
+        "scala.collection.SortedSetLike"),
+
+      "scala.collection.Set" -> List("scala.AnyRef",
+        "scala.Function1",
+        "scala.collection.Iterable",
+        "scala.collection.GenSet",
+        "scala.collection.generic.GenericSetTemplate",
+        "scala.collection.SetLike"),
+
+      "scala.collection.SetLike" -> List("scala.AnyRef",
+        "scala.collection.IterableLike",
+        "scala.collection.GenSetLike",
+        "scala.collection.generic.Subtractable",
+        "scala.collection.Parallelizable"),
+
+      "scala.collection.Parallelizable" -> List("scala.Any"),
+
+      "scala.collection.generic.Subtractable" -> List("scala.AnyRef"),
+
+      "scala.collection.GenSetLike" -> List("scala.AnyRef",
+        "scala.collection.GenIterableLike",
+        "scala.Function1",
+        "scala.Equals",
+        "scala.collection.Parallelizable"),
+
+      "scala.Equals" -> List("scala.Any"),
+
+      "scala.collection.GenTraversableOnce" -> List("scala.Any"),
+
+      "scala.collection.IterableLike" -> List("scala.Any",
+        "scala.Equals",
+        "scala.collection.TraversableLike",
+        "scala.collection.GenIterableLike"),
+
+      "scala.collection.GenIterableLike" -> List("scala.Any",
+        "scala.collection.GenTraversableLike"),
+
+      "scala.collection.GenTraversableLike" -> List("scala.Any",
+        "scala.collection.GenTraversableOnce",
+        "scala.collection.Parallelizable"),
+
+      "scala.collection.TraversableLike" -> List("scala.Any",
+        "scala.collection.generic.HasNewBuilder",
+        "scala.collection.generic.FilterMonadic",
+        "scala.collection.TraversableOnce",
+        "scala.collection.GenTraversableLike",
+        "scala.collection.Parallelizable"),
+
+      "scala.collection.TraversableOnce" -> List("scala.Any",
+        "scala.collection.GenTraversableOnce"),
+
+      "scala.collection.generic.FilterMonadic" -> List("scala.Any"),
+
+      "scala.collection.GenSet" -> List("scala.AnyRef",
+        "scala.collection.GenSetLike",
+        "scala.collection.GenIterable",
+        "scala.collection.generic.GenericSetTemplate"),
+
+      "scala.collection.GenIterable" -> List("scala.AnyRef",
+        "scala.collection.GenIterableLike",
+        "scala.collection.GenTraversable",
+        "scala.collection.generic.GenericTraversableTemplate"),
+
+      "scala.collection.GenTraversable" -> List("scala.AnyRef",
+        "scala.collection.GenTraversableLike",
+        "scala.collection.GenTraversableOnce",
+        "scala.collection.generic.GenericTraversableTemplate"),
+
+      "scala.collection.generic.GenericSetTemplate" -> List("scala.AnyRef",
+        "scala.collection.generic.GenericTraversableTemplate"),
+
+      "scala.collection.generic.GenericTraversableTemplate" -> List("scala.AnyRef",
+        "scala.collection.generic.HasNewBuilder"),
+
+      "scala.collection.generic.HasNewBuilder" -> List("scala.Any"),
+
+      "scala.Function1" -> List("scala.AnyRef"),
+
+      "scala.AnyRef" -> List("scala.Any", "java.lang.Object"),
+      "scala.Any" -> Nil,
+      "java.lang.Object" -> Nil,
+
+      "scala.collection.Iterable" -> List("scala.AnyRef",
+        "scala.collection.Traversable",
+        "scala.collection.GenIterable",
+        "scala.collection.generic.GenericTraversableTemplate",
+        "scala.collection.IterableLike"),
+
+      "scala.collection.Traversable" -> List("scala.AnyRef",
+        "scala.collection.TraversableLike",
+        "scala.collection.GenTraversable",
+        "scala.collection.TraversableOnce",
+        "scala.collection.generic.GenericTraversableTemplate"),
+
+
+      "scala.collection.SortedSetLike" -> List("scala.AnyRef",
+        "scala.collection.generic.Sorted",
+        "scala.collection.SetLike"),
+
+      "scala.collection.generic.Sorted" -> List("scala.AnyRef"),
+
+      "scala.collection.BitSetLike" -> List("scala.AnyRef",
+        "scala.collection.SortedSetLike")
+    )
+
+    val buffer = new ListBuffer[String]
+
+    def lin(clazz: String): Unit = {
+      buffer += clazz
+      for (c <- diagram(clazz).reverse) {
+        lin(c)
+      }
+    }
+
+    lin("scala.collection.BitSet")
+
+    // remove duplicates from the right
+    val set = new mutable.LinkedHashSet[String]
+    set ++= buffer.reverse
+
+    // remove AnyRef since its represented as java.lang.Object
+    set.toList.reverse.filter(_ != "scala.AnyRef")
+   }
 }

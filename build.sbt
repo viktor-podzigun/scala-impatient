@@ -23,6 +23,7 @@ coverageFailOnMinimum := true
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 libraryDependencies ++= Seq(
+  "org.scala-lang" % "scala-reflect" % "2.11.7" % "test",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
 

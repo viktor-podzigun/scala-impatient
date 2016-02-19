@@ -32,4 +32,15 @@ class Chapter10Spec extends FlatSpec with Matchers {
     new OrderedPoint(1, 1).compare(new OrderedPoint(1, 0)) shouldBe 1
     new OrderedPoint(1, 1).compare(new OrderedPoint(0, 0)) shouldBe 1
   }
+
+  "bitSetLinearization" should "return linearization of BitSet traits" in {
+    //when
+    val result: List[String] = bitSetLinearization
+
+    //then
+    // got from here:
+    //  http://stackoverflow.com/questions/15623498/handy-ways-to-show-linearization-of-a-class
+    val tpe = scala.reflect.runtime.universe.typeOf[scala.collection.BitSet]
+    result shouldBe tpe.baseClasses.map(_.fullName)
+  }
 }
