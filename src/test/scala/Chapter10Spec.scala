@@ -43,4 +43,33 @@ class Chapter10Spec extends FlatSpec with Matchers {
     val tpe = scala.reflect.runtime.universe.typeOf[scala.collection.BitSet]
     result shouldBe tpe.baseClasses.map(_.fullName)
   }
+
+  "CryptoLogger" should "encrypt messages with the Caesar cipher default key" in {
+    //given
+    val logger = new TestLogger with CryptoLogger
+
+    //when
+    logger.log("12345")
+
+    //then
+    logger.message shouldBe "45678"
+  }
+
+  it should "encrypt messages with the Caesar cipher key -3" in {
+    //given
+    val logger = new TestLogger with CryptoLogger {
+      override val key = -3
+    }
+
+    //when
+    logger.log("45678")
+
+    //then
+    logger.message shouldBe "12345"
+  }
+
+  class TestLogger extends Logger {
+    var message = ""
+    override def log(msg: String): Unit = message = msg
+  }
 }

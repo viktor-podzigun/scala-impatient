@@ -271,4 +271,23 @@ object Chapter10 {
     // remove AnyRef since its represented as java.lang.Object
     set.toList.reverse.filter(_ != "scala.AnyRef")
    }
+
+  /**
+   * Task 4:
+   *
+   * Provide a `CryptoLogger` trait that encrypts the log messages with the Caesar cipher.
+   * The key should be 3 by default, but it should be overridable by the user.
+   * Provide usage examples with the default key and a key of -3.
+   */
+  trait Logger {
+    def log(msg: String): Unit
+  }
+
+  trait CryptoLogger extends Logger {
+    val key: Int = 3
+
+    abstract override def log(msg: String): Unit = {
+      super.log(msg.map(c => (c + key).toChar))
+    }
+  }
 }
