@@ -349,4 +349,32 @@ object Chapter10 {
   }
 
   class PointBean(x: Int = 0, y: Int = 0) extends Point(x, y) with PropertyChangeSupportLike
+
+  /**
+   * Task 6:
+   *
+   * In the Java AWT library, we have a class `Container`, a subclass of `Component` that collects
+   * multiple components. For example, a `Button` is a `Component`, but a `Panel` is a `Container`.
+   * That's the composite pattern at work. Swing has `JComponent` and `JButton`, but if you look
+   * closely, you will notice something strange. `JComponent` extends `Container`, even though
+   * it makes no sense to add other components to say, a `JButton`.
+   * The Swing designers would have ideally preferred the design in Figure 10-4:
+   * {{{
+   *  JButton --------> JComponent -------> Component
+   *                          ^                  ^
+   *                          |                  |
+   *  JPanel ---> JContainer -----> Container ---+
+   * }}}
+   * But that's not possible in Java. Explain why not.
+   * How could the design be executed in Scala with traits?
+   *
+   *
+   * Solution:
+   *
+   * From the preferred design JContainer should extends from both Container and JComponent.
+   * And this is not possible in Java since it supports only single inheritance.
+   * But in Scala this design is possible through using traits.
+   * In Scala JComponent could be a trait. JContainer could then extend Container and mixed with
+   * JComponent trait, which is OK, since JComponent trait extends common Component class.
+   */
 }
