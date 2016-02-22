@@ -377,4 +377,51 @@ object Chapter10 {
    * In Scala JComponent could be a trait. JContainer could then extend Container and mixed with
    * JComponent trait, which is OK, since JComponent trait extends common Component class.
    */
+
+  /**
+   * Task 7:
+   *
+   * There are dozens of Scala trait tutorials with silly examples of barking dogs or
+   * philosophizing frogs. Reading through contrived hierarchies can be tedious and not very
+   * helpful, but designing your own is very illuminating. Make your own silly trait hierarchy
+   * example that demonstrates layered traits, concrete and abstract methods, and concrete and
+   * abstract fields.
+   */
+  trait Engine {
+    val model: String
+    def start(): Unit
+    def stop(): Unit
+  }
+
+  trait InfiniteEngine extends Engine {
+    val model = "infinite"
+
+    def start(): Unit = {
+      println("Starting infinite engine, model: " + model)
+    }
+
+    def stop(): Unit = {
+      // infinite engine cannot be stopped
+    }
+  }
+
+  class TestEngine extends Engine with InfiniteEngine {
+    override val model = "test"
+
+    override def start(): Unit = {
+      println("Starting test engine, model: " + model)
+      super.start()
+    }
+
+    override def stop(): Unit = {
+      println("Stopping test engine")
+      super.stop()
+    }
+  }
+}
+
+object EngineApp extends App {
+  val engine = new Chapter10.TestEngine
+  engine.start()
+  engine.stop()
 }
