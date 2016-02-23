@@ -1,5 +1,7 @@
 import java.awt.Point
 import java.beans.{PropertyChangeEvent, PropertyChangeListener, PropertyChangeSupport}
+import java.io.InputStream
+import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -416,6 +418,55 @@ object Chapter10 {
     override def stop(): Unit = {
       println("Stopping test engine")
       super.stop()
+    }
+  }
+
+  /**
+   * Task 8:
+   *
+   * In the `java.io` library, you add buffering to an input stream with a `BufferedInputStream`
+   * decorator. Reimplement buffering as a trait. For simplicity, override the `read` method.
+   */
+  trait BufferedInputStreamLike extends InputStream {
+    val bufferSize = 2048
+    private val buffer = new Array[Byte](bufferSize)
+    private var offset: Int = 0
+    private var size: Int = 0
+
+    abstract override def read(): Int = {
+      if (size == -1) {
+        return -1
+      }
+
+      if (offset >= size) {
+        offset = 0
+        size = 0
+        fillBuffer(0)
+        if (size == 0) {
+          size = -1
+          return -1
+        }
+      }
+
+      val byte = buffer(offset)
+      offset += 1
+      byte
+    }
+
+    @tailrec
+    private def fillBuffer(index: Int): Unit = {
+      if (index >= buffer.length) {
+        return
+      }
+
+      val byte = super.read()
+      if (byte == -1) {
+        return
+      }
+
+      buffer(index) = byte.toByte
+      size += 1
+      fillBuffer(index + 1)
     }
   }
 }

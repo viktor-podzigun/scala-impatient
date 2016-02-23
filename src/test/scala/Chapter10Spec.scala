@@ -1,5 +1,9 @@
 import Chapter10._
+import java.io.{FilterInputStream, InputStream}
 import org.scalatest.{FlatSpec, Matchers}
+import scala.annotation.tailrec
+import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
 
 class Chapter10Spec extends FlatSpec with Matchers {
 
@@ -66,6 +70,39 @@ class Chapter10Spec extends FlatSpec with Matchers {
 
     //then
     logger.message shouldBe "12345"
+  }
+
+  "BufferedInputStreamLike" should "add buffering to an input stream" in {
+    //given
+    val in = new {
+      override val bufferSize = 48
+    } with FilterInputStream (getClass.getResourceAsStream("/myfile.txt"))
+      with BufferedInputStreamLike
+
+    //when
+    val result = Source.fromBytes(readBytes(in)).mkString
+
+    //then
+    result shouldBe """
+                      |Simple text file with example words.
+                      |We will parse the file and count the words.
+                      |""".stripMargin
+  }
+
+  private def readBytes(in: InputStream): Array[Byte] = {
+    val buf = new ArrayBuffer[Byte]
+
+    @tailrec
+    def read(): Unit = {
+      val byte = in.read()
+      if (byte == -1) return
+
+      buf += byte.toByte
+      read()
+    }
+
+    read()
+    buf.toArray
   }
 
   class TestLogger extends Logger {
