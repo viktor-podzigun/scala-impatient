@@ -427,7 +427,7 @@ object Chapter10 {
    * In the `java.io` library, you add buffering to an input stream with a `BufferedInputStream`
    * decorator. Reimplement buffering as a trait. For simplicity, override the `read` method.
    */
-  trait BufferedInputStreamLike extends InputStream {
+  trait BufferedInputStreamLike extends InputStream with Logger {
     val bufferSize = 2048
     private val buffer = new Array[Byte](bufferSize)
     private var offset: Int = 0
@@ -441,11 +441,17 @@ object Chapter10 {
       if (offset >= size) {
         offset = 0
         size = 0
+
+        log("Filling the buffer, bufferSize: " + bufferSize)
         fillBuffer(0)
+
         if (size == 0) {
+          log("Reached stream end")
           size = -1
           return -1
         }
+
+        log("Buffer is filled, size: " + size)
       }
 
       val byte = buffer(offset)
@@ -468,6 +474,16 @@ object Chapter10 {
       size += 1
       fillBuffer(index + 1)
     }
+  }
+
+  /**
+   * Task 9:
+   *
+   * Using the logger traits from this chapter, add logging to the solution of the preceding
+   * problem that demonstrates buffering.
+   */
+  trait ConsoleLogger extends Logger {
+    override def log(msg: String): Unit = println(msg)
   }
 }
 

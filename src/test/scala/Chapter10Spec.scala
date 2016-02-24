@@ -78,6 +78,7 @@ class Chapter10Spec extends FlatSpec with Matchers {
       override val bufferSize = 48
     } with FilterInputStream (getClass.getResourceAsStream("/myfile.txt"))
       with BufferedInputStreamLike
+      with ConsoleLogger
 
     //when
     val result = Source.fromBytes(readBytes(in)).mkString
