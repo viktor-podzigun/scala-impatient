@@ -1,4 +1,5 @@
 import Chapter10._
+import java.beans.{PropertyChangeEvent, PropertyChangeListener}
 import java.io.{FilterInputStream, InputStream}
 import org.scalatest.{FlatSpec, Matchers}
 import scala.annotation.tailrec
@@ -72,22 +73,81 @@ class Chapter10Spec extends FlatSpec with Matchers {
     logger.message shouldBe "12345"
   }
 
+  "PointBean" should "extend java.awt.Point with PropertyChangeSupportLike" in {
+    //given
+    val point = new PointBean
+
+    //when
+    var event: PropertyChangeEvent = null
+    point.addPropertyChangeListener("x", new PropertyChangeListener {
+      override def propertyChange(evt: PropertyChangeEvent): Unit = {
+        event = evt
+      }
+    })
+    point.x += 1
+    point.firePropertyChange("x", 0, 1)
+
+    //then
+    point.hasListeners("x") shouldBe true
+    point.hasListeners("y") shouldBe false
+    event.getPropertyName shouldBe "x"
+    event.getOldValue shouldBe 0
+    event.getNewValue shouldBe 1
+  }
+
+  "TestEngine" should "extend Engine with InfiniteEngine" in {
+    //given
+    val engine = new TestEngine
+
+    //when
+    engine.start()
+    engine.stop()
+
+    //then
+    engine.model shouldBe "test"
+  }
+
   "BufferedInputStreamLike" should "add buffering to an input stream" in {
     //given
     val in = new {
       override val bufferSize = 48
-    } with FilterInputStream (getClass.getResourceAsStream("/myfile.txt"))
+    } with FilterInputStream(getClass.getResourceAsStream("/myfile.txt"))
       with BufferedInputStreamLike
       with ConsoleLogger
 
-    //when
-    val result = Source.fromBytes(readBytes(in)).mkString
+    try {
+      //when
+      val result = Source.fromBytes(readBytes(in)).mkString
 
-    //then
-    result shouldBe """
-                      |Simple text file with example words.
-                      |We will parse the file and count the words.
-                      |""".stripMargin
+      //then
+      result shouldBe """
+                        |Simple text file with example words.
+                        |We will parse the file and count the words.
+                        |""".stripMargin
+    }
+    finally {
+      in.close()
+    }
+  }
+
+  "IterableInputStream" should "extends java.io.InputStream with the trait Iterable[Byte]" in {
+    //given
+    val in = new IterableInputStream(getClass.getResourceAsStream("/myfile.txt"))
+
+    try {
+      //when
+      val result = new ArrayBuffer[Byte]
+      result ++= in
+
+      //then
+      new String(result.toArray) shouldBe """
+                                            |Simple text file with example words.
+                                            |We will parse the file and count the words.
+                                            |""".stripMargin
+    }
+    finally {
+      in.close()
+    }
   }
 
   private def readBytes(in: InputStream): Array[Byte] = {
