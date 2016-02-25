@@ -75,6 +75,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
   "printPowersOf2" should "print powers of 2 and their reciprocals to a file" in {
     //given
     val file = File.createTempFile("printPowersOf2", "txt")
+    file.deleteOnExit()
 
     //when
     printPowersOf2(file)
@@ -165,6 +166,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
   "Person" should "be serializable" in {
     //given
     val file = File.createTempFile("personSerialization", "bin")
+    file.deleteOnExit()
     val fred = new Person("Fred")
     val bob = new Person("Bob")
     val john = new Person("John")

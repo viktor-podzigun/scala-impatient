@@ -42,6 +42,8 @@ object TestUtils {
 
   def printToTmpFile(fileName: String, text: String): File = {
     val file = File.createTempFile(fileName, "txt")
+    file.deleteOnExit()
+
     val writer = new PrintWriter(file)
     try {
       writer.print(text)
