@@ -17,4 +17,17 @@ class Chapter11Spec extends FlatSpec with Matchers {
     (Fraction(1, 2) * Fraction(1, 2)).toString shouldBe "1/4"
     (Fraction(1, 2) / Fraction(1, 2)).toString shouldBe "1/1"
   }
+
+  "Money" should "be normalized and has operations +, -, ==, <" in {
+    //when & then
+    Money(1, 150).toString shouldBe "2.50"
+    (Money(1, 75) + Money(0, 50)).toString shouldBe "2.25"
+    (Money(1, 75) + Money(0, 10)).toString shouldBe "1.85"
+    (Money(2, 25) - Money(0, 50)).toString shouldBe "1.75"
+    (Money(2, 25) - Money(0, 25)).toString shouldBe "2.00"
+    Money(2, 25) == Money(0, 50) shouldBe false
+    Money(2, 25) == Money(2, 25) shouldBe true
+    Money(2, 25) < Money(2, 25) shouldBe false
+    Money(1, 50) < Money(2, 25) shouldBe true
+  }
 }

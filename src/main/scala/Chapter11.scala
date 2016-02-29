@@ -80,4 +80,47 @@ object Chapter11 {
   object Fraction {
     def apply(n: Int, d: Int) = new Fraction(n, d)
   }
+
+  /**
+   * Task 4:
+   *
+   * Implement a class `Money` with fields for dollars and cents. Supply `+`, `-` operators
+   * as well as comparison operators `==` and `<`. For example,
+   * {{{
+   *  Money(1, 75) + Money(0, 50) == Money(2, 25)
+   *  }}}
+   * should be true. Should you also supply `*` and `/` operators? Why or why not?
+   *
+   * Solution:
+   *
+   * Operators `*` and `/` for `Money` class doesn't make sense, since usually money multiplied
+   * or divided by concrete number, not another amount of money.
+   */
+  class Money private(d: Int, c: Int) {
+
+    if (d < 0) throw new IllegalArgumentException("d: " + d)
+    if (c < 0) throw new IllegalArgumentException("c: " + c)
+
+    val dollars: Int = if (c > 99) d + (c / 100) else d
+    val cents: Int = if (c > 99) c % 100 else c
+
+    def +(other: Money): Money = Money(dollars + other.dollars, cents + other.cents)
+
+    def -(other: Money): Money = {
+      val d: Int = dollars - other.dollars
+      val c: Int = cents - other.cents
+      if (c < 0) Money(d - 1, c + 100)
+      else Money(d, c)
+    }
+
+    def ==(other: Money): Boolean = dollars == other.dollars && cents == other.cents
+
+    def <(other: Money): Boolean = (dollars * 100) + cents < (other.dollars * 100) + other.cents
+
+    override def toString = "%d.%02d".format(dollars, + cents)
+  }
+
+  object Money {
+    def apply(d: Int, c: Int) = new Money(d, c)
+  }
 }
