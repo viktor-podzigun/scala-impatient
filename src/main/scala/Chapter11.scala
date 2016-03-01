@@ -1,5 +1,5 @@
 import scala.annotation.tailrec
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 object Chapter11 {
 
@@ -178,5 +178,62 @@ object Chapter11 {
 
   object Table {
     def apply() = new Table
+  }
+
+  /**
+   * Task 6:
+   *
+   * Provide a class `ASCIIArt` whose objects contain figures such as
+   * {{{
+   *   /\_/\
+   *  ( ' ' )
+   *  (  -  )
+   *   | | |
+   *  (__|__)
+   * }}}
+   * Supply operators for combining two `ASCIIArt` figures horizontally
+   * {{{
+   *   /\_/\     -----
+   *  ( ' ' )  / Hello \
+   *  (  -  ) <  Scala |
+   *   | | |   \ Coder /
+   *  (__|__)    -----
+   * }}}
+   * or vertically. Choose operators with appropriate precedence.
+   */
+  class ASCIIArt(val rows: List[String] = Nil) {
+
+    def +(row: String): ASCIIArt = new ASCIIArt(rows :+ row)
+
+    def |(other: ASCIIArt): ASCIIArt = {
+      val padLen = rows.foldLeft(0) {(len, s) =>
+        if (len > s.length) len
+        else s.length
+      }
+      val result = new ArrayBuffer[String]
+      result ++= rows
+
+      val buf = new StringBuilder
+      var i = 0
+      for (row <- other.rows) {
+        if (i >= result.length) {
+          result += ""
+        }
+
+        buf.clear()
+        buf ++= result(i)
+        while (buf.length < padLen) {
+          buf.append(' ')
+        }
+
+        buf ++= row
+        result(i) = buf.toString()
+        i += 1
+      }
+
+      new ASCIIArt(result.toList)
+    }
+
+    override def toString = rows.mkString("\n")
   }
 }

@@ -40,4 +40,35 @@ class Chapter11Spec extends FlatSpec with Matchers {
       "<tr><td>Gosling</td><td>Odersky</td></tr>" +
       "<tr><td>JVM</td><td>JVM, .NET</td></tr></table>"
   }
+
+  "ASCIIArt" should "provide operators for combining figures horizontally and vertically" in {
+    //given
+    val art = new ASCIIArt +
+      """ /\_/\""" +
+      """( ' ' )""" +
+      """(  -  )""" +
+      """ | | |""" +
+      """(__|__)"""
+
+    //when
+    val result = art | new ASCIIArt +
+      """    -----""" +
+      """  / Hello \""" +
+      """ <  Scala |""" +
+      """  \ Coder /""" +
+      """    -----"""
+
+    //then
+    art.toString shouldBe """ /\_/\
+                            |( ' ' )
+                            |(  -  )
+                            | | | |
+                            |(__|__)""".stripMargin
+
+    result.toString shouldBe """ /\_/\     -----
+                               |( ' ' )  / Hello \
+                               |(  -  ) <  Scala |
+                               | | | |   \ Coder /
+                               |(__|__)    -----""".stripMargin
+  }
 }
