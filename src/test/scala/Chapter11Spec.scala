@@ -71,4 +71,29 @@ class Chapter11Spec extends FlatSpec with Matchers {
                                | | | |   \ Coder /
                                |(__|__)    -----""".stripMargin
   }
+
+  "BitSequence" should "store 64 bits, packed in Long" in {
+    //given
+    val bits = new BitSequence
+
+    //when & then
+    bits(0) shouldBe 0
+    bits(0) = 1
+    bits(0) shouldBe 1
+    bits(1) shouldBe 0
+    bits(1) = 1
+    bits(1) shouldBe 1
+    bits(63) shouldBe 0
+    bits(63) = 1
+    bits(63) shouldBe 1
+    bits(0) shouldBe 1
+    bits(0) = 0
+    bits(0) shouldBe 0
+    bits(1) shouldBe 1
+    bits(1) = 0
+    bits(1) shouldBe 0
+    bits(63) shouldBe 1
+    bits(63) = 0
+    bits(63) shouldBe 0
+  }
 }

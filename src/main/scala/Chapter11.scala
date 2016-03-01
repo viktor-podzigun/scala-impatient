@@ -236,4 +236,29 @@ object Chapter11 {
 
     override def toString = rows.mkString("\n")
   }
+
+  /**
+   * Task 7:
+   *
+   * Implement a class `BitSequence` that stores a sequence of 64 bits packed in a `Long` value.
+   * Supply `apply` and `update` operators to get and set an individual bit.
+   */
+  class BitSequence {
+
+    private var bits: Long = 0
+
+    def apply(i: Int): Int = get(mask(i))
+
+    def update(i: Int, bit: Int): Unit = set(mask(i), bit)
+
+    private def mask(i: Int): Long = 1L << i
+
+    private def get(mask: Long): Int =
+      if ((bits & mask) == mask) 1
+      else 0
+
+    private def set(mask: Long, bit: Int): Unit =
+      if (bit == 0) bits &= ~mask
+      else bits |= mask
+  }
 }
