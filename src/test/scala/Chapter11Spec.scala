@@ -30,4 +30,14 @@ class Chapter11Spec extends FlatSpec with Matchers {
     Money(2, 25) < Money(2, 25) shouldBe false
     Money(1, 50) < Money(2, 25) shouldBe true
   }
+
+  "Table" should "provide operators that construct an HTML table" in {
+    //when
+    val table = Table() | "Java" | "Scala" || "Gosling" | "Odersky" || "JVM" | "JVM, .NET"
+
+    //then
+    table.toHtml shouldBe "<table><tr><td>Java</td><td>Scala</td></tr>" +
+      "<tr><td>Gosling</td><td>Odersky</td></tr>" +
+      "<tr><td>JVM</td><td>JVM, .NET</td></tr></table>"
+  }
 }

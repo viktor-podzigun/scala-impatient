@@ -1,4 +1,5 @@
 import scala.annotation.tailrec
+import scala.collection.mutable.ListBuffer
 
 object Chapter11 {
 
@@ -122,5 +123,60 @@ object Chapter11 {
 
   object Money {
     def apply(d: Int, c: Int) = new Money(d, c)
+  }
+
+  /**
+   * Task 5:
+   *
+   * Provide operators that construct an HTML table. For example,
+   * {{{
+   *  Table() | "Java" | "Scala" || "Gosling" | "Odersky" || "JVM" | "JVM, .NET"
+   * }}}
+   * should produce
+   * {{{
+   *  <table><tr><td>Java</td><td>Scala</td</tr><tr><td>Gosling...
+   * }}}
+   */
+  class Table private {
+
+    private val table = new ListBuffer[ListBuffer[String]]
+
+    def |(cell: String): Table = {
+      if (table.isEmpty) {
+        table += new ListBuffer[String]
+      }
+
+      table.last += cell
+      this
+    }
+
+    def ||(cell: String): Table = {
+      table += new ListBuffer[String]
+      table.last += cell
+      this
+    }
+
+    def toHtml: String = {
+      val sb = new StringBuilder("<table>")
+      for (row <- table) {
+        sb ++= "<tr>"
+        for (cell <- row) {
+          sb ++= "<td>"
+          sb ++= cell
+          sb ++= "</td>"
+        }
+
+        sb ++= "</tr>"
+      }
+
+      sb ++= "</table>"
+      sb.toString()
+    }
+
+    override def toString = table.mkString("\n")
+  }
+
+  object Table {
+    def apply() = new Table
   }
 }
