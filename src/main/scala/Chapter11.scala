@@ -261,4 +261,66 @@ object Chapter11 {
       if (bit == 0) bits &= ~mask
       else bits |= mask
   }
+
+  /**
+   * Task 8:
+   *
+   * Provide a class `Matrix` - you can choose whether you want to implement `2 x 2` matrices,
+   * square matrices of any size, or `m x n` matrices. Supply operations `+` and `*`.
+   * The latter should also work with scalars, for example `mat * 2`.
+   * A single element should be accessible as `mat(row, col)`.
+   */
+  class Matrix(rows: Int, cols: Int) {
+    if (rows <= 0 || cols <= 0) {
+      throw new IllegalArgumentException("rows: " + rows + ", cols: " + cols)
+    }
+
+    private val matrix: Array[Array[Int]] = Array.ofDim[Int](rows, cols)
+
+    def this(size: (Int, Int)) = this(size._1, size._2)
+
+    def +(other: Matrix): Matrix = {
+      val thisSize = size
+      if (thisSize != other.size) {
+        throw new IllegalArgumentException("matrices are not of the same size" +
+          ", expected: " + thisSize + ", actual: " + other.size)
+      }
+
+      map(new Matrix(thisSize))((row, col) => this(row, col) + other(row, col))
+    }
+
+    def *(value: Int): Matrix = map(new Matrix(size))((row, col) => this(row, col) * value)
+
+    def *(other: Matrix): Matrix = {
+      val (m1, n1) = size
+      val (m2, n2) = other.size
+      if (n1 != m2) {
+        throw new IllegalArgumentException("matrices are not multiplication compatible" +
+          ", expected rows: " + n1 + ", actual: " + m2)
+      }
+
+      map(new Matrix(m1, n2)) { (row, col) =>
+        0
+      }
+    }
+
+    def apply(row: Int, col: Int): Int = matrix(row)(col)
+
+    def update(row: Int, col: Int, value: Int): Unit = matrix(row)(col) = value
+
+    def size: (Int, Int) = (matrix.length, matrix(0).length)
+
+    override def toString = matrix.mkString("\n")
+
+    private def map(matrix: Matrix)(op: (Int, Int) => Int): Matrix = {
+      val (m, n) = matrix.size
+      for (row <- 0 until m) {
+        for (col <- 0 until n) {
+          matrix(row, col) = op(row, col)
+        }
+      }
+
+      matrix
+    }
+  }
 }
