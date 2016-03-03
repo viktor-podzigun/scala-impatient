@@ -96,4 +96,60 @@ class Chapter11Spec extends FlatSpec with Matchers {
     bits(63) = 0
     bits(63) shouldBe 0
   }
+
+  "Matrix" should "supply operator + and apply method" in {
+    //when
+    val result = Matrix(2, 2)(
+      1, 2,
+      3, 4) +
+      Matrix(2, 2)(
+        5, 6,
+        7, 8)
+
+    //then
+    result(0, 0) shouldBe 6
+    result(0, 1) shouldBe 8
+    result.toString shouldBe """[6, 8]
+                               |[10, 12]""".stripMargin
+  }
+
+  it should "supply operator * for scalars" in {
+    //when
+    val result = Matrix(2, 2)(
+      1, 2,
+      3, 4) * 2
+
+    //then
+    result.toString shouldBe """[2, 4]
+                               |[6, 8]""".stripMargin
+  }
+
+  it should "supply operator *" in {
+    //when
+    val result = Matrix(3, 2)(
+      1, 2,
+      3, 4,
+      5, 6) *
+      Matrix(2, 4)(
+        1, 2, 3, 4,
+        5, 6, 7, 8)
+
+    //then
+    result.toString shouldBe """[11, 14, 17, 20]
+                               |[23, 30, 37, 44]
+                               |[35, 46, 57, 68]""".stripMargin
+  }
+
+  it should "be error tolerant" in {
+    //when & then
+    a [IllegalArgumentException] should be thrownBy {
+      Matrix(1, 0)(1)
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      Matrix(1, 1)(1) + Matrix(1, 2)(1, 1)
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      Matrix(1, 1)(1) * Matrix(2, 1)(1, 1)
+    }
+  }
 }

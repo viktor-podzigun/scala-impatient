@@ -270,14 +270,9 @@ object Chapter11 {
    * The latter should also work with scalars, for example `mat * 2`.
    * A single element should be accessible as `mat(row, col)`.
    */
-  class Matrix(rows: Int, cols: Int) {
-    if (rows <= 0 || cols <= 0) {
-      throw new IllegalArgumentException("rows: " + rows + ", cols: " + cols)
-    }
-
-    private val matrix: Array[Array[Int]] = Array.ofDim[Int](rows, cols)
-
-    def this(size: (Int, Int)) = this(size._1, size._2)
+  class Matrix private(private val rows: Int,
+                       private val cols: Int,
+                       private val data: IndexedSeq[Int]) {
 
     def +(other: Matrix): Matrix = {
       val thisSize = size
@@ -286,10 +281,11 @@ object Chapter11 {
           ", expected: " + thisSize + ", actual: " + other.size)
       }
 
-      map(new Matrix(thisSize))((row, col) => this(row, col) + other(row, col))
+      Matrix.init(rows, cols)((row, col) => this(row, col) + other(row, col))
     }
 
-    def *(value: Int): Matrix = map(new Matrix(size))((row, col) => this(row, col) * value)
+    def *(value: Int): Matrix =
+      Matrix.init(rows, cols)((row, col) => this(row, col) * value)
 
     def *(other: Matrix): Matrix = {
       val (m1, n1) = size
@@ -299,28 +295,56 @@ object Chapter11 {
           ", expected rows: " + n1 + ", actual: " + m2)
       }
 
-      map(new Matrix(m1, n2)) { (row, col) =>
-        0
+      Matrix.init(m1, n2) { (row, col) => (0 until n1).foldLeft(0)((sum, i) =>
+        sum + data(row * n1 + i) * other.data(i * n2 + col))
       }
     }
 
-    def apply(row: Int, col: Int): Int = matrix(row)(col)
+    def apply(row: Int, col: Int): Int = data(row * cols + col)
 
-    def update(row: Int, col: Int, value: Int): Unit = matrix(row)(col) = value
+    def size: (Int, Int) = (rows, cols)
 
-    def size: (Int, Int) = (matrix.length, matrix(0).length)
+    override def toString = {
+      val sb = new StringBuilder
+      for (row <- 0 until rows) {
+        if (row > 0) {
+          sb ++= "\n"
+        }
 
-    override def toString = matrix.mkString("\n")
+        sb ++= "["
+        for (col <- 0 until cols) {
+          if (col > 0) {
+            sb ++= ", "
+          }
 
-    private def map(matrix: Matrix)(op: (Int, Int) => Int): Matrix = {
-      val (m, n) = matrix.size
-      for (row <- 0 until m) {
-        for (col <- 0 until n) {
-          matrix(row, col) = op(row, col)
+          sb.append(data(row * cols + col))
+        }
+        sb ++= "]"
+      }
+
+      sb.toString()
+    }
+  }
+
+  object Matrix {
+    def apply(rows: Int, cols: Int)(data: Int*): Matrix = {
+      if ((rows * cols) != data.length) {
+        throw new IllegalArgumentException("(" + rows + " x " + cols +
+          ") data length: " + data.length)
+      }
+
+      new Matrix(rows, cols, data.toIndexedSeq)
+    }
+
+    private def init(rows: Int, cols: Int)(op: (Int, Int) => Int): Matrix = {
+      val data = new Array[Int](rows * cols)
+      for (row <- 0 until rows) {
+        for (col <- 0 until cols) {
+          data(row * cols + col) = op(row, col)
         }
       }
 
-      matrix
+      new Matrix(rows, cols, data)
     }
   }
 }
