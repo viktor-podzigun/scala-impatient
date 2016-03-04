@@ -347,4 +347,21 @@ object Chapter11 {
       new Matrix(rows, cols, data)
     }
   }
+
+  /**
+   * Task 9:
+   *
+   * Define an `unapply` operation for the `RichFile` class that extracts the file path, name,
+   * and extension. For example, the `file/home/cay/readme.txt` has path `/home/cay`,
+   * name `readme`, and extension `txt`.
+   */
+  object RichFile {
+    
+    private val pathNameExtRegex = """file(.*)/(.+)\.(.*)""".r
+    
+    def unapply(file: String): Option[(String, String, String)] = file match {
+      case pathNameExtRegex(path, name, extension) => Some((path, name, extension))
+      case _ => None
+    }
+  }
 }

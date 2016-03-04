@@ -152,4 +152,17 @@ class Chapter11Spec extends FlatSpec with Matchers {
       Matrix(1, 1)(1) * Matrix(2, 1)(1, 1)
     }
   }
+
+  "RichFile" should "extract the file path, name, and extension" in {
+    //given
+    val file = "file/home/cay/readme.txt"
+
+    //when
+    val RichFile(path, name, extension) = file
+
+    //then
+    path shouldBe "/home/cay"
+    name shouldBe "readme"
+    extension shouldBe "txt"
+  }
 }
