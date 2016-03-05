@@ -165,4 +165,18 @@ class Chapter11Spec extends FlatSpec with Matchers {
     name shouldBe "readme"
     extension shouldBe "txt"
   }
+
+  "RichFile2" should "extract the path sequence" in {
+    //given
+    val file = "file/home/cay/data/readme.txt"
+
+    //when
+    val RichFile2(home, user, data, name) = file
+
+    //then
+    home shouldBe "home"
+    user shouldBe "cay"
+    data shouldBe "data"
+    name shouldBe "readme.txt"
+  }
 }
