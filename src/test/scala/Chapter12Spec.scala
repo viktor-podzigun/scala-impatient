@@ -5,7 +5,7 @@ class Chapter12Spec extends FlatSpec with Matchers {
 
   "values" should "yield a collection of function inputs and outputs in a given range" in {
     //when
-    val result = values(x => x * x, -5, 5)
+    val result: Seq[(Int, Int)] = values(x => x * x, -5, 5)
 
     //then
     result shouldBe Seq((-5, 25), (-4, 16), (-3, 9), (-2, 4), (-1, 1), (0, 0),
@@ -17,7 +17,7 @@ class Chapter12Spec extends FlatSpec with Matchers {
     val arr = Array(5, 6, 1, 0, -2, 3, -1)
 
     //when
-    val result = largestElement(arr)
+    val result: Int = largestElement(arr)
 
     //then
     result shouldBe 6
@@ -41,7 +41,7 @@ class Chapter12Spec extends FlatSpec with Matchers {
 
   "largest" should "return the largest value of a function within a given sequence of inputs" in {
     //when
-    val result = largest(x => 10 * x - x * x, 1 to 10)
+    val result: Int = largest(x => 10 * x - x * x, 1 to 10)
 
     //then
     result shouldBe 25
@@ -49,9 +49,24 @@ class Chapter12Spec extends FlatSpec with Matchers {
 
   "largestAt" should "return the input at which the output is largest" in {
     //when
-    val result = largestAt(x => 10 * x - x * x, 1 to 10)
+    val result: Int = largestAt(x => 10 * x - x * x, 1 to 10)
 
     //then
     result shouldBe 5
+  }
+
+  "adjustToPair" should "return the function that operates on a pair" in {
+    //when & then
+    adjustToPair(_ * _)((6, 7)) shouldBe 42
+  }
+
+  "mapPairs" should "compute the sums of the elements in pairs" in {
+    //given
+    val pairs = (1 to 10) zip (11 to 20)
+
+    //when
+    val result: Seq[Int] = mapPairs(pairs, _ + _)
+
+    result shouldBe Seq(12, 14, 16, 18, 20, 22, 24, 26, 28, 30)
   }
 }
