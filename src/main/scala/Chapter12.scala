@@ -12,4 +12,11 @@ object Chapter12 {
   def values(fun: (Int) => Int, low: Int, high: Int): Seq[(Int, Int)] = {
     for (i <- low to high) yield (i, fun(i))
   }
+
+  /**
+   * Task 2:
+   *
+   * How do you get the largest element of an array with `reduceLeft`?
+   */
+  def largestElement(arr: Array[Int]): Int = arr.reduceLeft((a, b) => if (a > b) a else b)
 }
