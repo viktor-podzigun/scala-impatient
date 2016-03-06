@@ -19,4 +19,13 @@ object Chapter12 {
    * How do you get the largest element of an array with `reduceLeft`?
    */
   def largestElement(arr: Array[Int]): Int = arr.reduceLeft((a, b) => if (a > b) a else b)
+
+  /**
+   * Task 3:
+   *
+   * Implement the `factorial` function using `to` and `reduceLeft`, without a loop or recursion.
+   */
+  def factorial(n: Int): Int = {
+    (1 to n).reduceLeft(_ * _)
+  }
 }

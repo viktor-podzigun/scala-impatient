@@ -22,4 +22,12 @@ class Chapter12Spec extends FlatSpec with Matchers {
     //then
     result shouldBe 6
   }
+
+  "factorial" should "be implemented using to and reduceLeft" in {
+    //when
+    val result = factorial(5)
+
+    //then
+    result shouldBe 120
+  }
 }
