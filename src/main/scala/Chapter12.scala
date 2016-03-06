@@ -46,4 +46,19 @@ object Chapter12 {
   def largest(fun: (Int) => Int, inputs: Seq[Int]): Int = {
     inputs.map(fun(_)).reduceLeft((a, b) => if (a > b) a else b)
   }
+
+  /**
+   * Task 6:
+   *
+   * Modify the previous function to return the input at which the output is largest. For example,
+   * `largestAt(x => 10 * x - x * x, 1 to 10)` should return `5`. Don't use a loop or recursion.
+   */
+  def largestAt(fun: (Int) => Int, inputs: Seq[Int]): Int = {
+    val valueWithInput: (Int, Int) = inputs.map(i => (fun(i), i)).reduceLeft {(a, b) =>
+      if (a._1 > b._1) a
+      else b
+    }
+
+    valueWithInput._2
+  }
 }

@@ -46,4 +46,12 @@ class Chapter12Spec extends FlatSpec with Matchers {
     //then
     result shouldBe 25
   }
+
+  "largestAt" should "return the input at which the output is largest" in {
+    //when
+    val result = largestAt(x => 10 * x - x * x, 1 to 10)
+
+    //then
+    result shouldBe 5
+  }
 }
