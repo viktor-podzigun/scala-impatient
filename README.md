@@ -18,7 +18,7 @@ activator clean coverage test coverageReport
 9. [Files and Regular Expressions](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter09.scala)
 10. [Traits](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter10.scala)
 11. [Operators](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter11.scala)
-12. Higher-order functions
+12. [Higher-order functions](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter12.scala)
 13. Collections
 14. Pattern matching and case classes
 15. Annotations
