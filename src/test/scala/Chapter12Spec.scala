@@ -38,4 +38,12 @@ class Chapter12Spec extends FlatSpec with Matchers {
     factorial2(1) shouldBe 1
     factorial2(5) shouldBe 120
   }
+
+  "largest" should "return the largest value of a function within a given sequence of inputs" in {
+    //when
+    val result = largest(x => 10 * x - x * x, 1 to 10)
+
+    //then
+    result shouldBe 25
+  }
 }
