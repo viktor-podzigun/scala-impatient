@@ -25,7 +25,14 @@ object Chapter12 {
    *
    * Implement the `factorial` function using `to` and `reduceLeft`, without a loop or recursion.
    */
-  def factorial(n: Int): Int = {
-    (1 to n).reduceLeft(_ * _)
-  }
+  def factorial(n: Int): Int = if (n <= 0) 1 else (1 to n).reduceLeft(_ * _)
+
+  /**
+   * Task 4:
+   *
+   * The previous implementation needed a special case when `n < 1`. Show how you can avoid this
+   * with `foldLeft`. (Look at the Scaladoc for `foldLeft`. It’s like `reduceLeft`, except that
+   * the first value in the chain of combined values is supplied in the call.)
+   */
+  def factorial2(n: Int): Int = (1 to n).foldLeft(1)(_ * _)
 }
