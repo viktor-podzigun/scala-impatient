@@ -84,4 +84,21 @@ class Chapter12Spec extends FlatSpec with Matchers {
   "corresponds2" should "be implemented without currying" in {
     corresponds2(Array("a"), Array(1), (a: String, b: Int) => a.length == b) shouldBe true
   }
+
+  "unless" should "work just like if, but with an inverted condition" in {
+    //when & then
+    var a = 0
+    unless(a == 1) {
+      a = 1
+    }
+
+    a shouldBe 1
+
+    var b = 0
+    unless(b == 0) {
+      b = 1
+    }
+
+    b shouldBe 0
+  }
 }

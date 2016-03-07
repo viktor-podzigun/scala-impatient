@@ -121,4 +121,17 @@ object Chapter12 {
   def corresponds2[A, B](ax: Array[A], bx: Array[B], predicate: (A, B) => Boolean): Boolean = {
     ax.corresponds(bx)(predicate)
   }
+
+  /**
+   * Task 10:
+   *
+   * Implement an `unless` control abstraction that works just like `if`, but with an inverted
+   * condition. Does the first parameter need to be a call-by-name parameter? Do you need currying?
+   *
+   * Solution:
+   *
+   * The first parameter not need to be a call-by-name parameter since it is evaluated only once.
+   * Yes, we need currying, with it looks exactly like an `if` expression.
+   */
+  def unless(cond: Boolean)(block: => Unit): Unit = if (!cond) block
 }
