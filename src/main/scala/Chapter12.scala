@@ -103,4 +103,22 @@ object Chapter12 {
   def correspondsLen(strings: Array[String], lengths: Array[Int]): Boolean = {
     strings.corresponds(lengths)(_.length == _)
   }
+
+  /**
+   * Task 9:
+   *
+   * Implement `corresponds` without currying. Then try the call from the preceding exercise.
+   * What problem do you encounter?
+   *
+   * Solution:
+   *
+   * Without currying the compiler is not be able to infer the types for predicate function.
+   * So, it should be called like this:
+   * {{{
+   *  corresponds2(Array("a"), Array(1), (a: String, b: Int) => a.length == b)
+   * }}}
+   */
+  def corresponds2[A, B](ax: Array[A], bx: Array[B], predicate: (A, B) => Boolean): Boolean = {
+    ax.corresponds(bx)(predicate)
+  }
 }

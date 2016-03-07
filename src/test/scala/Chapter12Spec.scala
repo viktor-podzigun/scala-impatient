@@ -80,4 +80,8 @@ class Chapter12Spec extends FlatSpec with Matchers {
     correspondsLen(Array("a", "bb", "ccc"), Array(1, 2, 3, 4)) shouldBe false
     correspondsLen(Array("a", "bb", "ccc"), Array(1, 2)) shouldBe false
   }
+
+  "corresponds2" should "be implemented without currying" in {
+    corresponds2(Array("a"), Array(1), (a: String, b: Int) => a.length == b) shouldBe true
+  }
 }
