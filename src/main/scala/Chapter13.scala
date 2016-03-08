@@ -23,4 +23,19 @@ object Chapter13 {
 
     map
   }
+
+  /**
+   * Task 2:
+   *
+   * Repeat the preceding exercise, using an immutable map of characters to lists.
+   */
+  def indexes2(s: String): Map[Char, List[Int]] = {
+    var map = Map[Char, List[Int]]()
+    for (i <- 0 until s.length) {
+      val c = s(i)
+      map = map.updated(c, map.getOrElse(c, Nil) :+ i)
+    }
+
+    map
+  }
 }
