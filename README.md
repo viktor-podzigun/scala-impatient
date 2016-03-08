@@ -1,12 +1,6 @@
 ### Scala for the Impatient
 My solutions to the exercises from the excellent [Scala for the Impatient](https://www.typesafe.com/resources/e-book/scala-for-the-impatient) book.
 
-Almost all solutions covered with corresponding tests. You can build and run tests and see the coverage by using the following command:
-
-```bash
-activator clean coverage test coverageReport
-```
-
 1. The Basics
 2. Control Structures and Functions
 3. [Working with Arrays](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter03.scala)
@@ -19,7 +13,7 @@ activator clean coverage test coverageReport
 10. [Traits](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter10.scala)
 11. [Operators](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter11.scala)
 12. [Higher-order functions](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter12.scala)
-13. Collections
+13. [Collections](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter13.scala)
 14. Pattern matching and case classes
 15. Annotations
 16. XML Processing
@@ -29,3 +23,9 @@ activator clean coverage test coverageReport
 20. Actors
 21. Implicits
 22. Delimited continuations
+
+Almost all solutions covered with corresponding tests. You can build and run tests and see the coverage by using the following command:
+
+```bash
+activator clean coverage test coverageReport
+```
