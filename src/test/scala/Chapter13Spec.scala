@@ -25,4 +25,26 @@ class Chapter13Spec extends FlatSpec with Matchers {
     result('s') shouldBe List(2, 3, 5, 6)
     result('p') shouldBe List(8, 9)
   }
+
+  "removeAllZeroes" should "remove all zeroes from a linked list of integers" in {
+    //when & then
+    val list: mutable.LinkedList[Int] = mutable.LinkedList(1, 2, 3)
+    val result: mutable.LinkedList[Int] = removeAllZeroes(list)
+    result shouldBe theSameInstanceAs(list)
+
+    removeAllZeroes(mutable.LinkedList(0, 1, 2, 3, 4)) shouldBe
+      mutable.LinkedList(1, 2, 3, 4)
+
+    removeAllZeroes(mutable.LinkedList(1, 2, 0, 3, 4)) shouldBe
+      mutable.LinkedList(1, 2, 3, 4)
+
+    removeAllZeroes(mutable.LinkedList(1, 2, 3, 4, 0)) shouldBe
+      mutable.LinkedList(1, 2, 3, 4)
+
+    removeAllZeroes(mutable.LinkedList(0, 1, 2, 0, 3, 4, 0)) shouldBe
+      mutable.LinkedList(1, 2, 3, 4)
+
+    removeAllZeroes(mutable.LinkedList(0, 0, 1, 2, 0, 0, 3, 0, 0, 4, 0, 0)) shouldBe
+      mutable.LinkedList(1, 2, 3, 4)
+  }
 }

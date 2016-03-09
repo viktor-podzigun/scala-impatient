@@ -38,4 +38,31 @@ object Chapter13 {
 
     map
   }
+
+  /**
+   * Task 3:
+   *
+   * Write a function that removes all zeroes from a linked list of integers.
+   */
+  def removeAllZeroes(list: mutable.LinkedList[Int]): mutable.LinkedList[Int] = {
+    // remove elements at the beginning of the list
+    var result = list
+    while (result.nonEmpty && result.elem == 0) {
+      result = result.next
+    }
+
+    // remove elements till the end of the list
+    var prev, curr = result
+    while (curr.nonEmpty) {
+      if (curr.elem == 0) {
+        prev.next = curr.next
+        curr = prev
+      }
+
+      prev = curr
+      curr = curr.next
+    }
+
+    result
+  }
 }
