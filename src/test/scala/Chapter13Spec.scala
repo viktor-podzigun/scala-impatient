@@ -59,4 +59,12 @@ class Chapter13Spec extends FlatSpec with Matchers {
     //then
     result shouldBe Array(3, 5)
   }
+
+  "collToString" should "works just like mkString, using reduceLeft" in {
+    //when & then
+    collToString(Nil) shouldBe ""
+    collToString(Array(1)) shouldBe "1"
+    collToString(Seq(1, 2, 3)) shouldBe "1, 2, 3"
+    collToString(List("1", "2", "3")) shouldBe "1, 2, 3"
+  }
 }

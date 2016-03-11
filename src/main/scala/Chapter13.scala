@@ -78,4 +78,15 @@ object Chapter13 {
   def mapToValues(coll: Traversable[String], map: Map[String, Int]): Traversable[Int] = {
     coll.flatMap(map.get)
   }
+
+  /**
+   * Task 5:
+   *
+   * Implement a function that works just like `mkString`, using `reduceLeft`.
+   */
+  def collToString[T](xs: Traversable[T]): String = {
+    if (xs.isEmpty) ""
+    // we have to specify Any type here, since its the closest common parent type for String and T
+    else xs.reduceLeft((a: Any, b: T) => a + ", " + b).toString
+  }
 }
