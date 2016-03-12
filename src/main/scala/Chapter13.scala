@@ -89,4 +89,27 @@ object Chapter13 {
     // we have to specify Any type here, since its the closest common parent type for String and T
     else xs.reduceLeft((a: Any, b: T) => a + ", " + b).toString
   }
+
+  /**
+   * Task 6:
+   *
+   * Given a list of integers `lst`, what is
+   * `(lst :\ List[Int]())(_ :: _)` ?
+   * `(List[Int]() /: lst)(_ :+ _)` ?
+   * How can you modify one of them to reverse the list?
+   *
+   * Solution:
+   *
+   * The first expression executes `foldRight` and prepends the elements to the resulting list.
+   * The second expression executes `foldLeft` and appends the elements to the resulting list.
+   * Both expressions produce new `List[Int]` with the same elements as in the original list,
+   * and in the same order.
+   */
+  def reversList(lst: List[Int]): List[Int] = {
+    (lst :\ List[Int]())((el, res) => res :+ el)
+
+    // or:
+    //
+    //(List[Int]() /: lst)((res, el) => el :: res)
+  }
 }
