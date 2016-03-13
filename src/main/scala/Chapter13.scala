@@ -104,12 +104,12 @@ object Chapter13 {
    * The second expression executes `foldLeft` and appends the elements to the resulting list.
    * Both expressions produce new `List[Int]` with the same elements as in the original list,
    * and in the same order.
+   * To reverse the list its better to modify the second expression to prepend the elements,
+   * which is cheaper for lists comparing to append.
    */
   def reversList(lst: List[Int]): List[Int] = {
-    (lst :\ List[Int]())((el, res) => res :+ el)
+    //(lst :\ List[Int]())((el, res) => res :+ el)
 
-    // or:
-    //
-    //(List[Int]() /: lst)((res, el) => el :: res)
+    (List[Int]() /: lst)((res, el) => el :: res)
   }
 }
