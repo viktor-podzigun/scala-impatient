@@ -90,4 +90,16 @@ class Chapter13Spec extends FlatSpec with Matchers {
     //then
     result shouldBe List(10, 40, 90)
   }
+
+  "twoDimensionalArray" should "turn an array of Double values into a two-dimensional array" in {
+    //given
+    val arr = Array[Double](1, 2, 3, 4, 5, 6)
+    val columns = 3
+
+    //when
+    val result: Array[Array[Double]] = twoDimensionalArray(arr, columns)
+
+    //then
+    result shouldBe Array[Array[Double]](Array(1, 2, 3), Array(4, 5, 6))
+  }
 }

@@ -132,4 +132,24 @@ object Chapter13 {
   def multiply(prices: Iterable[Int], quantities: Iterable[Int]): Iterable[Int] = {
     (prices zip quantities) map Function.tupled { _ * _ }
   }
+
+  /**
+   * Task 8:
+   *
+   * Write a function that turns an array of `Double` values into a two-dimensional array.
+   * Pass the number of columns as a parameter. For example, with `Array(1, 2, 3, 4, 5, 6)`
+   * and three columns, return `Array(Array(1, 2, 3), Array(4, 5, 6))`. Use the `grouped` method.
+   */
+  def twoDimensionalArray(arr: Array[Double], columns: Int): Array[Array[Double]] = {
+    require(arr.length % columns == 0,
+      "array length should be compatible with the number of columns")
+
+    //val res: Array[Array[Double]] = Array.ofDim(arr.length / columns, columns)
+    val res = new mutable.ArrayBuffer[Array[Double]](arr.length / columns)
+    for (row <- arr.grouped(columns)) {
+      res += row
+    }
+
+    res.toArray
+  }
 }
