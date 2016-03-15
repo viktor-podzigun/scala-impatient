@@ -1,6 +1,7 @@
 import Chapter13._
 import org.scalatest.{FlatSpec, Matchers}
 import scala.collection.mutable
+import scala.io.Source
 
 class Chapter13Spec extends FlatSpec with Matchers {
 
@@ -101,5 +102,30 @@ class Chapter13Spec extends FlatSpec with Matchers {
 
     //then
     result shouldBe Array[Array[Double]](Array(1, 2, 3), Array(4, 5, 6))
+  }
+
+  "getLetterFrequencyMap" should "return letter frequency map for the given files" in {
+    //given
+    val files = Array.fill(5)("/myfile.txt")
+
+    //when
+    val result: Map[Char, Int] = getLetterFrequencyMap(files)
+
+    //then
+    result shouldBe getTestFrequencyMap(files)
+  }
+
+  private def getTestFrequencyMap(files: Array[String]): Map[Char, Int] = {
+    val result = new mutable.HashMap[Char, Int]()
+    for (c <- Source.fromInputStream(getClass.getResourceAsStream(files.head))) {
+      result(c) = result.getOrElse(c, 0) + 1
+    }
+
+    val multiplier = files.length
+    for ((k, v) <- result) {
+      result(k) = v * multiplier
+    }
+
+    result.toMap
   }
 }

@@ -1,4 +1,5 @@
-import scala.collection.mutable
+import scala.collection.{concurrent, mutable}
+import scala.io.Source
 
 object Chapter13 {
 
@@ -151,5 +152,64 @@ object Chapter13 {
     }
 
     res.toArray
+  }
+
+  /**
+   * Task 9:
+   *
+   * Harry Hacker writes a program that accepts a sequence of file names on the command line.
+   * For each, he starts a new thread that reads the file and updates a letter frequency map
+   * declared as
+   * {{{
+   *  val frequencies = new scala.collection.mutable.HashMap[Char, Int] with
+   *    scala.collection.mutable.SynchronizedMap[Char, Int]
+   * }}}
+   * When reading a letter `c`, he calls
+   * {{{
+   *  frequencies(c) = frequencies.getOrElse (c, 0) + 1
+   * }}}
+   * Why won't this work? Will it work if he used instead
+   * {{{
+   *  import scala.collection.JavaConversions.asScalaConcurrentMap
+   *  val frequencies: scala.collection.mutable.ConcurrentMap[Char, Int] =
+   *    new java.util.concurrent.ConcurrentHashMap[Char, Int]
+   * }}}
+   *
+   * Solution:
+   *
+   * It won't work with SynchronizedMap since its not synchronize addition operation.
+   * And its not enough using ConcurrentHashMap, we also need to perform threadsafe addition.
+   * See the fixed code below.
+   */
+  def getLetterFrequencyMap(files: Iterable[String]): Map[Char, Int] = {
+    import scala.collection.JavaConversions.mapAsScalaConcurrentMap
+
+    //val frequencies = new mutable.HashMap[Char, Int] with mutable.SynchronizedMap[Char, Int]
+    val frequencies: concurrent.Map[Char, Int] =
+      new java.util.concurrent.ConcurrentHashMap[Char, Int]
+    
+    val threads = files.map(file =>
+      new Thread(new Runnable() {
+        override def run() = {
+          val source = Source.fromInputStream(getClass.getResourceAsStream(file))
+          try {
+            for (c <- source) {
+              //frequencies(c) = frequencies.getOrElse(c, 0) + 1
+              var incremented = false
+              while (!incremented) {
+                val oldVal = frequencies.putIfAbsent(c, 0).getOrElse(0)
+                incremented = frequencies.replace(c, oldVal, oldVal + 1)
+              }
+            }
+          }
+          finally {
+            source.close()
+          }
+        }
+      }))
+    threads.foreach(_.start())
+    threads.foreach(_.join())
+
+    frequencies.toMap
   }
 }
