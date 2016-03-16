@@ -112,16 +112,26 @@ class Chapter13Spec extends FlatSpec with Matchers {
     val result: Map[Char, Int] = getLetterFrequencyMap(files)
 
     //then
-    result shouldBe getTestFrequencyMap(files)
+    result shouldBe getTestFrequencyMap(files.head, files.length)
   }
 
-  private def getTestFrequencyMap(files: Array[String]): Map[Char, Int] = {
+  "getLetterFrequencyMap2" should "return letter frequency map for the given string" in {
+    //given
+    val str = Source.fromInputStream(getClass.getResourceAsStream("/myfile.txt")).mkString
+
+    //when
+    val result: Map[Char, Int] = getLetterFrequencyMap2(str)
+
+    //then
+    result shouldBe getTestFrequencyMap("/myfile.txt", 1)
+  }
+
+  private def getTestFrequencyMap(file: String, multiplier: Int): Map[Char, Int] = {
     val result = new mutable.HashMap[Char, Int]()
-    for (c <- Source.fromInputStream(getClass.getResourceAsStream(files.head))) {
+    for (c <- Source.fromInputStream(getClass.getResourceAsStream(file))) {
       result(c) = result.getOrElse(c, 0) + 1
     }
 
-    val multiplier = files.length
     for ((k, v) <- result) {
       result(k) = v * multiplier
     }
