@@ -14,7 +14,7 @@ My solutions to the exercises from the excellent [Scala for the Impatient](https
 11. [Operators](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter11.scala)
 12. [Higher-order functions](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter12.scala)
 13. [Collections](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter13.scala)
-14. Pattern matching and case classes
+14. [Pattern matching and case classes](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter14.scala)
 15. Annotations
 16. XML Processing
 17. Type parameters
