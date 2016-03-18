@@ -26,4 +26,14 @@ object Chapter14 {
    *  (100 * 100%) / 9500 = 1%
    * }}}
    */
+
+  /**
+   * Task 2:
+   *
+   * Using pattern matching, write a function `swap` that receives a pair of integers and
+   * returns the pair with the components swapped.
+   */
+  def swap(pair: (Int, Int)): (Int, Int) = pair match {
+    case (one, two) => (two, one)
+  }
 }
