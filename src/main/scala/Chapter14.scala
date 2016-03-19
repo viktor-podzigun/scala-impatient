@@ -36,4 +36,18 @@ object Chapter14 {
   def swap(pair: (Int, Int)): (Int, Int) = pair match {
     case (one, two) => (two, one)
   }
+
+  /**
+   * Task 3:
+   *
+   * Using pattern matching, write a function `swap` that swaps the first two elements of
+   * an array provided its length is at least two.
+   */
+  def swap2(arr: Array[Int]): Array[Int] = arr match {
+    case Array(first, second, _*) =>
+      arr(0) = second
+      arr(1) = first
+      arr
+    case _ => arr
+  }
 }
