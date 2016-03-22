@@ -69,4 +69,35 @@ object Chapter14 {
     case Bundle(_, disc, its @ _*) => its.map(price).sum - disc
     case Multiple(count, item) => count * price(item)
   }
+
+  /**
+   * Task 5:
+   *
+   * One can use lists to model trees that store values only in the leaves. For example, the list
+   * `((3 8) 2 (5))` describes the tree
+   * {{{
+   *     *
+   *    /|\
+   *   * 2 *
+   *  /\   |
+   * 3 8   5
+   * }}}
+   * However, some of the list elements are numbers and others are lists. In Scala, you cannot
+   * have heterogeneous lists, so you have to use a `List[Any]`. Write a `leafSum` function to
+   * compute the sum of all elements in the leaves, using pattern matching to differentiate
+   * between numbers and lists.
+   */
+  def leafSum(xs: List[Any]): Double = {
+    xs.foldLeft(0.0) {(acc: Double, item) => item match {
+        case b: Byte => acc + b
+        case s: Short => acc + s
+        case i: Int => acc + i
+        case j: Long => acc + j
+        case f: Float => acc + f
+        case d: Double => acc + d
+        case list: List[_] => acc + leafSum(list)
+        case _ => acc
+      }
+    }
+  }
 }

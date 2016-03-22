@@ -61,4 +61,15 @@ class Chapter14Spec extends FlatSpec with Matchers {
           Multiple(3, Article("iPhone 5s", 549.99)))))
     ).formatted("%.2f") shouldBe "3201.94"
   }
+
+  "leafSum" should "compute the sum of all elements in the leaves" in {
+    //given
+    val list: List[Any] = List(List(3, 8), 2, List(5))
+
+    //when
+    val result: Double = leafSum(list)
+
+    //then
+    result shouldBe 18
+  }
 }
