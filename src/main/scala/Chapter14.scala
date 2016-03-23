@@ -100,4 +100,28 @@ object Chapter14 {
       }
     }
   }
+
+  /**
+   * Task 6:
+   *
+   * A better way of modeling such trees is with case classes. Let's start with binary trees.
+   * {{{
+   * sealed abstract class BinaryTree
+   * case class Leaf(value: Int) extends BinaryTree
+   * case class Node(left: BinaryTree, right: BinaryTree) extends BinaryTree
+   * }}}
+   * Write a function to compute the sum of all elements in the leaves.
+   */
+  sealed abstract class BinaryTree
+  case class Leaf(value: Int) extends BinaryTree
+  case class Node(left: BinaryTree, right: BinaryTree) extends BinaryTree
+
+  def leafSum2(bt: BinaryTree): Int = {
+    def sum(acc: Int, bt: BinaryTree): Int = bt match {
+      case leaf: Leaf => acc + leaf.value
+      case left Node right => sum(acc, left) + sum(acc, right)
+    }
+
+    sum(0, bt)
+  }
 }

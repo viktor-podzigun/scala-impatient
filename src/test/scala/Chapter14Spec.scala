@@ -72,4 +72,15 @@ class Chapter14Spec extends FlatSpec with Matchers {
     //then
     result shouldBe 18
   }
+
+  "leafSum2" should "compute the sum of all elements in the BinaryTree leaves" in {
+    //given
+    val bt = Node(Node(Leaf(3), Leaf(8)), Node(Leaf(2), Leaf(5)))
+
+    //when
+    val result: Int = leafSum2(bt)
+
+    //then
+    result shouldBe 18
+  }
 }
