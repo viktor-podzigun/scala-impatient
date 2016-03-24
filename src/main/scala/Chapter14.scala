@@ -143,4 +143,45 @@ object Chapter14 {
       case node: Node => node.children.foldLeft(0)((acc, item) => acc + leafSum(item))
     }
   }
+
+  /**
+   * Task 8:
+   *
+   * Extend the tree in the preceding exercise so that each non-leaf node stores an operator
+   * in addition to the child nodes. Then write a function `eval` that computes the value.
+   * For example, the tree
+   * {{{
+   *     +
+   *    /|\
+   *   * 2 -
+   *  /\   |
+   * 3 8   5
+   * }}}
+   * has value `(3 x 8) + 2 + (-5) = 21`.
+   */
+  object Task8 {
+
+    sealed abstract class BinaryTree
+
+    case class Leaf(value: Int) extends BinaryTree
+
+    case class Node(op: Op, children: BinaryTree*) extends BinaryTree
+
+    class Op private(val identity: Int, op: (Int, Int) => Int) {
+      def apply(a: Int, b: Int): Int = op(a, b)
+    }
+
+    object Op {
+      val Plus = new Op(0, _ + _)
+      val Minus = new Op(0, _ - _)
+      val Product = new Op(1, _ * _)
+    }
+
+    def eval(bt: BinaryTree): Int = bt match {
+      case leaf: Leaf => leaf.value
+      case node: Node => node.children.foldLeft(node.op.identity) { (acc, item) =>
+        node.op(acc, eval(item))
+      }
+    }
+  }
 }

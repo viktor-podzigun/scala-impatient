@@ -98,4 +98,19 @@ class Chapter14Spec extends FlatSpec with Matchers {
     //then
     result shouldBe 18
   }
+
+  "eval" should "compute the value of the operator-node tree" in {
+    import Task8._
+    import Task8.Op._
+
+    //given
+    val bt: Task8.BinaryTree =
+      Node(Plus, Node(Product, Leaf(3), Leaf(8)), Leaf(2), Node(Minus, Leaf(5)))
+
+    //when
+    val result: Int = eval(bt)
+
+    //then
+    result shouldBe 21
+  }
 }
