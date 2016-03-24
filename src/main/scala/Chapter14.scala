@@ -184,4 +184,14 @@ object Chapter14 {
       }
     }
   }
+
+  /**
+   * Task 9:
+   *
+   * Write a function that computes the sum of the non-None values in a `List[Option[Int]]`.
+   * Don't use a match statement.
+   */
+  def sumOfNonNoneValues(xs: List[Option[Int]]): Int = xs.foldLeft(0) { (acc, item) =>
+    acc + item.getOrElse(0)
+  }
 }
