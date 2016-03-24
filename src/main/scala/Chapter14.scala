@@ -89,12 +89,7 @@ object Chapter14 {
    */
   def leafSum(xs: List[Any]): Double = {
     xs.foldLeft(0.0) {(acc: Double, item) => item match {
-        case b: Byte => acc + b
-        case s: Short => acc + s
-        case i: Int => acc + i
-        case j: Long => acc + j
-        case f: Float => acc + f
-        case d: Double => acc + d
+        case n: Number => acc + n.doubleValue()
         case list: List[_] => acc + leafSum(list)
         case _ => acc
       }
@@ -112,16 +107,40 @@ object Chapter14 {
    * }}}
    * Write a function to compute the sum of all elements in the leaves.
    */
-  sealed abstract class BinaryTree
-  case class Leaf(value: Int) extends BinaryTree
-  case class Node(left: BinaryTree, right: BinaryTree) extends BinaryTree
+  object Task6 {
 
-  def leafSum2(bt: BinaryTree): Int = {
-    def sum(acc: Int, bt: BinaryTree): Int = bt match {
-      case leaf: Leaf => acc + leaf.value
-      case left Node right => sum(acc, left) + sum(acc, right)
+    sealed abstract class BinaryTree
+
+    case class Leaf(value: Int) extends BinaryTree
+
+    case class Node(left: BinaryTree, right: BinaryTree) extends BinaryTree
+
+    def leafSum(bt: BinaryTree): Int = bt match {
+      case leaf: Leaf => leaf.value
+      case left Node right => leafSum(left) + leafSum(right)
     }
+  }
 
-    sum(0, bt)
+  /**
+   * Task 7:
+   *
+   * Extend the tree in the preceding exercise so that each node can have an arbitrary number
+   * of children, and reimplement the `leafSum` function. The tree in exercise 5 should be as
+   * {{{
+   *  Node(Node(Leaf(3), Leaf(8)), Leaf(2), Node(Leaf(5)))
+   * }}}
+   */
+  object Task7 {
+
+    sealed abstract class BinaryTree
+
+    case class Leaf(value: Int) extends BinaryTree
+
+    case class Node(children: BinaryTree*) extends BinaryTree
+
+    def leafSum(bt: BinaryTree): Int = bt match {
+      case leaf: Leaf => leaf.value
+      case node: Node => node.children.foldLeft(0)((acc, item) => acc + leafSum(item))
+    }
   }
 }

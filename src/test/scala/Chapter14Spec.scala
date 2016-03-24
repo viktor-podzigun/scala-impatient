@@ -73,12 +73,27 @@ class Chapter14Spec extends FlatSpec with Matchers {
     result shouldBe 18
   }
 
-  "leafSum2" should "compute the sum of all elements in the BinaryTree leaves" in {
+  "Task6.leafSum" should "compute the sum of all elements in the BinaryTree" in {
+    import Task6._
+
     //given
-    val bt = Node(Node(Leaf(3), Leaf(8)), Node(Leaf(2), Leaf(5)))
+    val bt: Task6.BinaryTree = Node(Node(Leaf(3), Leaf(8)), Node(Leaf(2), Leaf(5)))
 
     //when
-    val result: Int = leafSum2(bt)
+    val result: Int = leafSum(bt)
+
+    //then
+    result shouldBe 18
+  }
+
+  "Task7.leafSum" should "compute the sum of all elements in the multi-node tree" in {
+    import Task7._
+
+    //given
+    val bt: Task7.BinaryTree = Node(Node(Leaf(3), Leaf(8)), Leaf(2), Node(Leaf(5)))
+
+    //when
+    val result: Int = leafSum(bt)
 
     //then
     result shouldBe 18
