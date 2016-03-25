@@ -124,4 +124,18 @@ class Chapter14Spec extends FlatSpec with Matchers {
     //then
     result shouldBe 6
   }
+
+  "compose" should "yield None if either function does" in {
+    //given
+    def f(x: Double) = if (x >= 0) Some(Math.sqrt(x)) else None
+    def g(x: Double) = if (x != 1) Some(1 / (x - 1)) else None
+
+    //when
+    val h = compose(f, g)
+
+    //then
+    h(2) shouldBe Some(1)
+    h(1) shouldBe None
+    h(0) shouldBe None
+  }
 }
