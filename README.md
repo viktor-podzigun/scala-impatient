@@ -15,7 +15,7 @@ My solutions to the exercises from the excellent [Scala for the Impatient](https
 12. [Higher-order functions](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter12.scala)
 13. [Collections](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter13.scala)
 14. [Pattern matching and case classes](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter14.scala)
-15. Annotations
+15. [Annotations](https://github.com/viktor-podzigun/scala-impatient/blob/master/src/main/scala/Chapter15.scala)
 16. XML Processing
 17. Type parameters
 18. Advanced types
@@ -24,7 +24,8 @@ My solutions to the exercises from the excellent [Scala for the Impatient](https
 21. Implicits
 22. Delimited continuations
 
-Almost all solutions covered with corresponding tests. You can build and run tests and see the coverage by using the following command:
+Almost all solutions are covered with corresponding tests.
+You can build and run tests and see the coverage by using the following command:
 
 ```bash
 activator clean coverage test coverageReport

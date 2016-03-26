@@ -29,25 +29,19 @@ class Chapter13Spec extends FlatSpec with Matchers {
 
   "removeAllZeroes" should "remove all zeroes from a linked list of integers" in {
     //when & then
-    val list: mutable.LinkedList[Int] = mutable.LinkedList(1, 2, 3)
-    val result: mutable.LinkedList[Int] = removeAllZeroes(list)
+    val list: LinkedList[Int] = newLinkedList(1, 2, 3)
+    val result: LinkedList[Int] = removeAllZeroes(list)
     result shouldBe theSameInstanceAs(list)
 
-    removeAllZeroes(mutable.LinkedList(0, 1, 2, 3, 4)) shouldBe
-      mutable.LinkedList(1, 2, 3, 4)
-
-    removeAllZeroes(mutable.LinkedList(1, 2, 0, 3, 4)) shouldBe
-      mutable.LinkedList(1, 2, 3, 4)
-
-    removeAllZeroes(mutable.LinkedList(1, 2, 3, 4, 0)) shouldBe
-      mutable.LinkedList(1, 2, 3, 4)
-
-    removeAllZeroes(mutable.LinkedList(0, 1, 2, 0, 3, 4, 0)) shouldBe
-      mutable.LinkedList(1, 2, 3, 4)
-
-    removeAllZeroes(mutable.LinkedList(0, 0, 1, 2, 0, 0, 3, 0, 0, 4, 0, 0)) shouldBe
-      mutable.LinkedList(1, 2, 3, 4)
+    removeAllZeroes(newLinkedList(0, 1, 2, 3, 4)) shouldBe newLinkedList(1, 2, 3, 4)
+    removeAllZeroes(newLinkedList(1, 2, 0, 3, 4)) shouldBe newLinkedList(1, 2, 3, 4)
+    removeAllZeroes(newLinkedList(1, 2, 3, 4, 0)) shouldBe newLinkedList(1, 2, 3, 4)
+    removeAllZeroes(newLinkedList(0, 1, 2, 0, 3, 4, 0)) shouldBe newLinkedList(1, 2, 3, 4)
+    removeAllZeroes(newLinkedList(0, 0, 1, 2, 0, 0, 3, 0, 0, 4, 0, 0)) shouldBe
+      newLinkedList(1, 2, 3, 4)
   }
+
+  private def newLinkedList(elems: Int*): LinkedList[Int] = mutable.LinkedList(elems: _*)
 
   "mapToValues" should "return collection of corresponding integer values from map" in {
     //given

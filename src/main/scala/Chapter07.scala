@@ -205,14 +205,14 @@ object Chapter0709 extends App {
  */
 object JavaLangOverrides extends App {
 
-  val overrides = List(Boolean.getClass,
-    Byte.getClass,
-    Double.getClass,
-    Float.getClass,
-    Iterable.getClass,
-    Long.getClass,
-    Short.getClass,
-    StringBuilder.getClass)
+  val overrides = List[Class[_]](classOf[Boolean],
+    classOf[Byte],
+    classOf[Double],
+    classOf[Float],
+    classOf[Iterable[_]],
+    classOf[Long],
+    classOf[Short],
+    classOf[StringBuilder])
 
   println(overrides.mkString("\n"))
 }

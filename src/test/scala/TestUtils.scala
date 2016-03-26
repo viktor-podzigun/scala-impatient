@@ -22,6 +22,10 @@ object TestUtils {
       "-cp", jars + "/org.scala-lang/scala-library/jars/scala-library-" + ScalaVersion + ".jar" +
         File.pathSeparator + jars +
         "/org.scoverage/scalac-scoverage-runtime_2.11/jars/scalac-scoverage-runtime_2.11-1.1.1.jar" +
+        File.pathSeparator + jars +
+        "/junit/junit/jars/junit-4.11.jar" +
+        File.pathSeparator + jars +
+        "/org.hamcrest/hamcrest-all/jars/hamcrest-all-1.3.jar" +
         File.pathSeparator + "./target/scala-2.11/classes")
     cmd += mainObj
     cmd ++= args

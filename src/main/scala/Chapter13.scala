@@ -45,7 +45,9 @@ object Chapter13 {
    *
    * Write a function that removes all zeroes from a linked list of integers.
    */
-  def removeAllZeroes(list: mutable.LinkedList[Int]): mutable.LinkedList[Int] = {
+  type LinkedList[T] = mutable.LinkedList[T]
+
+  def removeAllZeroes(list: LinkedList[Int]): LinkedList[Int] = {
     // remove elements at the beginning of the list
     var result = list
     while (result.nonEmpty && result.elem == 0) {
