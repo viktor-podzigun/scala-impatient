@@ -55,4 +55,19 @@ object Chapter15 {
       1 + 2: @unchecked
     }
   }
+
+  /**
+   * Task 3:
+   *
+   * Which annotations from the Scala library use one of the meta-annotations
+   * {{{
+   *  @param, @field, @getter, @setter, @beanGetter, or @beanSetter?
+   * }}}
+   *
+   * Solution:
+   *
+   * - `@deprecated`
+   * - `@deprecatedName`
+   * - `@BeanProperty`
+   */
 }
