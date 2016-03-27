@@ -1,4 +1,5 @@
 import org.junit.Test
+import scala.annotation.varargs
 
 object Chapter15 {
 
@@ -70,4 +71,17 @@ object Chapter15 {
    * - `@deprecatedName`
    * - `@BeanProperty`
    */
+
+  /**
+   * Task 4:
+   *
+   * Write a Scala method `sum` with variable integer arguments that returns the sum of its
+   * arguments. Call it from Java.
+   *
+   * @see Chapter15Task4.java
+   */
+  @varargs
+  def sum(args: Int*): Int = {
+    args.sum
+  }
 }

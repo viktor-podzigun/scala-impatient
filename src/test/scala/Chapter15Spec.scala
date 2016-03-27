@@ -13,4 +13,10 @@ class Chapter15Spec extends FlatSpec with Matchers {
     err shouldBe ""
     out should include ("OK (4 tests)")
   }
+
+  "scalaSum" should "call Scala sum method with variable arguments from Java" in {
+    //when & then
+    Chapter15Task4.scalaSum(1, 2, 3) shouldBe 6
+    sum(1, 2, 3, 4) shouldBe 10
+  }
 }
