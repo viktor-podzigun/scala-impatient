@@ -1,5 +1,8 @@
 import Chapter15._
 import TestUtils.runApp
+import Chapter15Task4.scalaSum
+import Chapter15Task5.scalaFileToString
+import java.io.IOException
 import org.scalatest.{FlatSpec, Matchers}
 
 class Chapter15Spec extends FlatSpec with Matchers {
@@ -16,7 +19,21 @@ class Chapter15Spec extends FlatSpec with Matchers {
 
   "scalaSum" should "call Scala sum method with variable arguments from Java" in {
     //when & then
-    Chapter15Task4.scalaSum(1, 2, 3) shouldBe 6
+    scalaSum(1, 2, 3) shouldBe 6
     sum(1, 2, 3, 4) shouldBe 10
+  }
+
+  "scalaFileToString" should "call Scala fileToString method" in {
+    //when & then
+    scalaFileToString("/myfile.txt") shouldBe """
+                                                |Simple text file with example words.
+                                                |We will parse the file and count the words.
+                                                |""".stripMargin
+    a [RuntimeException] should be thrownBy {
+      scalaFileToString("nonExisting.file")
+    }
+    a [IOException] should be thrownBy {
+      fileToString("nonExisting.file")
+    }
   }
 }

@@ -1,5 +1,7 @@
+import java.io.IOException
 import org.junit.Test
 import scala.annotation.varargs
+import scala.io.Source
 
 object Chapter15 {
 
@@ -83,5 +85,20 @@ object Chapter15 {
   @varargs
   def sum(args: Int*): Int = {
     args.sum
+  }
+
+  /**
+   * Task 5:
+   *
+   * Write a Scala method that returns a string containing all lines of a file. Call it from Java.
+   */
+  @throws[IOException]
+  def fileToString(file: String): String = {
+    val inStream = getClass.getResourceAsStream(file)
+    if (inStream == null) {
+      throw new IOException("Resource is not found: " + file)
+    }
+
+    Source.fromInputStream(inStream).mkString
   }
 }
