@@ -101,4 +101,53 @@ object Chapter15 {
 
     Source.fromInputStream(inStream).mkString
   }
+
+  /**
+   * Task 6:
+   *
+   * Write a Scala object with a `volatile` `Boolean` field. Have one thread sleep for some time,
+   * then set the field to `true`, print a message, and exit. Another thread will keep checking
+   * whether the field is `true`. If so, it prints a message and exits. If not, it sleeps for
+   * a short time and tries again. What happens if the variable is not volatile?
+   *
+   * Solution:
+   *
+   * If the variable is not volatile, then threads may see the changes to this variable with some
+   * delay, or may not see changes at all. Since non-volatile (normal) variables may be cached.
+   */
+  object Work {
+
+    @volatile
+    private var done = false
+
+    def doWork(): Unit = {
+      val threads = List(new Thread(new Runnable {
+
+        override def run(): Unit = {
+          Thread.sleep(200)
+
+          Work.done = true
+          println("Work.done flag was set to true")
+        }
+      }), new Thread(new Runnable {
+
+        override def run(): Unit = {
+          while (!Work.done) {
+            println("Work is not done yet, waiting...")
+            Thread.sleep(100)
+          }
+
+          println("Work is done, exiting")
+        }
+      }))
+
+      threads.foreach(_.start())
+      threads.foreach(_.join())
+    }
+  }
+}
+
+object Chapter15WorkApp extends App {
+
+  Chapter15.Work.doWork()
 }

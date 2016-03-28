@@ -36,4 +36,15 @@ class Chapter15Spec extends FlatSpec with Matchers {
       fileToString("nonExisting.file")
     }
   }
+
+  "Work" should "emulate work with two threads and one shared volatile boolean flag" in {
+    //when
+    val (exit, out, err) = runApp("Chapter15WorkApp")
+
+    //then
+    exit shouldBe 0
+    err shouldBe ""
+    out should include ("Work.done flag was set to true")
+    out should include ("Work is done, exiting")
+  }
 }
