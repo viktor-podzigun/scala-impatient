@@ -47,4 +47,15 @@ class Chapter15Spec extends FlatSpec with Matchers {
     out should include ("Work.done flag was set to true")
     out should include ("Work is done, exiting")
   }
+
+  "TailRecursion" should "provide non-overridden, tail-recursive method" in {
+    //given
+    val tr = new TailRecursion
+
+    //when
+    val result: Int = tr.sum(List(1, 2, 3, 4))
+
+    //then
+    result shouldBe 10
+  }
 }

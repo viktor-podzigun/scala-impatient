@@ -1,6 +1,6 @@
 import java.io.IOException
 import org.junit.Test
-import scala.annotation.varargs
+import scala.annotation.{tailrec, varargs}
 import scala.io.Source
 
 object Chapter15 {
@@ -143,6 +143,25 @@ object Chapter15 {
 
       threads.foreach(_.start())
       threads.foreach(_.join())
+    }
+  }
+
+  /**
+   * Task 7:
+   *
+   * Give an example to show that the tail recursion optimization is not valid when a method
+   * can be overridden.
+   *
+   * Solution:
+   *
+   * To be tail recursive the method in class should be either `private` or `final`.
+   */
+  class TailRecursion {
+
+    @tailrec
+    final def sum(xs: List[Int], acc: Int = 0): Int = xs match {
+      case head :: tail => sum(tail, acc + head)
+      case _ => acc
     }
   }
 }
