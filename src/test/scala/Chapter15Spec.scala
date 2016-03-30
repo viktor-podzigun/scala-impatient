@@ -1,7 +1,7 @@
 import Chapter15._
-import TestUtils.runApp
 import Chapter15Task4.scalaSum
 import Chapter15Task5.scalaFileToString
+import TestUtils.{ClassPath, runApp, runCmd}
 import java.io.IOException
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -57,5 +57,24 @@ class Chapter15Spec extends FlatSpec with Matchers {
 
     //then
     result shouldBe 10
+  }
+
+  "allDifferent" should "be generated for all primitive types" in {
+    //when
+    val (exit, out, err) = runCmd("javap", "-classpath", ClassPath, "Chapter15$")
+
+    //then
+    exit shouldBe 0
+    err shouldBe ""
+    out should include ("public <T extends java/lang/Object> boolean allDifferent(T, T, T);")
+    out should include ("public boolean allDifferent$mZc$sp(boolean, boolean, boolean);")
+    out should include ("public boolean allDifferent$mBc$sp(byte, byte, byte);")
+    out should include ("public boolean allDifferent$mCc$sp(char, char, char);")
+    out should include ("public boolean allDifferent$mDc$sp(double, double, double);")
+    out should include ("public boolean allDifferent$mFc$sp(float, float, float);")
+    out should include ("public boolean allDifferent$mIc$sp(int, int, int);")
+    out should include ("public boolean allDifferent$mJc$sp(long, long, long);")
+    out should include ("public boolean allDifferent$mSc$sp(short, short, short);")
+    out should include ("public boolean allDifferent$mVc$sp(scala.runtime.BoxedUnit, scala.runtime.BoxedUnit, scala.runtime.BoxedUnit);")
   }
 }

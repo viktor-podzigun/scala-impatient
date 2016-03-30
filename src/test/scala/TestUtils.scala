@@ -1,6 +1,6 @@
 import java.io.{File, PrintWriter}
 
-import scala.collection.JavaConversions.bufferAsJavaList
+import scala.collection.JavaConversions.seqAsJavaList
 import scala.collection.mutable
 import scala.io.Source
 
@@ -8,6 +8,8 @@ import scala.io.Source
  * Contains utility functions and constants used in tests.
  */
 object TestUtils {
+
+  val ClassPath = "./target/scala-2.11/classes"
 
   // should be the same as in build script
   private val ScalaVersion = "2.11.7"
@@ -26,10 +28,18 @@ object TestUtils {
         "/junit/junit/jars/junit-4.11.jar" +
         File.pathSeparator + jars +
         "/org.hamcrest/hamcrest-all/jars/hamcrest-all-1.3.jar" +
-        File.pathSeparator + "./target/scala-2.11/classes")
+        File.pathSeparator + ClassPath)
     cmd += mainObj
     cmd ++= args
-    
+
+    runCmdWithInput(input, cmd: _*)
+  }
+
+  def runCmd(cmd: String*): (Int, String, String) = {
+    runCmdWithInput("", cmd: _*)
+  }
+
+  def runCmdWithInput(input: String, cmd: String*): (Int, String, String) = {
     val process = new ProcessBuilder(cmd).start()
     if (!input.isEmpty) {
       val writer = new PrintWriter(process.getOutputStream)
