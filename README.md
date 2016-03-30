@@ -5,9 +5,9 @@ My solutions to the exercises from the excellent [Scala for the Impatient](https
 2. Control Structures and Functions
 3. [Working with Arrays](src/main/scala/Chapter03.scala) => [tests](src/test/scala/Chapter03Spec.scala)
 4. [Maps and Tuples](src/main/scala/Chapter04.scala) => [tests](src/test/scala/Chapter04Spec.scala)
-5. [Classes](src/main/scala/Chapter05.scala) => [tests](src/test/scala/Chapter05Spec.scala)
+5. [Classes](src/main/scala/Chapter05.scala) ([task 5 java](src/main/java/Chapter05Car.java)) => [tests](src/test/scala/Chapter05Spec.scala)
 6. [Objects](src/main/scala/Chapter06.scala) => [tests](src/test/scala/Chapter06Spec.scala)
-7. [Packages and Imports](src/main/scala/Chapter07.scala) => [tests](src/test/scala/Chapter07Spec.scala)
+7. [Packages and Imports](src/main/scala/Chapter07.scala) ([task 1a](src/main/scala/Chapter0701a.scala), [1b](src/main/scala/Chapter0701b.scala)) => [tests](src/test/scala/Chapter07Spec.scala)
 8. [Inheritance](src/main/scala/Chapter08.scala) => [tests](src/test/scala/Chapter08Spec.scala)
 9. [Files and Regular Expressions](src/main/scala/Chapter09.scala) => [tests](src/test/scala/Chapter09Spec.scala)
 10. [Traits](src/main/scala/Chapter10.scala) => [tests](src/test/scala/Chapter10Spec.scala)
@@ -15,7 +15,7 @@ My solutions to the exercises from the excellent [Scala for the Impatient](https
 12. [Higher-order functions](src/main/scala/Chapter12.scala) => [tests](src/test/scala/Chapter12Spec.scala)
 13. [Collections](src/main/scala/Chapter13.scala) => [tests](src/test/scala/Chapter13Spec.scala)
 14. [Pattern matching and case classes](src/main/scala/Chapter14.scala) => [tests](src/test/scala/Chapter14Spec.scala)
-15. [Annotations](src/main/scala/Chapter15.scala) => [tests](src/test/scala/Chapter15Spec.scala)
+15. [Annotations](src/main/scala/Chapter15.scala) ([task 4 java](src/main/java/Chapter15Task4.java), [5 java](src/main/java/Chapter15Task5.java)) => [tests](src/test/scala/Chapter15Spec.scala)
 16. XML Processing
 17. Type parameters
 18. Advanced types
