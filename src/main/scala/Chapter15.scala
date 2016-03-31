@@ -172,6 +172,38 @@ object Chapter15 {
    * What methods did the `@specialized` annotation generate?
    */
   def allDifferent[@specialized T](x: T, y: T, z: T): Boolean = x != y && x != z && y != z
+
+  /**
+   * Task 9:
+   *
+   * The `Range.foreach` method is annotated as `@specialized(Unit)`. Why?
+   * Look at the bytecode by running
+   * {{{
+   *   javap -classpath /path/to/scala/lib/scala-library.jar scala.collection.immutable.Range
+   * }}}
+   * and consider the `@specialized` annotations on `Function1`. Click on the `Function1.scala`
+   * link in Scaladoc to see them.
+   *
+   * Solution:
+   *
+   * In the bytecode for my scala library version (2.11.7):
+   * {{{
+   *   public final void foreach$mVc$sp(scala.Function1<java.lang.Object, scala.runtime.BoxedUnit>);
+   * }}}
+   * Int the source code, from `scala.collection.immutable.Range`:
+   * {{{
+   *   override def foreach[@specialized(Unit) U](f: Int => U)
+   * }}}
+   * Int the source code, from `Function1.scala`:
+   * {{{
+   *   trait Function1[@specialized(Int, Long, Float, Double) -T1,
+   *                   @specialized(Unit, Boolean, Int, Float, Long, Double) +R]
+   * }}}
+   *
+   * Its like this, because `foreach[U]` has parametrized return type and Function1 is specialized,
+   * so `foreach` in Range class is also specialized for `Unit` only to use specialized version of
+   * Function1.
+   */
 }
 
 object Chapter15WorkApp extends App {
