@@ -77,4 +77,11 @@ class Chapter15Spec extends FlatSpec with Matchers {
     out should include ("public boolean allDifferent$mSc$sp(short, short, short);")
     out should include ("public boolean allDifferent$mVc$sp(scala.runtime.BoxedUnit, scala.runtime.BoxedUnit, scala.runtime.BoxedUnit);")
   }
+
+  "factorial" should "throw an exception when assertions are enabled" in {
+    //when & then
+    a [AssertionError] should be thrownBy {
+      factorial(-1)
+    }
+  }
 }
