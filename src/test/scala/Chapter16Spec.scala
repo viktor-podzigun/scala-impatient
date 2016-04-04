@@ -10,4 +10,21 @@ class Chapter16Spec extends FlatSpec with Matchers {
     <fred/>(0)(0)(0).toString() shouldBe "<fred/>"
     <fred/>(0)(0)(0)(0).toString() shouldBe "<fred/>"
   }
+
+  "task2" should "escape special characters" in {
+    //when & then
+    val result = <ul>
+      <li>Opening bracket: [</li>
+      <li>Closing bracket: ]</li>
+      <li>Opening brace: {{</li>
+      <li>Closing brace: }}</li>
+    </ul>
+
+    result.toString() shouldBe """<ul>
+                                 |      <li>Opening bracket: [</li>
+                                 |      <li>Closing bracket: ]</li>
+                                 |      <li>Opening brace: {</li>
+                                 |      <li>Closing brace: }</li>
+                                 |    </ul>""".stripMargin
+  }
 }

@@ -19,4 +19,27 @@ object Chapter16 {
    *   ...
    * }}}
    */
+
+  /**
+   * Task 2:
+   *
+   * What is the result of
+   * {{{
+   *  <ul>
+   *    <li>Opening bracket: [</li>
+   *    <li>Closing bracket: ]</li>
+   *    <li>Opening brace: {</li>
+   *    <li>Closing brace: }</li>
+   *  </ul>
+   * }}}
+   * How do you fix it?
+   *
+   * Solution:
+   *
+   * The given snippet produces an error in the third `li` element: "No closing Tag", because
+   * the brace `{` symbol is interpreted by Scala compiler as start of Scala expression.
+   * To fix it we can escape braces by using '{{' and '}}'.
+   *
+   * @see Chapter16Spec.scala
+   */
 }
