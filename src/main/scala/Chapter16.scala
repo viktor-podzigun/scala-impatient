@@ -42,4 +42,28 @@ object Chapter16 {
    *
    * @see Chapter16Spec.scala
    */
+
+  /**
+   * Task 3:
+   *
+   * Contrast
+   * {{{
+   *  <li>Fred</li> match { case <li>{Text(t)}</li> => t }
+   * }}}
+   * and
+   * {{{
+   *  <li>{"Fred"}</li> match { case <li>{Text(t)}</li> => t }
+   * }}}
+   * Why do they act differently?
+   *
+   * Solution:
+   *
+   * Since embedded strings, like `{"Fred"}` don't get turned into `Text` nodes we cannot
+   * properly pattern match using `Text` node. That's why our second expression failed.
+   * To fix it we should either rewrite our patten match expression or we can wrap embedded strings
+   * into `Text` node:
+   * {{{
+   *  <li>{Text("Fred")}</li> match { case <li>{Text(t)}</li> => t }
+   * }}}
+   */
 }

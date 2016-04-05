@@ -1,5 +1,6 @@
 import Chapter16._
 import org.scalatest.{FlatSpec, Matchers}
+import scala.xml.{Text, Node, Elem}
 
 class Chapter16Spec extends FlatSpec with Matchers {
 
@@ -26,5 +27,18 @@ class Chapter16Spec extends FlatSpec with Matchers {
                                  |      <li>Opening brace: {</li>
                                  |      <li>Closing brace: }</li>
                                  |    </ul>""".stripMargin
+  }
+
+  "task3" should "check expressions" in {
+    //when & then
+    val res1 = <li>Fred</li> match { case <li>{Text(t)}</li> => t }
+    res1.toString shouldBe "Fred"
+
+    a [scala.MatchError] should be thrownBy {
+      <li>{"Fred"}</li> match { case <li>{Text(t)}</li> => t }
+    }
+
+    val res2 = <li>{Text("Fred")}</li> match { case <li>{Text(t)}</li> => t }
+    res2.toString shouldBe "Fred"
   }
 }
