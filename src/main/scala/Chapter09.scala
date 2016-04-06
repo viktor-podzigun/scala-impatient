@@ -226,21 +226,12 @@ object Chapter09 {
   }
 }
 
-object PrintLongWordsApp extends FileApp(Chapter09.printLongWords)
+object Chapter09PrintLongWordsApp extends Utils.FileApp(Chapter09.printLongWords)
 
-object PrintNumbersStatApp extends FileApp(Chapter09.printNumbersStat)
+object Chapter09PrintNumbersStatApp extends Utils.FileApp(Chapter09.printNumbersStat)
 
-object PrintQuotedStringsApp extends FileApp(Chapter09.printQuotedStrings)
+object Chapter09PrintQuotedStringsApp extends Utils.FileApp(Chapter09.printQuotedStrings)
 
-object PrintNonNumberTokensApp extends FileApp(Chapter09.printNonNumberTokens)
+object Chapter09PrintNonNumberTokensApp extends Utils.FileApp(Chapter09.printNonNumberTokens)
 
-object PrintSrcOfImageTagsApp extends FileApp(Chapter09.printSrcOfImageTags)
-
-sealed class FileApp(process: String => Unit) extends App {
-  if (args.length < 1) {
-    sys.error("Expect file name as first argument")
-    System.exit(1)
-  }
-
-  process(args(0))
-}
+object Chapter09PrintSrcOfImageTagsApp extends Utils.FileApp(Chapter09.printSrcOfImageTags)

@@ -23,6 +23,8 @@ object TestUtils {
     val cmd = mutable.Buffer("java",
       "-cp", jars + "/org.scala-lang/scala-library/jars/scala-library-" + ScalaVersion + ".jar" +
         File.pathSeparator + jars +
+        "/org.scala-lang.modules/scala-xml_2.11/bundles/scala-xml_2.11-1.0.2.jar" +
+        File.pathSeparator + jars +
         "/org.scoverage/scalac-scoverage-runtime_2.11/jars/scalac-scoverage-runtime_2.11-1.1.1.jar" +
         File.pathSeparator + jars +
         "/junit/junit/jars/junit-4.11.jar" +

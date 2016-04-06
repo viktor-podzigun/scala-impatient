@@ -1,6 +1,7 @@
 import Chapter16._
+import TestUtils.runApp
 import org.scalatest.{FlatSpec, Matchers}
-import scala.xml.{Text, Node, Elem}
+import scala.xml.Text
 
 class Chapter16Spec extends FlatSpec with Matchers {
 
@@ -40,5 +41,20 @@ class Chapter16Spec extends FlatSpec with Matchers {
 
     val res2 = <li>{Text("Fred")}</li> match { case <li>{Text(t)}</li> => t }
     res2.toString shouldBe "Fred"
+  }
+
+  "printImgWithoutAlt" should "print all img elements without alt attribute" in {
+    //given
+    val file = "/Chapter16Task04.html"
+
+    //when
+    val (exit, out, err) = runApp("Chapter16PrintImgWithoutAltApp", file)
+
+    //then
+    //exit shouldBe 0
+    err shouldBe ""
+    out shouldBe """http://test.com/img1.png
+                   |http://test.com/img2.png
+                   |""".stripMargin
   }
 }

@@ -45,7 +45,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
     val file = printToTmpFile("printLongWords", "text toooooooolong text2 text3texttext2text3")
 
     //when
-    val (exit, out, err) = runApp("PrintLongWordsApp", file.getAbsolutePath)
+    val (exit, out, err) = runApp("Chapter09PrintLongWordsApp", file.getAbsolutePath)
 
     //then
     exit shouldBe 0
@@ -60,7 +60,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
     val file = printToTmpFile("printNumbersStat", "1 1.2 2.34 -5 25.5 0.0 1.234")
 
     //when
-    val (exit, out, err) = runApp("PrintNumbersStatApp", file.getAbsolutePath)
+    val (exit, out, err) = runApp("Chapter09PrintNumbersStatApp", file.getAbsolutePath)
 
     //then
     exit shouldBe 0
@@ -94,7 +94,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
     val file = "src/main/scala/Chapter09.scala"
 
     //when
-    val (exit, out, err) = runApp("PrintQuotedStringsApp", file)
+    val (exit, out, err) = runApp("Chapter09PrintQuotedStringsApp", file)
 
     //then
     exit shouldBe 0
@@ -111,7 +111,6 @@ class Chapter09Spec extends FlatSpec with Matchers {
                    |(?![\\d]+(\\.[\\d]+)?)\\w+
                    |(?i)<img\\s+(.*?\\s+)?src\\s*=\\s*\"([^\"]+)\"
                    |.class
-                   |Expect file name as first argument
                    |""".stripMargin
   }
 
@@ -120,7 +119,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
     val file = printToTmpFile("printNonNumberTokens", "1 first 2.34 second -5 0.0 1.234 third")
 
     //when
-    val (exit, out, err) = runApp("PrintNonNumberTokensApp", file.getAbsolutePath)
+    val (exit, out, err) = runApp("Chapter09PrintNonNumberTokensApp", file.getAbsolutePath)
 
     //then
     exit shouldBe 0
@@ -143,7 +142,7 @@ class Chapter09Spec extends FlatSpec with Matchers {
         |""".stripMargin)
 
     //when
-    val (exit, out, err) = runApp("PrintSrcOfImageTagsApp", file.getAbsolutePath)
+    val (exit, out, err) = runApp("Chapter09PrintSrcOfImageTagsApp", file.getAbsolutePath)
 
     //then
     exit shouldBe 0

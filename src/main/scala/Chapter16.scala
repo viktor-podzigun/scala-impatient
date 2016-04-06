@@ -1,4 +1,4 @@
-
+import scala.xml.XML
 
 object Chapter16 {
 
@@ -66,4 +66,20 @@ object Chapter16 {
    *  <li>{Text("Fred")}</li> match { case <li>{Text(t)}</li> => t }
    * }}}
    */
+
+  /**
+   * Task 4:
+   *
+   * Read an XHTML file and print all `img` elements that don't have an `alt` attribute.
+   */
+  def printImgWithoutAlt(file: String): Unit = {
+    val root = XML.load(getClass.getResourceAsStream(file))
+    for (n <- root \\ "img" if n.attribute("alt").isEmpty;
+        src <- n.attribute("src")) {
+
+      println(src.text)
+    }
+  }
 }
+
+object Chapter16PrintImgWithoutAltApp extends Utils.FileApp(Chapter16.printImgWithoutAlt)
