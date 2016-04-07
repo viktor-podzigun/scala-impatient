@@ -74,8 +74,21 @@ object Chapter16 {
    */
   def printImgWithoutAlt(file: String): Unit = {
     val root = XML.load(getClass.getResourceAsStream(file))
-    for (n <- root \\ "img" if n.attribute("alt").isEmpty;
-        src <- n.attribute("src")) {
+    for (n <- root \\ "img" if n.attribute("alt").isEmpty) {
+      println(n)
+    }
+  }
+
+  /**
+   * Task 5:
+   *
+   * Print the names of all images in an XHTML file. That is, print all `src` attribute values
+   * inside `img` elements.
+   */
+  def printAllImg(file: String): Unit = {
+    val root = XML.load(getClass.getResourceAsStream(file))
+    for (n <- root \\ "img";
+         src <- n.attribute("src")) {
 
       println(src.text)
     }
@@ -83,3 +96,5 @@ object Chapter16 {
 }
 
 object Chapter16PrintImgWithoutAltApp extends Utils.FileApp(Chapter16.printImgWithoutAlt)
+
+object Chapter16PrintAllImgApp extends Utils.FileApp(Chapter16.printAllImg)

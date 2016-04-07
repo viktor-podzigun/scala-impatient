@@ -53,8 +53,24 @@ class Chapter16Spec extends FlatSpec with Matchers {
     //then
     //exit shouldBe 0
     err shouldBe ""
+    out shouldBe """<img src="http://test.com/img1.png"/>
+                   |<img src="http://test.com/img2.png"/>
+                   |""".stripMargin
+  }
+
+  "printAllImg" should "print all img src attributes" in {
+    //given
+    val file = "/Chapter16Task04.html"
+
+    //when
+    val (exit, out, err) = runApp("Chapter16PrintAllImgApp", file)
+
+    //then
+    //exit shouldBe 0
+    err shouldBe ""
     out shouldBe """http://test.com/img1.png
                    |http://test.com/img2.png
+                   |http://test.com/img3.png
                    |""".stripMargin
   }
 }
