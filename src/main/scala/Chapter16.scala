@@ -1,4 +1,5 @@
-import scala.xml.XML
+import scala.collection.mutable
+import scala.xml.{Text, XML}
 
 object Chapter16 {
 
@@ -93,8 +94,64 @@ object Chapter16 {
       println(src.text)
     }
   }
+
+  /**
+   * Task 6:
+   *
+   * Read an XHTML file and print a table of all hyperlinks in the file, together with their URLs.
+   * That is, print the child text and the `href` attribute of each a element.
+   */
+  def printAllHyperlinks(file: String): Unit = {
+    val root = XML.load(getClass.getResourceAsStream(file))
+    var maxTextLen = 0
+    var maxHrefLen = 0
+
+    // extract hyperlinks
+    val links = mutable.Buffer[(String, String)]()
+    for (n <- root \\ "a";
+         hrefAttr <- n.attribute("href")) {
+
+      // extract text from a tag
+      val sb = new StringBuilder()
+      for (c <- n.child) sb ++= (c match {
+        case Text(item) => item.trim
+        case item => item.toString()
+      })
+
+      val text = sb.toString()
+      val href = hrefAttr.text
+      maxTextLen = if (maxTextLen < text.length) text.length else maxTextLen
+      maxHrefLen = if (maxHrefLen < href.length) href.length else maxHrefLen
+      links += Tuple2(text, href)
+    }
+
+    val headerAndFooter: String = {
+      val sb = new StringBuilder("+")
+      for (_ <- 0 until maxTextLen) sb += '-'
+      sb ++= "--+--"
+      for (_ <- 0 until maxHrefLen) sb += '-'
+      sb += '+'
+      sb.toString()
+    }
+
+    // print extracted hyperlinks as table
+    println(headerAndFooter)
+    for ((text, href) <- links) {
+      print("| ")
+      print(text)
+      for (_ <- text.length until maxTextLen) print(' ')
+      print(" | ")
+      print(href)
+      for (_ <- href.length until maxHrefLen) print(' ')
+      println(" |")
+    }
+
+    println(headerAndFooter)
+  }
 }
 
 object Chapter16PrintImgWithoutAltApp extends Utils.FileApp(Chapter16.printImgWithoutAlt)
 
 object Chapter16PrintAllImgApp extends Utils.FileApp(Chapter16.printAllImg)
+
+object Chapter16PrintAllHyperlinksApp extends Utils.FileApp(Chapter16.printAllHyperlinks)

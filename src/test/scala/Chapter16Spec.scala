@@ -51,7 +51,7 @@ class Chapter16Spec extends FlatSpec with Matchers {
     val (exit, out, err) = runApp("Chapter16PrintImgWithoutAltApp", file)
 
     //then
-    //exit shouldBe 0
+    exit shouldBe 0
     err shouldBe ""
     out shouldBe """<img src="http://test.com/img1.png"/>
                    |<img src="http://test.com/img2.png"/>
@@ -66,11 +66,29 @@ class Chapter16Spec extends FlatSpec with Matchers {
     val (exit, out, err) = runApp("Chapter16PrintAllImgApp", file)
 
     //then
-    //exit shouldBe 0
+    exit shouldBe 0
     err shouldBe ""
     out shouldBe """http://test.com/img1.png
                    |http://test.com/img2.png
                    |http://test.com/img3.png
+                   |""".stripMargin
+  }
+
+  "printAllHyperlinks" should "print a table of all hyperlinks together with their URLs" in {
+    //given
+    val file = "/Chapter16Task04.html"
+
+    //when
+    val (exit, out, err) = runApp("Chapter16PrintAllHyperlinksApp", file)
+
+    //then
+    exit shouldBe 0
+    err shouldBe ""
+    out shouldBe """+---------------------------------------+----------------------+
+                   || <img src="http://test.com/img1.png"/> | http://test.com/ref1 |
+                   || Ref 2                                 | http://test.com/ref2 |
+                   || Ref 3                                 | http://test.com/ref3 |
+                   |+---------------------------------------+----------------------+
                    |""".stripMargin
   }
 }
