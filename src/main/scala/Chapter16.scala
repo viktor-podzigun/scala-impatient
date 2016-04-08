@@ -167,6 +167,27 @@ object Chapter16 {
       }
     }</dl>
   }
+
+  /**
+   * Task 8:
+   *
+   * Write a function that takes a `dl` element and turns it into a `Map[String, String]`.
+   * This function should be the inverse of the function in the preceding exercise, provided
+   * all `dt` children are distinct.
+   */
+  def xmlToMap(elem: Elem): Map[String, String] = elem match {
+    case <dl>{children @ _*}</dl> =>
+      val map = new mutable.HashMap[String, String]
+      var currKey = ""
+      for (child <- children) child match {
+        case <dt>{key}</dt> => currKey = key.text.trim
+        case <dd>{value}</dd> => map(currKey) = value.text.trim
+      }
+
+      map.toMap
+
+    case _ => Map.empty
+  }
 }
 
 object Chapter16PrintImgWithoutAltApp extends Utils.FileApp(Chapter16.printImgWithoutAlt)

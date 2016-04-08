@@ -102,4 +102,15 @@ class Chapter16Spec extends FlatSpec with Matchers {
     //then
     result shouldBe <dl><dt>A</dt><dd>1</dd><dt>B</dt><dd>2</dd></dl>
   }
+
+  "xmlToMap" should "produce map from the given Xml" in {
+    //given
+    val xml = <dl><dt>A</dt><dd>1</dd><dt>B</dt><dd>2</dd></dl>
+
+    //when
+    val result: Map[String, String] = xmlToMap(xml)
+
+    //then
+    result shouldBe Map("A" -> "1", "B" -> "2")
+  }
 }
