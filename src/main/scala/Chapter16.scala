@@ -1,5 +1,5 @@
 import scala.collection.mutable
-import scala.xml.{Text, XML}
+import scala.xml.{Elem, Text, XML}
 
 object Chapter16 {
 
@@ -147,6 +147,25 @@ object Chapter16 {
     }
 
     println(headerAndFooter)
+  }
+
+  /**
+   * Task 7:
+   *
+   * Write a function that has a parameter of type `Map[String, String]` and returns a `dl` element
+   * with a `dt` for each key and `dd` for each value. For example,
+   * {{{
+   *  Map("A" -> "1", "B" -> "2")
+   * }}}
+   * should yield `<dl><dt>A</dt><dd>1</dd><dt>B</dt><dd>2</dd></dl>`.
+   */
+  def mapToXml(map: Map[String, String]): Elem = {
+    <dl>{
+      for ((key, value) <- map) yield {
+        <dt>{key}</dt>
+        <dd>{value}</dd>
+      }
+    }</dl>
   }
 }
 

@@ -1,7 +1,7 @@
 import Chapter16._
 import TestUtils.runApp
 import org.scalatest.{FlatSpec, Matchers}
-import scala.xml.Text
+import scala.xml.{Elem, Text}
 
 class Chapter16Spec extends FlatSpec with Matchers {
 
@@ -90,5 +90,16 @@ class Chapter16Spec extends FlatSpec with Matchers {
                    || Ref 3                                 | http://test.com/ref3 |
                    |+---------------------------------------+----------------------+
                    |""".stripMargin
+  }
+
+  "mapToXml" should "produce XML from the given map" in {
+    //given
+    val map = Map("A" -> "1", "B" -> "2")
+
+    //when
+    val result: Elem = mapToXml(map)
+
+    //then
+    result shouldBe <dl><dt>A</dt><dd>1</dd><dt>B</dt><dd>2</dd></dl>
   }
 }
