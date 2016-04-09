@@ -1,7 +1,7 @@
 import Chapter16._
 import TestUtils.runApp
 import org.scalatest.{FlatSpec, Matchers}
-import scala.xml.{Elem, Text}
+import scala.xml.{XML, Elem, Text}
 
 class Chapter16Spec extends FlatSpec with Matchers {
 
@@ -112,5 +112,31 @@ class Chapter16Spec extends FlatSpec with Matchers {
 
     //then
     result shouldBe Map("A" -> "1", "B" -> "2")
+  }
+
+  "transformXhtml" should "transform an XHTML document" in {
+    //given
+    val root = XML.load(getClass.getResourceAsStream("/Chapter16Task04.html"))
+
+    //when
+    val result: Elem = transformXhtml(root)
+
+    //then
+    result.toString() shouldBe """<html>
+                                 |    <body>
+                                 |        <p>
+                                 |            <a href="http://test.com/ref1">
+                                 |                <img alt="TODO" src="http://test.com/img1.png"/>
+                                 |            </a>
+                                 |        </p>
+                                 |        <a href="http://test.com/ref2">Ref 2</a>
+                                 |        <div>
+                                 |            <img alt="TODO" src="http://test.com/img2.png"/>
+                                 |
+                                 |            <a href="http://test.com/ref3">Ref 3</a>
+                                 |        </div>
+                                 |        <img src="http://test.com/img3.png" alt="Some text"/>
+                                 |    </body>
+                                 |</html>""".stripMargin
   }
 }

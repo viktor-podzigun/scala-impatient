@@ -1,5 +1,6 @@
 import scala.collection.mutable
-import scala.xml.{Elem, Text, XML}
+import scala.xml._
+import scala.xml.transform.{RewriteRule, RuleTransformer}
 
 object Chapter16 {
 
@@ -187,6 +188,24 @@ object Chapter16 {
       map.toMap
 
     case _ => Map.empty
+  }
+
+  /**
+   * Task 9:
+   *
+   * Transform an XHTML document by adding an `alt="TODO"` attribute to all img elements without
+   * an `alt` attribute, preserving everything else.
+   */
+  def transformXhtml(root: Elem): Elem = {
+    val rule = new RewriteRule {
+      override def transform(n: Node) = n match {
+        case e @ <img/> if e.attribute("alt").isEmpty =>
+          e.asInstanceOf[Elem] % Attribute(null, "alt", "TODO", Null)
+        case _ => n
+      }
+    }
+
+    new RuleTransformer(rule).transform(root).head.asInstanceOf[Elem]
   }
 }
 
