@@ -1,7 +1,9 @@
 import Chapter16._
 import TestUtils.runApp
+import java.io.File
 import org.scalatest.{FlatSpec, Matchers}
-import scala.xml.{XML, Elem, Text}
+import scala.io.Source
+import scala.xml.{Elem, Node, Text, XML}
 
 class Chapter16Spec extends FlatSpec with Matchers {
 
@@ -119,7 +121,7 @@ class Chapter16Spec extends FlatSpec with Matchers {
     val root = XML.load(getClass.getResourceAsStream("/Chapter16Task04.html"))
 
     //when
-    val result: Elem = transformXhtml(root)
+    val result: Node = transformXhtml(root)
 
     //then
     result.toString() shouldBe """<html>
@@ -138,5 +140,47 @@ class Chapter16Spec extends FlatSpec with Matchers {
                                  |        <img src="http://test.com/img3.png" alt="Some text"/>
                                  |    </body>
                                  |</html>""".stripMargin
+  }
+
+  "transformXhtmlFile" should "transform XHTML file and saves the result to another file" in {
+    //given
+    val inFile = "/Chapter16Task10.xhtml"
+    val tmpFile = File.createTempFile("Chapter16Task10Out", "xhtml")
+    tmpFile.deleteOnExit()
+
+    //when
+    transformXhtmlFile(inFile, tmpFile.getAbsolutePath)
+
+    //then
+    Source.fromFile(tmpFile).mkString shouldBe
+      """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+        |<html>
+        |<head>
+        |    <title>
+        |        Sample XHTML document
+        |    </title>
+        |</head>
+        |<body>
+        |    <div>
+        |        [CDATA[should be preserved]]
+        |    </div>
+        |    <p>
+        |        <a href="http://test.com/ref1">
+        |            <img alt="TODO" src="http://test.com/img1.png"/>
+        |        </a>
+        |    </p>
+        |    <p>
+        |        <a href="http://test.com/ref2">Ref 2</a>
+        |    </p>
+        |    <div>
+        |        <img alt="TODO" src="http://test.com/img2.png"/>
+        |
+        |        <a href="http://test.com/ref3">Ref 3</a>
+        |    </div>
+        |    <p>
+        |        <img src="http://test.com/img3.png" alt="Some text"/>
+        |    </p>
+        |</body>
+        |</html>""".stripMargin
   }
 }

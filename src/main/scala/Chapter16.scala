@@ -1,5 +1,7 @@
 import scala.collection.mutable
 import scala.xml._
+import scala.xml.dtd.DocType
+import scala.xml.parsing.XhtmlParser
 import scala.xml.transform.{RewriteRule, RuleTransformer}
 
 object Chapter16 {
@@ -196,16 +198,33 @@ object Chapter16 {
    * Transform an XHTML document by adding an `alt="TODO"` attribute to all img elements without
    * an `alt` attribute, preserving everything else.
    */
-  def transformXhtml(root: Elem): Elem = {
+  def transformXhtml(root: Node): Node = {
     val rule = new RewriteRule {
       override def transform(n: Node) = n match {
-        case e @ <img/> if e.attribute("alt").isEmpty =>
+        case e @ <img/> if e.attribute("alt").isEmpty || e.attributes("alt").text.isEmpty =>
           e.asInstanceOf[Elem] % Attribute(null, "alt", "TODO", Null)
         case _ => n
       }
     }
 
-    new RuleTransformer(rule).transform(root).head.asInstanceOf[Elem]
+    new RuleTransformer(rule).transform(root).head
+  }
+
+  /**
+   * Task 10:
+   *
+   * Write a function that reads an XHTML document, carries out the transformation of
+   * the preceding exercise, and saves the result.
+   * Be sure to preserve the DTD and any CDATA sections.
+   */
+  def transformXhtmlFile(inFile: String, outFile: String): Unit = {
+    val doc = new XhtmlParser(scala.io.Source.fromInputStream(
+      getClass.getResourceAsStream(inFile))).initialize.document()
+
+    val xhtml = transformXhtml(doc.docElem)
+    val dtd = doc.dtd
+    XML.save(outFile, xhtml, enc = "UTF-8",
+      doctype = DocType(xhtml.label, dtd.externalID, dtd.decls))
   }
 }
 
