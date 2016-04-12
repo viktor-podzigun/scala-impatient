@@ -5,7 +5,7 @@ class Chapter17Spec extends FlatSpec with Matchers {
 
   "Pair.swap" should "return a new pair with the components swapped" in {
     //given
-    val pair = Pair(1, "2")
+    val pair: Pair[Int, String] = Pair(1, "2")
 
     //when
     val result: Pair[String, Int] = pair.swap()
@@ -25,5 +25,17 @@ class Chapter17Spec extends FlatSpec with Matchers {
     //then
     pair.first shouldBe 2
     pair.second shouldBe 1
+  }
+
+  "swap" should "take a pair and return a new pair with the components swapped" in {
+    //given
+    val pair: Pair[Int, String] = Pair(1, "2")
+
+    //when
+    val result: Pair[String, Int] = swap(pair)
+
+    //then
+    result.first shouldBe "2"
+    result.second shouldBe 1
   }
 }

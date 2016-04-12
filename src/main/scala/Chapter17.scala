@@ -26,4 +26,12 @@ object Chapter17 {
       second = tmp
     }
   }
+
+  /**
+   * Task 3:
+   *
+   * Given a `class Pair[T, S]`, write a generic method `swap` that takes a pair as its argument
+   * and returns a new pair with the components swapped.
+   */
+  def swap[T, S](pair: Pair[T, S]): Pair[S, T] = Pair(pair.second, pair.first)
 }
