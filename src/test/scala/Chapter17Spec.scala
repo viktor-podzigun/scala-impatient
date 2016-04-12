@@ -14,4 +14,16 @@ class Chapter17Spec extends FlatSpec with Matchers {
     result.first shouldBe "2"
     result.second shouldBe 1
   }
+
+  "MutablePair.swap" should "swap the components of the mutable pair" in {
+    //given
+    val pair: MutablePair[Int] = new MutablePair(1, 2)
+
+    //when
+    pair.swap()
+
+    //then
+    pair.first shouldBe 2
+    pair.second shouldBe 1
+  }
 }
