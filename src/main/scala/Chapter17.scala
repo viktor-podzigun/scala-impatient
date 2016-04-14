@@ -69,4 +69,24 @@ class Pair[T](val first: T, val second: T) {
   def replaceFirst(newFirst: T): Pair[T] = new Pair(newFirst, second)
 }
 
+/**
+ * Task 5:
+ *
+ * Why does `RichInt` implement `Comparable[Int]` and not `Comparable[RichInt]`?
+ *
+ * Solution:
+ *
+ * To be able to use view bounds, like
+ * {{{
+ *   class Pair[T <% Comparable[T]](val first: T, val second: T)
+ * }}}
+ * which than can be used with `Int` types, like
+ * {{{
+ *   new Pair(1, 2)
+ * }}}
+ * we need to have implicit conversion from `T` to `Comparable[T]`. `RichInt` class
+ * implements `Comparable[Int]` and there is implicit conversion from `Int` to `RichInt`.
+ * So, we don't use `RichInt` class directly.
+ */
+
 }
