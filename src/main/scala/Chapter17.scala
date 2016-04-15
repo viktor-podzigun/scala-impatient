@@ -69,6 +69,8 @@ class Pair[T](val first: T, val second: T) {
   def replaceFirst(newFirst: T): Pair[T] = new Pair(newFirst, second)
 }
 
+}
+
 /**
  * Task 5:
  *
@@ -89,4 +91,28 @@ class Pair[T](val first: T, val second: T) {
  * So, we don't use `RichInt` class directly.
  */
 
+/**
+ * Task 6:
+ *
+ * Write a generic method `middle` that returns the middle element from any `Iterable[T]`.
+ * For example, `middle("World")` is 'r'.
+ */
+object Chapter17Task06 {
+
+  //def middle[T](xs: Iterable[T]): Option[T] = {
+  //def middle[A, C](xs: C)(implicit ev: C <:< Iterable[A]): Option[A] = {
+  //def middle[A, C <% Iterable[A]](xs: C): Option[A] = {
+  def middle[A, C](xs: C)(implicit ev: C => Iterable[A]): Option[A] = {
+    val size = xs.size
+    if (size % 2 == 0) {
+      return None
+    }
+
+    var distance = size / 2
+    xs.find { _ =>
+      val found = if (distance == 0) true else false
+      distance -= 1
+      found
+    }
+  }
 }

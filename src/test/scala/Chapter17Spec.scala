@@ -57,4 +57,17 @@ class Chapter17Spec extends FlatSpec with Matchers {
     result.first.name shouldBe "newFirst"
     result.second.name shouldBe "Second"
   }
+
+  "Task06.middle" should "return the middle element from any Iterable[T]" in {
+    //when & then
+    Chapter17Task06.middle("World") shouldBe Some('r')
+    Chapter17Task06.middle("Worl") shouldBe None
+    Chapter17Task06.middle("Wor") shouldBe Some('o')
+    Chapter17Task06.middle("Wo") shouldBe None
+    Chapter17Task06.middle("W") shouldBe Some('W')
+    Chapter17Task06.middle("") shouldBe None
+    Chapter17Task06.middle(List(1, 2, 3)) shouldBe Some(2)
+    Chapter17Task06.middle(Some(1)) shouldBe Some(1)
+    Chapter17Task06.middle(None) shouldBe None
+  }
 }
