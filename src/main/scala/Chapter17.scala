@@ -116,3 +116,15 @@ object Chapter17Task06 {
     }
   }
 }
+
+/**
+ * Task 7:
+ *
+ * Look through the methods of the `Iterable[+A]` trait. Which methods use the type parameter `A`?
+ * Why is it in a covariant position in these methods?
+ *
+ * Solution:
+ *
+ * Parameter `A` used in the following methods, for example: `head`, `last`, `min`, `max`.
+ * Its used in a covariant position since its defined with the covariant variance annotation (+A).
+ */
