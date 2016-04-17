@@ -128,3 +128,21 @@ object Chapter17Task06 {
  * Parameter `A` used in the following methods, for example: `head`, `last`, `min`, `max`.
  * Its used in a covariant position since its defined with the covariant variance annotation (+A).
  */
+
+/**
+ * Task 8:
+ *
+ * In Section 17.10, "Co- and Contravariant Positions", on page 238, the `replaceFirst` method
+ * has a type bound. Why can't you define an equivalent method on a mutable `Pair[T]`?
+ * {{{
+ *   def replaceFirst[R >: T](newFirst: R) { first = newFirst } // Error
+ * }}}
+ *
+ * Solution:
+ *
+ * It is an error because the used type bound (`R >: T`) allows passing supper type instances.
+ * But we can change the type bound definition to allow passing sub type instances:
+ * {{{
+ *   def replaceFirst[R <: T](newFirst: R) { first = newFirst }
+ * }}}
+ */
