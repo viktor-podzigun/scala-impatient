@@ -70,4 +70,18 @@ class Chapter17Spec extends FlatSpec with Matchers {
     Chapter17Task06.middle(Some(1)) shouldBe Some(1)
     Chapter17Task06.middle(None) shouldBe None
   }
+
+  "Task09.check" should "call replaceFirst on Pair[Any] that is actually NastyDoublePair" in {
+    import Chapter17Task09._
+
+    //given
+    val pair: Pair[Any] = new NastyDoublePair(1.0, 2.0)
+
+    //when
+    val result: Pair[Any] = check(pair)
+
+    //then
+    result.first shouldBe 1.0
+    result.second shouldBe 2.0
+  }
 }

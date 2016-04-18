@@ -146,3 +146,36 @@ object Chapter17Task06 {
  *   def replaceFirst[R <: T](newFirst: R) { first = newFirst }
  * }}}
  */
+
+/**
+ * Task 9:
+ *
+ * It may seem strange to restrict method parameters in an immutable `class Pair[+T]`. However,
+ * suppose you could define
+ * {{{
+ *   def replaceFirst(newFirst: T)
+ * }}}
+ * in a `Pair[+T]`. The problem is that this method can be overridden in an unsound way.
+ * Construct an example of the problem. Define a subclass `NastyDoublePair` of `Pair[Double]`
+ * that overrides `replaceFirst` so that it makes a pair with the square root of `newFirst`.
+ * Then construct the call `replaceFirst("Hello")` on a `Pair[Any]` that is actually
+ * a `NastyDoublePair`.
+ */
+object Chapter17Task09 {
+
+  class Pair[+T](val first: T, val second: T) {
+
+    //def replaceFirst(newFirst: T): Pair[T] = new Pair(newFirst, second)
+
+    def replaceFirst[R >: T](newFirst: R): Pair[R] = new Pair(newFirst, second)
+  }
+
+  class NastyDoublePair(first: Double, second: Double) extends Pair[Double](first, second) {
+
+    //override def replaceFirst[R >: Double](newFirst: R) = new Pair(math.sqrt(newFirst), second)
+
+    override def replaceFirst[R >: Double](newFirst: R) = new Pair(math.sqrt(first), second)
+  }
+
+  def check(pair: Pair[Any]): Pair[Any] = pair.replaceFirst("Hello")
+}
