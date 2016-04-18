@@ -179,3 +179,22 @@ object Chapter17Task09 {
 
   def check(pair: Pair[Any]): Pair[Any] = pair.replaceFirst("Hello")
 }
+
+/**
+ * Task 10:
+ *
+ * Given a mutable `Pair[S, T]` class, use a type constraint to define a `swap` method that can
+ * be called if the type parameters are the same.
+ */
+package task1710 {
+
+class Pair[S, T](var first: S, var second: T) {
+
+  def swap(implicit ev: T =:= S): Unit = {
+    val tmp = first.asInstanceOf[T]
+    first = second
+    second = tmp
+  }
+}
+
+}

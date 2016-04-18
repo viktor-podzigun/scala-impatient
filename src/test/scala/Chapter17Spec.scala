@@ -84,4 +84,19 @@ class Chapter17Spec extends FlatSpec with Matchers {
     result.first shouldBe 1.0
     result.second shouldBe 2.0
   }
+
+  "Task10.swap" should "be called if the type parameters are the same" in {
+    import task1710._
+
+    //given
+    val pair = new Pair(1.0, 2.0)
+
+    //when
+    pair.swap
+    //new Pair("1.0", 2.0).swap // Error
+
+    //then
+    pair.first shouldBe 2.0
+    pair.second shouldBe 1.0
+  }
 }
