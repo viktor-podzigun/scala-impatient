@@ -20,21 +20,47 @@ object Chapter18 {
     private var position: Int = 0
     private var turnedAround: Boolean = false
 
-    def move(steps: Int): Bug = {
+    def move(steps: Int): this.type = {
       if (turnedAround) position -= steps
       else position += steps
       this
     }
 
-    def turn(): Bug = {
+    def turn(): this.type = {
       turnedAround = !turnedAround
       this
     }
 
-    def show(): Bug = {
+    def show(): this.type = {
       print(" ")
       print(position)
       this
     }
   }
+
+  /**
+   * Task 2:
+   *
+   * Provide a fluent interface for the `Bug` class of the preceding exercise, so that one can
+   * write
+   * {{{
+   *   bugsy move 4 and show and then move 6 and show turn around move 5 and show
+   * }}}
+   */
+  trait FluentBug { this: Bug =>
+
+    def and(obj: Show.type): this.type = this.show()
+
+    def and(obj: Then.type): this.type = this
+
+    def turn(obj: Around.type): this.type = this.turn()
+  }
+
+  object Show
+  object Then
+  object Around
+
+  val show = Show
+  val then = Then
+  val around = Around
 }
