@@ -1,5 +1,4 @@
-import java.io.{File, PrintWriter}
-
+import java.io.{ByteArrayOutputStream, File, PrintWriter}
 import scala.collection.JavaConversions.seqAsJavaList
 import scala.collection.mutable
 import scala.io.Source
@@ -68,5 +67,11 @@ object TestUtils {
     finally {
       writer.close()
     }
+  }
+  
+  def withOutput(block: => Unit): String = {
+    val out = new ByteArrayOutputStream()
+    Console.withOut(out)(block)
+    out.toString
   }
 }

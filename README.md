@@ -18,7 +18,7 @@ My solutions to the exercises from the excellent [Scala for the Impatient](https
 15. [Annotations](src/main/scala/Chapter15.scala) ([task 4 java](src/main/java/Chapter15Task4.java), [5 java](src/main/java/Chapter15Task5.java)) => [tests](src/test/scala/Chapter15Spec.scala)
 16. [XML Processing](src/main/scala/Chapter16.scala) => [tests](src/test/scala/Chapter16Spec.scala)
 17. [Type parameters](src/main/scala/Chapter17.scala) => [tests](src/test/scala/Chapter17Spec.scala)
-18. Advanced types
+18. [Advanced types](src/main/scala/Chapter18.scala) => [tests](src/test/scala/Chapter18Spec.scala)
 19. Parsing
 20. Actors
 21. Implicits
