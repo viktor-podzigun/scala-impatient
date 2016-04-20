@@ -29,4 +29,16 @@ class Chapter18Spec extends FlatSpec with Matchers {
     //then
     out shouldBe " 4 10 5"
   }
+
+  "Book" should "provide a fluent interface" in {
+    //given
+    val book = new Book()
+
+    //when
+    book set Title to "Scala for the Impatient" set Author to "Cay Horstmann"
+
+    //then
+    book.getTitle shouldBe "Scala for the Impatient"
+    book.getAuthor shouldBe "Cay Horstmann"
+  }
 }

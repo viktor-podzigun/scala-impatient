@@ -1,4 +1,4 @@
-
+import scala.beans.BeanProperty
 
 object Chapter18 {
 
@@ -63,4 +63,49 @@ object Chapter18 {
   val show = Show
   val then = Then
   val around = Around
+
+  /**
+   * Task 3:
+   *
+   * Complete the fluent interface in Section 18.1, "Singleton Types", on page 246
+   * so that one can call
+   * {{{
+   *   book set Title to "Scala for the Impatient" set Author to "Cay Horstmann"
+   * }}}
+   */
+  trait FluentDocument { this: Document =>
+
+    private var useNextArgsAs: Option[Any] = None
+
+    def set(obj: Title.type): this.type = setNextArgsAs(obj)
+    def set(obj: Author.type): this.type = setNextArgsAs(obj)
+
+    def to(arg: String): this.type = {
+      for (obj <- useNextArgsAs) obj match {
+        case Title => setTitle(arg)
+        case Author => setAuthor(arg)
+      }
+
+      this
+    }
+
+    private def setNextArgsAs(obj: Any): this.type = {
+      useNextArgsAs = Some(obj)
+      this
+    }
+  }
+
+  object Title
+  object Author
+
+  class Document {
+
+    @BeanProperty var title: String = null
+    @BeanProperty var author: String = null
+  }
+
+  class Book extends Document with FluentDocument {
+
+    def addChapter(chapter: String): this.type = this
+  }
 }
