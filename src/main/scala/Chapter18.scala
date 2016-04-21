@@ -108,4 +108,22 @@ object Chapter18 {
 
     def addChapter(chapter: String): this.type = this
   }
+
+  /**
+   * Task 4:
+   *
+   * Implement the `equals` method for the `Member` class that is nested inside the `Network`
+   * class in Section 18.2, "Type Projections", on page 247. For two members to be equal,
+   * they need to be in the same network.
+   */
+  class Network { outer =>
+
+    class Member {
+
+      override def equals(that: Any): Boolean = that match {
+        case _: Member => true
+        case _ => false
+      }
+    }
+  }
 }

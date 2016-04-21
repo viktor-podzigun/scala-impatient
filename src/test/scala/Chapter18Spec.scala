@@ -41,4 +41,18 @@ class Chapter18Spec extends FlatSpec with Matchers {
     book.getTitle shouldBe "Scala for the Impatient"
     book.getAuthor shouldBe "Cay Horstmann"
   }
+
+  "Member.equals" should "return true if two members are in the same network" in {
+    //given
+    val network1 = new Network
+    val member11 = new network1.Member
+    val member12 = new network1.Member
+    val network2 = new Network
+    val member21 = new network2.Member
+
+    //when & then
+    member11.equals(member12) shouldBe true
+    member11.equals(member21) shouldBe false
+    member12.equals(member21) shouldBe false
+  }
 }
