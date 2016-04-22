@@ -116,7 +116,7 @@ object Chapter18 {
    * class in Section 18.2, "Type Projections", on page 247. For two members to be equal,
    * they need to be in the same network.
    */
-  class Network { outer =>
+  class Network {
 
     class Member {
 
@@ -126,4 +126,41 @@ object Chapter18 {
       }
     }
   }
+
+  /**
+   * Task 5:
+   *
+   * Consider the type alias
+   * {{{
+   *   type NetworkMember = n.Member forSome { val n: Network }
+   * }}}
+   * and the function
+   * {{{
+   *   def process(m1: NetworkMember, m2: NetworkMember) = (m1, m2)
+   * }}}
+   * How does this differ from the `process` function in Section 18.8, "Existential Types",
+   * on page 252?
+   *
+   * Solution:
+   *
+   * The difference is that `NetworkMember` defines type alias for `Member` from any `Network`,
+   * which is the same as defining `process` function like this:
+   * {{{
+   *   def process[M >: n.Member forSome { val n: Network }](m1: M, m2: M) = (m1, m2)
+   * }}}
+   * While the `process` function, from Section 18.8, accepts only members from the same network,
+   * and it is defined like this:
+   * {{{
+   *   def process[M <: n.Member forSome { val n: Network }](m1: M, m2: M) = (m1, m2)
+   * }}}
+   */
+  import scala.language.existentials
+
+  type NetworkMember = n.Member forSome { val n: Network }
+
+  def process(m1: NetworkMember, m2: NetworkMember) = (m1, m2)
+
+  def processAny[M >: n.Member forSome { val n: Network }](m1: M, m2: M) = (m1, m2)
+
+  def processSame[M <: n.Member forSome { val n: Network }](m1: M, m2: M) = (m1, m2)
 }
