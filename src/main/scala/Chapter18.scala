@@ -163,4 +163,26 @@ object Chapter18 {
   def processAny[M >: n.Member forSome { val n: Network }](m1: M, m2: M) = (m1, m2)
 
   def processSame[M <: n.Member forSome { val n: Network }](m1: M, m2: M) = (m1, m2)
+
+  /**
+   * Task 6:
+   *
+   * The `Either` type in the Scala library can be used for algorithms that return either a result
+   * or some failure information. Write a function that takes two parameters:
+   * a sorted array of integers and an integer value.
+   * Return either the index of the value in the array or the index of the element that is closest
+   * to the value. Use an infix type as the return type.
+   */
+  def findClosestValueIndex(sortedArr: Array[Int], value: Int): Int Either Int = {
+    var i = 0
+    while (i < sortedArr.length) {
+      val elem = sortedArr(i)
+      if (elem == value) return Left(i)
+      else if (elem > value) return Right(i)
+      i += 1
+    }
+
+    // return index if the last element
+    Right(i - 1)
+  }
 }

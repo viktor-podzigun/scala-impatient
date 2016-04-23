@@ -97,4 +97,16 @@ class Chapter18Spec extends FlatSpec with Matchers {
     //processSame(member11, member21) shouldBe (member11, member21) // Error
     //processSame(member12, member21) shouldBe (member12, member21) // Error
   }
+
+  "findClosestValueIndex" should "return either index of exact value or closest value" in {
+    //when & then
+    findClosestValueIndex(Array(), 0) shouldBe Right(-1)
+    findClosestValueIndex(Array(1, 2, 4), 0) shouldBe Right(0)
+    findClosestValueIndex(Array(1, 2, 4), 1) shouldBe Left(0)
+    findClosestValueIndex(Array(1, 2, 4), 2) shouldBe Left(1)
+    findClosestValueIndex(Array(1, 2, 4), 3) shouldBe Right(2)
+    findClosestValueIndex(Array(1, 2, 4), 4) shouldBe Left(2)
+    findClosestValueIndex(Array(1, 2, 4), 5) shouldBe Right(2)
+    findClosestValueIndex(Array(1, 2, 4), 6) shouldBe Right(2)
+  }
 }
