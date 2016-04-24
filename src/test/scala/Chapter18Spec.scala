@@ -151,4 +151,10 @@ class Chapter18Spec extends FlatSpec with Matchers {
     //then
     obj.closed shouldBe true
   }
+
+  "printValues" should "print all values of apply function with inputs from the given range" in {
+    //when & then
+    withOutput(printValues((x: Int) => x * x, 3, 6)) shouldBe " 9 16 25 36"
+    withOutput(printValues(Array(1, 1, 2, 3, 5, 8, 13, 21, 34, 55), 3, 6)) shouldBe " 3 5 8 13"
+  }
 }
