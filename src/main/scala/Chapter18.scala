@@ -269,3 +269,32 @@ object Chapter18 {
     override def create(v: Double) = new Meters(v)
   }
 }
+
+/**
+ * Task 10:
+ *
+ * Self types can usually be replaced with traits that extend classes, but there can be
+ * situations where using self types changes the initialization and override orders.
+ * Construct such an example.
+ */
+package task1810 {
+
+  class A(val name: String) {
+
+    override def toString: String = name
+  }
+
+  trait Named { self: A =>
+
+    override val name: String = "Named: " + self.name
+
+    override def toString: String = "from Named: " + super.toString
+  }
+
+  object Task1810App extends App {
+
+    val obj = new A("obj") with Named
+
+    println(obj) // Prints from Named: Named: null
+  }
+}
