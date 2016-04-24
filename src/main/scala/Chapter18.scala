@@ -185,4 +185,25 @@ object Chapter18 {
     // return index if the last element
     Right(i - 1)
   }
+
+  /**
+   * Task 7:
+   *
+   * Implement a method that receives an object of any class that has a method
+   * {{{
+   *   def close(): Unit
+   * }}}
+   * together with a function that processes that object. Call the function and invoke the
+   * `close` method upon completion, or when any exception occurs.
+   */
+  def processAndClose[T <: { def close(): Unit }, R](obj: T)(f: T => R): R = {
+    import scala.language.reflectiveCalls
+
+    try {
+      f(obj)
+    }
+    finally {
+      obj.close()
+    }
+  }
 }

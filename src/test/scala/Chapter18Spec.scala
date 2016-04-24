@@ -109,4 +109,46 @@ class Chapter18Spec extends FlatSpec with Matchers {
     findClosestValueIndex(Array(1, 2, 4), 5) shouldBe Right(2)
     findClosestValueIndex(Array(1, 2, 4), 6) shouldBe Right(2)
   }
+
+  "processAndClose" should "call the function and invoke the close method upon completion" in {
+    //given
+    val obj = new Object {
+      var processed = false
+      var closed = false
+
+      def process(): Unit = {
+        processed = true
+      }
+
+      def close(): Unit = {
+        closed = true
+      }
+    }
+
+    //when
+    processAndClose(obj)(_.process())
+
+    //then
+    obj.processed shouldBe true
+    obj.closed shouldBe true
+  }
+
+  it should "call the function and invoke the close method when exception" in {
+    //given
+    val obj = new Object {
+      var closed = false
+
+      def close(): Unit = {
+        closed = true
+      }
+    }
+
+    //when
+    a [Exception] should be thrownBy {
+      processAndClose(obj)(_ => throw new Exception())
+    }
+
+    //then
+    obj.closed shouldBe true
+  }
 }
