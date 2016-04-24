@@ -157,4 +157,17 @@ class Chapter18Spec extends FlatSpec with Matchers {
     withOutput(printValues((x: Int) => x * x, 3, 6)) shouldBe " 9 16 25 36"
     withOutput(printValues(Array(1, 1, 2, 3, 5, 8, 13, 21, 34, 55), 3, 6)) shouldBe " 3 5 8 13"
   }
+
+  "Task09" should "not allowing meters and seconds to be added" in {
+    //given
+    val seconds1 = new Seconds(1.0)
+    val seconds2 = new Seconds(2.0)
+    val meters1 = new Meters(3.0)
+    val meters2 = new Meters(4.0)
+
+    //when & then
+    (seconds1 + seconds2).toString shouldBe "3.0 s"
+    (meters1 + meters2).toString shouldBe "7.0 m"
+    //(seconds1 + meters2).toString shouldBe "" // Error
+  }
 }
