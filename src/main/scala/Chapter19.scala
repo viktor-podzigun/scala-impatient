@@ -32,4 +32,43 @@ object Chapter19 {
       case _ ~ e ~ _ => e
     }
   }
+
+  /**
+   * Task 2:
+   *
+   * Add a `^` operator to the arithmetic expression evaluator. As in mathematics, `^` should have
+   * a higher precedence than multiplication, and it should be right associative.
+   * That is, `4^2^3` should be `4^(2^3)`, or `65536`.
+   */
+  class ExprEvaluator2 extends RegexParsers {
+
+    val number = "[0-9]+".r
+
+    def eval(e: String): Int = parseAll(expr, e).get
+
+    def expr: Parser[Int] = term ~ rep(("+" | "-") ~ term ^^ {
+      case "+" ~ t => t
+      case "-" ~ t => -t
+    }) ^^ {
+      case t ~ r => t + r.sum
+    }
+
+    def term: Parser[Int] = power ~ rep(("*" | "/" | "%") ~ power) ^^ {
+      case p ~ r => r.foldLeft(p)((b, a) => a._1 match {
+        case "*" => b * a._2
+        case "/" => b / a._2
+        case "%" => b % a._2
+      })
+    }
+
+    def power: Parser[Int] = rep(factor ~ "^") ~ factor ^^ {
+      case r ~ f => r.foldRight(f)((a, b) => a._2 match {
+        case "^" => math.pow(a._1, b).toInt
+      })
+    }
+
+    def factor: Parser[Int] = number ^^ { _.toInt } | "(" ~ expr ~ ")" ^^ {
+      case _ ~ e ~ _ => e
+    }
+  }
 }
