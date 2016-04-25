@@ -290,11 +290,4 @@ package task1810 {
 
     override def toString: String = "from Named: " + super.toString
   }
-
-  object Task1810App extends App {
-
-    val obj = new A("obj") with Named
-
-    println(obj) // Prints from Named: Named: null
-  }
 }

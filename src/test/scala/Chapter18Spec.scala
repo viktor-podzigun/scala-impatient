@@ -158,7 +158,7 @@ class Chapter18Spec extends FlatSpec with Matchers {
     withOutput(printValues(Array(1, 1, 2, 3, 5, 8, 13, 21, 34, 55), 3, 6)) shouldBe " 3 5 8 13"
   }
 
-  "Task09" should "not allowing meters and seconds to be added" in {
+  "Dim" should "not allow meters and seconds to be added" in {
     //given
     val seconds1 = new Seconds(1.0)
     val seconds2 = new Seconds(2.0)
@@ -169,5 +169,15 @@ class Chapter18Spec extends FlatSpec with Matchers {
     (seconds1 + seconds2).toString shouldBe "3.0 s"
     (meters1 + meters2).toString shouldBe "7.0 m"
     //(seconds1 + meters2).toString shouldBe "" // Error
+  }
+
+  "selfType" should "demonstrate changes in the initialization and override orders" in {
+    import task1810._
+
+    //given
+    val obj = new A("obj") with Named
+
+    //when & then
+    obj.toString shouldBe "from Named: Named: null"
   }
 }
