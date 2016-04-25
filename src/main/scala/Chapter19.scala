@@ -13,10 +13,11 @@ object Chapter19 {
 
     def eval(e: String): Int = parseAll(expr, e).get
 
-    def expr: Parser[Int] = term ~ opt(("+" | "-") ~ expr) ^^ {
-      case t ~ None => t
-      case t ~ Some("+" ~ e) => t + e
-      case t ~ Some("-" ~ e) => t - e
+    def expr: Parser[Int] = term ~ rep(("+" | "-") ~ term ^^ {
+      case "+" ~ t => t
+      case "-" ~ t => -t
+    }) ^^ {
+      case t ~ r => t + r.sum
     }
 
     def term: Parser[Int] = factor ~ rep(("*" | "/" | "%") ~ factor) ^^ {

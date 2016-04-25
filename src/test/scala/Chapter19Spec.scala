@@ -9,6 +9,6 @@ class Chapter19Spec extends FlatSpec with Matchers {
 
     //when & then
     e.eval("3 - 4 * 5") shouldBe -17
-    e.eval("(3 - 8 / 4 * 5) + 3 % 4") shouldBe -4
+    e.eval("3 - 8 / 4 * 5 + 3 % 4") shouldBe -4
   }
 }
