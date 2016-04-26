@@ -1,3 +1,4 @@
+import java.util.{Calendar, Date}
 import scala.util.parsing.combinator.RegexParsers
 
 object Chapter19 {
@@ -91,5 +92,56 @@ object Chapter19 {
     }
 
     def list: Parser[List[Int]] = "(" ~> repsep(number ^^ { _.toInt }, ",") <~ ")"
+  }
+
+  /**
+   * Task 4:
+   *
+   * Write a parser that can parse date and time expressions in ISO 8601.
+   * Your parser should return a `java.util.Date` object.
+   */
+  class DateTimeParser extends RegexParsers {
+
+    val numRegex = """\d{2}""".r
+    val millisRegex = """\d{3}""".r
+    val yearRegex = """\d{4}""".r
+
+    def parse(e: String): Date = {
+      val result = parseAll(dateTime, e)
+      if (!result.successful) {
+        throw new RuntimeException("Parsing failed: " + result)
+      }
+
+      result.get
+    }
+
+    def dateTime: Parser[Date] = date ~ opt(time) ^^ {
+      case (y, m, d) ~ None => makeDate(y, m, d, 0, 0, 0, 0)
+      case (y, m, d) ~ Some((h, mm, s, ss)) => makeDate(y, m, d, h, mm, s, ss)
+    }
+
+    def date: Parser[(Int, Int, Int)] = year ~ month ~ day ^^ {
+      case y ~ m ~ d => (y, m, d)
+    }
+
+    def time: Parser[(Int, Int, Int, Int)] = "T" ~> hour ~ minute ~ second ~ opt(millis) ^^ {
+      case h ~ m ~ s ~ None => (h, m, s, 0)
+      case h ~ m ~ s ~ Some(ss) => (h, m, s, ss)
+    }
+
+    def year: Parser[Int] = yearRegex ^^ { _.toInt }
+    def month: Parser[Int] = opt("-") ~> numRegex ^^ { _.toInt }
+    def day: Parser[Int] = opt("-") ~> numRegex ^^ { _.toInt }
+    def hour: Parser[Int] = numRegex ^^ { _.toInt }
+    def minute: Parser[Int] = opt(":") ~> numRegex ^^ { _.toInt }
+    def second: Parser[Int] = opt(":") ~> numRegex ^^ { _.toInt }
+    def millis: Parser[Int] = opt(".") ~> millisRegex ^^ { _.toInt }
+
+    private def makeDate(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
+      val cal = Calendar.getInstance()
+      cal.set(y, m - 1, d, h, mm, s)
+      cal.set(Calendar.MILLISECOND, ss)
+      cal.getTime
+    }
   }
 }

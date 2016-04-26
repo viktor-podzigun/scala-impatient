@@ -1,4 +1,5 @@
 import Chapter19._
+import java.util.{Calendar, Date}
 import org.scalatest.{FlatSpec, Matchers}
 
 class Chapter19Spec extends FlatSpec with Matchers {
@@ -31,5 +32,25 @@ class Chapter19Spec extends FlatSpec with Matchers {
     p.parse("()") shouldBe List()
     p.parse("(1)") shouldBe List(1)
     p.parse("(1, 23, -79)") shouldBe List(1, 23, -79)
+  }
+
+  "DateTimeParser" should "date and time expressions in ISO 8601" in {
+    //given
+    val p = new DateTimeParser
+
+    //when & then
+    p.parse("2005-08-09T18:31:42.123") shouldBe date(2005, 8, 9, 18, 31, 42, 123)
+    p.parse("20050809T183142123") shouldBe date(2005, 8, 9, 18, 31, 42, 123)
+    p.parse("2005-08-09T18:31:42") shouldBe date(2005, 8, 9, 18, 31, 42, 0)
+    p.parse("20050809T183142") shouldBe date(2005, 8, 9, 18, 31, 42, 0)
+    p.parse("2005-08-09") shouldBe date(2005, 8, 9, 0, 0, 0, 0)
+    p.parse("20050809") shouldBe date(2005, 8, 9, 0, 0, 0, 0)
+  }
+
+  private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
+    val cal = Calendar.getInstance()
+    cal.set(y, m - 1, d, h, mm, s)
+    cal.set(Calendar.MILLISECOND, ss)
+    cal.getTime
   }
 }
