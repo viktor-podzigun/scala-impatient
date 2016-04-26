@@ -1,4 +1,5 @@
 import scala.beans.BeanProperty
+import scala.language.reflectiveCalls
 
 object Chapter18 {
 
@@ -197,8 +198,6 @@ object Chapter18 {
    * `close` method upon completion, or when any exception occurs.
    */
   def processAndClose[T <: { def close(): Unit }, R](obj: T)(f: T => R): R = {
-    import scala.language.reflectiveCalls
-
     try {
       f(obj)
     }

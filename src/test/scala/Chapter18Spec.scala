@@ -1,6 +1,7 @@
 import Chapter18._
 import TestUtils.withOutput
 import org.scalatest.{FlatSpec, Matchers}
+import scala.language.reflectiveCalls
 
 class Chapter18Spec extends FlatSpec with Matchers {
 
