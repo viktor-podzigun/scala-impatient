@@ -71,4 +71,25 @@ object Chapter19 {
       case _ ~ e ~ _ => e
     }
   }
+
+  /**
+   * Task 3:
+   *
+   * Write a parser that parses a list of integers (such as `(1, 23, -79)`) into a `List[Int]`.
+   */
+  class IntListParser extends RegexParsers {
+
+    val number = "-?[0-9]+".r
+
+    def parse(e: String): List[Int] = {
+      val result = parseAll(list, e)
+      if (!result.successful) {
+        throw new RuntimeException("Parsing failed: " + result)
+      }
+
+      result.get
+    }
+
+    def list: Parser[List[Int]] = "(" ~> repsep(number ^^ { _.toInt }, ",") <~ ")"
+  }
 }
