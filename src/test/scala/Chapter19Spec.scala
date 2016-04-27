@@ -47,6 +47,17 @@ class Chapter19Spec extends FlatSpec with Matchers {
     p.parse("20050809") shouldBe date(2005, 8, 9, 0, 0, 0, 0)
   }
 
+  "IdentXMLParser" should "parse a subset of XML" in {
+    //given
+    val p = new IdentXMLParser
+
+    //when & then
+    p.parse("""<a></a>""") shouldBe List()
+    p.parse("""<ident><a/></ident>""") shouldBe List("ident")
+    p.parse("""<ident><a></a></ident>""") shouldBe List("ident")
+    p.parse("""<ident><ident/><a/></ident>""") shouldBe List("ident", "ident")
+  }
+
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
     val cal = Calendar.getInstance()
     cal.set(y, m - 1, d, h, mm, s)

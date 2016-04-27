@@ -144,4 +144,56 @@ object Chapter19 {
       cal.getTime
     }
   }
+
+  /**
+   * Task 5:
+   *
+   * Write a parser that parses a subset of XML. Handle tags of the form `<ident>...</ident>` or
+   * `<ident/>`. Tags can be nested. Handle attributes inside tags. Attribute values can be
+   * delimited by single or double quotes. You don't need to deal with character data
+   * (that is, text inside tags or CDATA sections).
+   * Your parser should return a Scala XML `Elem` value.
+   * The challenge is to reject mismatched tags. Hint: `into`, `accept`.
+   */
+  class IdentXMLParser extends RegexParsers {
+
+    val attrRegex = """[^/>]*""".r
+    val charDataRegex = """[^<>]*""".r
+    val tagRegex = """([a-z]|[A-Z]|\d)+""".r
+    val identRegex = """ident""".r
+
+    def parse(e: String): List[String] = {
+      val result = parseAll(openCloseTag, e)
+      if (!result.successful) {
+        throw new RuntimeException("Parsing failed: " + result)
+      }
+
+      result.get
+    }
+
+    def openCloseTag: Parser[List[String]] = tagOpen into { open =>
+      rep(singleTag | openCloseTag) ~ tagClose ^^ {
+        case Nil ~ close =>
+          if (open == close && open == "ident") List("ident")
+          else Nil
+        case r ~ close =>
+          if (open == close && open == "ident") "ident" +: r.foldLeft(List[String]())(_ ++ _)
+          else Nil
+      }
+    }
+
+    def singleTag: Parser[List[String]] = "<" ~> tagName into { tag =>
+      opt(attr) <~ "/>" ^^ {
+        case _ =>
+          if (tag == "ident") List("ident")
+          else Nil
+      }
+    }
+
+    def tagOpen: Parser[String] = "<" ~> tagName <~ ">"
+
+    def tagClose: Parser[String] = "</" ~> tagName <~ ">"
+    def tagName: Parser[String] = tagRegex
+    def attr: Parser[String] = attrRegex
+  }
 }
