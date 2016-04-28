@@ -157,43 +157,38 @@ object Chapter19 {
    */
   class IdentXMLParser extends RegexParsers {
 
-    val attrRegex = """[^/>]*""".r
-    val charDataRegex = """[^<>]*""".r
-    val tagRegex = """([a-z]|[A-Z]|\d)+""".r
-    val identRegex = """ident""".r
+    val attrRegex = """[^/>]+""".r
+    val textRegex = """[^<>]+""".r
+    val cdataRegex = """(?s)<!\[CDATA\[.*?\]\]>""".r
 
     def parse(e: String): List[String] = {
       val result = parseAll(openCloseTag, e)
       if (!result.successful) {
-        throw new RuntimeException("Parsing failed: " + result)
+        throw new IllegalArgumentException("Parsing failed: " + result)
       }
 
       result.get
     }
 
-    def openCloseTag: Parser[List[String]] = tagOpen into { open =>
-      rep(singleTag | openCloseTag) ~ tagClose ^^ {
-        case Nil ~ close =>
-          if (open == close && open == "ident") List("ident")
-          else Nil
-        case r ~ close =>
-          if (open == close && open == "ident") "ident" +: r.foldLeft(List[String]())(_ ++ _)
-          else Nil
+    def openCloseTag: Parser[List[String]] = tagOpen into { tag =>
+      opt(text) ~> rep(singleTag | openCloseTag) <~ (opt(text) ~ tagClose) ^^ {
+        case Nil => List("ident")
+        case r => "ident" +: r.foldLeft(List[String]())(_ ++ _)
       }
     }
 
-    def singleTag: Parser[List[String]] = "<" ~> tagName into { tag =>
-      opt(attr) <~ "/>" ^^ {
-        case _ =>
-          if (tag == "ident") List("ident")
-          else Nil
-      }
+    def singleTag: Parser[List[String]] = ("<" ~ tagName) ~> opt(attr) <~ "/>" ^^ {
+      case _ => List("ident")
     }
 
     def tagOpen: Parser[String] = "<" ~> tagName <~ ">"
 
     def tagClose: Parser[String] = "</" ~> tagName <~ ">"
-    def tagName: Parser[String] = tagRegex
+    def tagName: Parser[String] = "ident" | failure("ident tag expected")
     def attr: Parser[String] = attrRegex
+    def text: Parser[String] = textRegex
+    //def cdata: Parser[String] = "<!" ~> cdataRegex <~ ">"
+
+    //override val whiteSpace = """(?s)\s+|(<!\[CDATA\[.*?\]\]>)+""".r
   }
 }

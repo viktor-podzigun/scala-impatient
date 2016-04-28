@@ -52,10 +52,40 @@ class Chapter19Spec extends FlatSpec with Matchers {
     val p = new IdentXMLParser
 
     //when & then
-    p.parse("""<a></a>""") shouldBe List()
-    p.parse("""<ident><a/></ident>""") shouldBe List("ident")
-    p.parse("""<ident><a></a></ident>""") shouldBe List("ident")
-    p.parse("""<ident><ident/><a/></ident>""") shouldBe List("ident", "ident")
+    a [IllegalArgumentException] should be thrownBy {
+      p.parse("<a></a>")
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      p.parse("<ident></a>")
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      p.parse("<a></ident>")
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      p.parse("<ident><a/></ident>")
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      p.parse("<ident><a></a></ident>")
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      p.parse("<ident><ident/><a/></ident>")
+    }
+    a [IllegalArgumentException] should be thrownBy {
+      p.parse("<ident/>")
+    }
+
+//    p.parse("""<ident>
+//              |  text <![CDATA[
+//              |  <ident/>]]> text <![CDATA[<ident/>]]> text
+//              |</ident>
+//              |""".stripMargin) shouldBe List("ident")
+    p.parse("""<ident>
+              |  text
+              |  text text
+              |</ident>
+              |""".stripMargin) shouldBe List("ident")
+    p.parse("<ident ><ident />text</ident>") shouldBe List("ident", "ident")
+    p.parse("<ident><ident></ident></ident>") shouldBe List("ident", "ident")
   }
 
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
