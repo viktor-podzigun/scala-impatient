@@ -1,5 +1,6 @@
 import java.util.{Calendar, Date}
 import scala.util.parsing.combinator.RegexParsers
+import scala.xml.{Null, TopScope}
 
 object Chapter19 {
 
@@ -161,7 +162,7 @@ object Chapter19 {
     val textRegex = """[^<>]+""".r
     val cdataRegex = """(?s)<!\[CDATA\[.*?\]\]>""".r
 
-    def parse(e: String): List[String] = {
+    def parse(e: String): xml.Elem = {
       val result = parseAll(openCloseTag, e)
       if (!result.successful) {
         throw new IllegalArgumentException("Parsing failed: " + result)
@@ -170,22 +171,31 @@ object Chapter19 {
       result.get
     }
 
-    def openCloseTag: Parser[List[String]] = tagOpen into { tag =>
-      opt(text) ~> rep(singleTag | openCloseTag) <~ (opt(text) ~ tagClose) ^^ {
-        case Nil => List("ident")
-        case r => "ident" +: r.foldLeft(List[String]())(_ ++ _)
+    def openCloseTag: Parser[xml.Elem] = tagOpen into { elem =>
+      opt(text) ~> rep(singleTag <~ opt(text) | openCloseTag <~ opt(text)) <~
+        (opt(text) ~ tagClose) ^^ {
+
+        case Nil => elem
+        case r => elem.copy(child = r)
       }
     }
 
-    def singleTag: Parser[List[String]] = ("<" ~ tagName) ~> opt(attr) <~ "/>" ^^ {
-      case _ => List("ident")
+    def singleTag: Parser[xml.Elem] = ("<" ~ tagName) ~> opt(attr) <~ "/>" ^^ {
+      case _ => makeElem()
     }
 
-    def tagOpen: Parser[String] = "<" ~> tagName <~ ">"
+    def tagOpen: Parser[xml.Elem] = ("<" ~ tagName) ~> opt(attr) <~ ">" ^^ {
+      case _ => makeElem()
+    }
+
+    def makeElem(): xml.Elem = {
+      xml.Elem(null, "ident", Null, TopScope, minimizeEmpty = false)
+    }
+
+    def attr: Parser[String] = attrRegex
 
     def tagClose: Parser[String] = "</" ~> tagName <~ ">"
     def tagName: Parser[String] = "ident" | failure("ident tag expected")
-    def attr: Parser[String] = attrRegex
     def text: Parser[String] = textRegex
     //def cdata: Parser[String] = "<!" ~> cdataRegex <~ ">"
 
