@@ -1,7 +1,6 @@
 import Chapter19._
 import java.util.{Calendar, Date}
 import org.scalatest.{FlatSpec, Matchers}
-import scala.xml.{TopScope, Null}
 
 class Chapter19Spec extends FlatSpec with Matchers {
 
@@ -81,15 +80,15 @@ class Chapter19Spec extends FlatSpec with Matchers {
 //              |</ident>
 //              |""".stripMargin) shouldBe <ident></ident>
 
-    p.parse("""<ident>
+    p.parse("""<ident "a1"="val1" "a2"="val2" 'a3'='val3'>
               |  text
               |  text text
               |</ident>
               |""".stripMargin) shouldBe <ident></ident>
 
-    p.parse( """<ident > a
-               |  <ident> b </ident>c
-               |  <ident />d
+    p.parse( """<ident "a1"="val1"> a
+               |  <ident "a2"="val2"> b </ident>c
+               |  <ident 'a3'='val3'/>d
                |</ident>""".stripMargin) shouldBe <ident><ident></ident><ident/></ident>
   }
 
