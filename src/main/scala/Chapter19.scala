@@ -1,6 +1,6 @@
 import java.util.{Calendar, Date}
 import scala.util.parsing.combinator.RegexParsers
-import scala.xml.{MetaData, Null, TopScope}
+import scala.xml._
 
 object Chapter19 {
 
@@ -158,7 +158,9 @@ object Chapter19 {
    */
   class IdentXMLParser extends RegexParsers {
 
-    val attrRegex = """"[^"]+"|'[^']+'""".r
+    val attrKeyRegex = """[^</>='"]+""".r
+    val singleQuotesRegex = """[^']+""".r
+    val doubleQuotesRegex = """[^"]+""".r
     val textRegex = """[^<>]+""".r
     val cdataRegex = """(?s)<!\[CDATA\[.*?\]\]>""".r
 
@@ -184,18 +186,27 @@ object Chapter19 {
 
     def tagOpen: Parser[xml.Elem] = ("<" ~ tagName) ~> attrs <~ ">"
 
-    def attrs: Parser[xml.Elem] = rep(attr) ^^ {
-      case Nil => makeElem(Null)
-      case attrs => makeElem(Null)
+    def attrs: Parser[xml.Elem] = rep(attrPair) ^^ {
+      case Nil => makeElem(Nil)
+      case attrPairs => makeElem(attrPairs)
     }
 
-    def makeElem(attributes: MetaData): xml.Elem = {
+    def makeElem(attrPairs: List[(String, String)]): xml.Elem = {
+      val attributes = if (attrPairs.nonEmpty) {
+        val attrs = for ((key, value) <- attrPairs) yield Attribute(null, key, value, Null)
+        attrs.reduceRight((attr, next) => attr.copy(next = next))
+      }
+      else Null
+
       xml.Elem(null, "ident", attributes, TopScope, minimizeEmpty = false)
     }
 
-    def attr: Parser[(String, String)] = attrRegex ~ "=" ~ attrRegex ^^ {
-      case name ~ "=" ~ value => (name, value)
+    def attrPair: Parser[(String, String)] = attrKeyRegex ~ "=" ~ attrValue ^^ {
+      case key ~ "=" ~ value => (key, value)
     }
+
+    def attrValue: Parser[String] = "'" ~> singleQuotesRegex <~ "'" |
+      "\"" ~> doubleQuotesRegex <~ "\""
 
     def tagClose: Parser[String] = "</" ~> tagName <~ ">"
     def tagName: Parser[String] = "ident" | failure("ident tag expected")

@@ -80,16 +80,17 @@ class Chapter19Spec extends FlatSpec with Matchers {
 //              |</ident>
 //              |""".stripMargin) shouldBe <ident></ident>
 
-    p.parse("""<ident "a1"="val1" "a2"="val2" 'a3'='val3'>
+    p.parse("""<ident a1="val1" a2="val2" a3='val3'>
               |  text
               |  text text
               |</ident>
-              |""".stripMargin) shouldBe <ident></ident>
+              |""".stripMargin) shouldBe <ident a1="val1" a2="val2" a3='val3'></ident>
 
-    p.parse( """<ident "a1"="val1"> a
-               |  <ident "a2"="val2"> b </ident>c
-               |  <ident 'a3'='val3'/>d
-               |</ident>""".stripMargin) shouldBe <ident><ident></ident><ident/></ident>
+    p.parse( """<ident a1="val1"> a
+               |  <ident a2="val2"> b </ident>c
+               |  <ident a3='val3'/>d
+               |</ident>""".stripMargin) shouldBe
+      <ident a1="val1"><ident a2="val2"></ident><ident a3='val3'/></ident>
   }
 
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
