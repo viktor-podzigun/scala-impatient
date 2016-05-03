@@ -74,11 +74,11 @@ class Chapter19Spec extends FlatSpec with Matchers {
       p.parse("<ident/>")
     }
 
-//    p.parse("""<ident>
-//              |  text <![CDATA[
-//              |  <ident/>]]> text <![CDATA[<ident/>]]> text
-//              |</ident>
-//              |""".stripMargin) shouldBe <ident></ident>
+    p.parse("""<ident>
+              |  text <![CDATA[
+              |  <ident/>]]> text <![CDATA[<ident/>]]> text
+              |</ident>
+              |""".stripMargin) shouldBe <ident></ident>
 
     p.parse("""<ident a1="val1" a2="val2" a3='val3'>
               |  text

@@ -174,17 +174,19 @@ object Chapter19 {
     }
 
     def openCloseTag: Parser[xml.Elem] = tagOpen into { elem =>
-      opt(text) ~> rep(singleTag <~ opt(text) | openCloseTag <~ opt(text)) <~
-        (opt(text) ~ tagClose) ^^ {
-
+      opt(textRegex) ~> rep(singleTag <~ opt(textRegex) | openCloseTag <~ opt(textRegex)) <~
+        tagClose ^^ {
         case Nil => elem
-        case r => elem.copy(child = r)
+        case r => elem.copy(child = r.filter(_ != null))
       }
     }
 
-    def singleTag: Parser[xml.Elem] = ("<" ~ tagName) ~> attrs <~ "/>"
-
     def tagOpen: Parser[xml.Elem] = ("<" ~ tagName) ~> attrs <~ ">"
+    def tagClose: Parser[String] = "</" ~> tagName <~ ">"
+
+    def singleTag: Parser[xml.Elem] = ("<" ~ tagName) ~> attrs <~ "/>" | cdataRegex ^^ { _ => null }
+
+    def tagName: Parser[String] = "ident" | failure("ident tag expected")
 
     def attrs: Parser[xml.Elem] = rep(attrPair) ^^ {
       case Nil => makeElem(Nil)
@@ -207,12 +209,5 @@ object Chapter19 {
 
     def attrValue: Parser[String] = "'" ~> singleQuotesRegex <~ "'" |
       "\"" ~> doubleQuotesRegex <~ "\""
-
-    def tagClose: Parser[String] = "</" ~> tagName <~ ">"
-    def tagName: Parser[String] = "ident" | failure("ident tag expected")
-    def text: Parser[String] = textRegex
-    //def cdata: Parser[String] = "<!" ~> cdataRegex <~ ">"
-
-    //override val whiteSpace = """(?s)\s+|(<!\[CDATA\[.*?\]\]>)+""".r
   }
 }
