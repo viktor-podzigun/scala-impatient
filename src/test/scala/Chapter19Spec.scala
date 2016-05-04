@@ -93,6 +93,16 @@ class Chapter19Spec extends FlatSpec with Matchers {
       <ident a1="val1"><ident a2="val2"></ident><ident a3='val3'/></ident>
   }
 
+  "ExprParser" should "produce correct expression tree" in {
+    //given
+    val p = new ExprParser
+
+    //when & then
+    p.parse("3-4-5") shouldBe Operator("-", Operator("-", Number(3), Number(4)), Number(5))
+    p.parse("3-4+5") shouldBe Operator("+", Operator("-", Number(3), Number(4)), Number(5))
+    p.parse("3-4*5") shouldBe Operator("-", Number(3), Operator("*", Number(4), Number(5)))
+  }
+
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
     val cal = Calendar.getInstance()
     cal.set(y, m - 1, d, h, mm, s)

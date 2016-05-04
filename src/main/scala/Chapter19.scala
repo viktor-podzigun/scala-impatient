@@ -210,4 +210,59 @@ object Chapter19 {
     def attrValue: Parser[String] = "'" ~> singleQuotesRegex <~ "'" |
       "\"" ~> doubleQuotesRegex <~ "\""
   }
+
+  /**
+   * Task 6:
+   *
+   * Assume that the parser in Section 19.5, "Generating Parse Trees", on page 275 is completed with
+   * {{{
+   *  class ExprParser extends RegexParsers {
+   *    def expr: Parser[Expr] = (term ~ opt(("+" | "-") ~ expr)) ^^ {
+   *      case a ~ None => a
+   *      case a ~ Some(op ~ b) => Operator(op, a, b)
+   *    }
+   *  }
+   * }}}
+   * Unfortunately, this parser computes an incorrect expression tree - operators with the same
+   * precedence are evaluated right-to-left. Modify the parser so that the expression tree
+   * is correct. For example, `3-4-5` should yield an
+   * {{{
+   *  Operator("-", Operator("-", 3, 4), 5)
+   * }}}
+   */
+  class ExprParser extends RegexParsers {
+
+    val number = "[0-9]+".r
+
+    def parse(e: String): Expr = {
+      val result = parseAll(expr, e)
+      if (!result.successful) {
+        throw new RuntimeException("Parsing failed: " + result)
+      }
+
+      result.get
+    }
+
+    def expr: Parser[Expr] = term into { a =>
+      rep1(("+" | "-") ~ term ^^ {
+        case op ~ b => (op, b)
+      }) ^^ {
+        case pairs => pairs.foldLeft(a) { (a, pair) =>
+          Operator(pair._1, a, pair._2)
+        }
+      }
+    }
+
+    def term: Parser[Expr] = factor ~ opt("*" ~> term) ^^ {
+      case a ~ None => a
+      case a ~ Some(b) => Operator("*", a, b)
+    }
+
+    def factor: Parser[Expr] = number ^^ (n => Number(n.toInt)) |
+      "(" ~> expr <~ ")"
+  }
+
+  class Expr
+  case class Number(value: Int) extends Expr
+  case class Operator(op: String, left: Expr, right: Expr) extends Expr
 }
