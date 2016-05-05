@@ -265,4 +265,45 @@ object Chapter19 {
   class Expr
   case class Number(value: Int) extends Expr
   case class Operator(op: String, left: Expr, right: Expr) extends Expr
+
+  /**
+   * Task 7:
+   *
+   * Suppose in Section 19.6, "Avoiding Left Recursion", on page 276, we first parse an expr
+   * into a list of `~` with operations and values:
+   * {{{
+   *  def expr: Parser[Int] = term ~ rep(("+" | "-") ~ term) ^^ {...}
+   * }}}
+   * To evaluate the result, we need to compute `((t0 +- t1) +- t2) +- ...`
+   * Implement this computation as a `fold` (see Chapter 13).
+   */
+  class FoldExprEvaluator extends RegexParsers {
+
+    val number = "[0-9]+".r
+
+    def parse(e: String): Int = {
+      val result = parseAll(expr, e)
+      if (!result.successful) {
+        throw new RuntimeException("Parsing failed: " + result)
+      }
+
+      result.get
+    }
+
+    def expr: Parser[Int] = term into { a =>
+      rep(("+" | "-") ~ term ^^ {
+        case "+" ~ b => b
+        case "-" ~ b => -b
+      }) ^^ {
+        case pairs => pairs.fold(a)(_ + _)
+      }
+    }
+
+    def term: Parser[Int] = factor ~ opt("*" ~> term) ^^ {
+      case a ~ None => a
+      case a ~ Some(b) => a * b
+    }
+
+    def factor: Parser[Int] = number ^^ (_.toInt) | "(" ~> expr <~ ")"
+  }
 }

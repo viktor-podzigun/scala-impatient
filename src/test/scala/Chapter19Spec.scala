@@ -103,6 +103,16 @@ class Chapter19Spec extends FlatSpec with Matchers {
     p.parse("3-4*5") shouldBe Operator("-", Number(3), Operator("*", Number(4), Number(5)))
   }
 
+  "FoldExprEvaluator" should "implement expression computation as a fold" in {
+    //given
+    val p = new FoldExprEvaluator
+
+    //when & then
+    p.parse("3-4+5") shouldBe 4
+    p.parse("3+4-5") shouldBe 2
+    p.parse("3-4*5") shouldBe -17
+  }
+
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
     val cal = Calendar.getInstance()
     cal.set(y, m - 1, d, h, mm, s)
