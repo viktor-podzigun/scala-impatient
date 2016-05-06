@@ -341,37 +341,14 @@ object Chapter19 {
     }
   }
 
-  class CalculatorParser extends RegexParsers {
+  class CalculatorParser extends ExprParser {
 
     val varRegex = """[^.,()+-\\*=\d][_\da-zA-Z]*""".r
-    val number = "[0-9]+".r
 
-    def parse(e: String): Expr = {
-      val result = parseAll(expr, e)
-      if (!result.successful) {
-        throw new RuntimeException("Parsing failed: " + result)
-      }
-
-      result.get
-    }
-
-    def expr: Parser[Expr] = term into { a =>
-      rep1(("+" | "-") ~ term ^^ {
-        case op ~ b => (op, b)
-      }) ^^ {
-        case pairs => pairs.foldLeft(a) { (a, pair) =>
-          Operator(pair._1, a, pair._2)
-        }
-      }
-    }
-
-    def term: Parser[Expr] = variable | factor ~ opt("*" ~> term) ^^ {
+    override def term: Parser[Expr] = variable | factor ~ opt("*" ~> term) ^^ {
       case a ~ None => a
       case a ~ Some(b) => Operator("*", a, b)
     }
-
-    def factor: Parser[Expr] = number ^^ (n => Number(n.toInt)) |
-      "(" ~> expr <~ ")"
 
     def variable: Parser[Expr] = varRegex ~ opt("=" ~ (term | expr)) ^^ {
       case v ~ None => Variable(v)
