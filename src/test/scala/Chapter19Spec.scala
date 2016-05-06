@@ -113,6 +113,22 @@ class Chapter19Spec extends FlatSpec with Matchers {
     p.parse("3-4*5") shouldBe -17
   }
 
+  "Calculator" should "should use variables and assignment" in {
+    //given
+    val c = new Calculator
+
+    //when & then
+    c.calc("3-4+5+a") shouldBe 4
+    c.calc("3-4+5+a=6") shouldBe 10
+    c.calc("3-4+5+a=b-6") shouldBe -2
+    c.calc("3-4+5+a+a=6") shouldBe 10
+    c.calc("3-4+5+a=6+a") shouldBe 16
+
+    TestUtils.withOutput {
+      c.calc("3-4+5+out=(3+3)+a")
+    } shouldBe "6"
+  }
+
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
     val cal = Calendar.getInstance()
     cal.set(y, m - 1, d, h, mm, s)

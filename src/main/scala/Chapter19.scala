@@ -1,4 +1,5 @@
 import java.util.{Calendar, Date}
+import scala.collection.mutable
 import scala.util.parsing.combinator.RegexParsers
 import scala.xml._
 
@@ -306,4 +307,78 @@ object Chapter19 {
 
     def factor: Parser[Int] = number ^^ (_.toInt) | "(" ~> expr <~ ")"
   }
+
+  /**
+   * Task 8:
+   *
+   * Add variables and assignment to the calculator program. Variables are created when they
+   * are first used. Uninitialized variables are zero. To print a value, assign it to the special
+   * variable `out`.
+   */
+  class Calculator {
+
+    private val parser = new CalculatorParser
+    private val vars = new mutable.HashMap[String, Int]
+
+    def calc(input: String): Int = {
+      vars.clear()
+      eval(parser.parse(input))
+    }
+
+    private def eval(expr: Expr): Int = expr match {
+      case Number(n) => n
+      case Operator(op, left, right) => op match {
+        case "+" => eval(left) + eval(right)
+        case "-" => eval(left) - eval(right)
+        case "*" => eval(left) * eval(right)
+      }
+      case Variable(name) => vars.getOrElse(name, 0)
+      case Assignment(v, e) =>
+        val res = eval(e)
+        if (v.name == "out") print(res)
+        else vars(v.name) = res
+        res
+    }
+  }
+
+  class CalculatorParser extends RegexParsers {
+
+    val varRegex = """[^.,()+-\\*=\d][_\da-zA-Z]*""".r
+    val number = "[0-9]+".r
+
+    def parse(e: String): Expr = {
+      val result = parseAll(expr, e)
+      if (!result.successful) {
+        throw new RuntimeException("Parsing failed: " + result)
+      }
+
+      result.get
+    }
+
+    def expr: Parser[Expr] = term into { a =>
+      rep1(("+" | "-") ~ term ^^ {
+        case op ~ b => (op, b)
+      }) ^^ {
+        case pairs => pairs.foldLeft(a) { (a, pair) =>
+          Operator(pair._1, a, pair._2)
+        }
+      }
+    }
+
+    def term: Parser[Expr] = variable | factor ~ opt("*" ~> term) ^^ {
+      case a ~ None => a
+      case a ~ Some(b) => Operator("*", a, b)
+    }
+
+    def factor: Parser[Expr] = number ^^ (n => Number(n.toInt)) |
+      "(" ~> expr <~ ")"
+
+    def variable: Parser[Expr] = varRegex ~ opt("=" ~ (term | expr)) ^^ {
+      case v ~ None => Variable(v)
+      case v ~ Some("=" ~ e) => Assignment(Variable(v), e)
+    }
+  }
+
+  case class Variable(name: String) extends Expr
+  case class Assignment(variable: Variable, right: Expr) extends Expr
 }
