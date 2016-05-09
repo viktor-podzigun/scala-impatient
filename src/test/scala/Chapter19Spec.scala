@@ -1,4 +1,5 @@
 import Chapter19._
+import TestUtils.withOutput
 import java.util.{Calendar, Date}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -113,7 +114,7 @@ class Chapter19Spec extends FlatSpec with Matchers {
     p.parse("3-4*5") shouldBe -17
   }
 
-  "Calculator" should "should use variables and assignment" in {
+  "Calculator" should "use variables and assignment when calculating expressions" in {
     //given
     val c = new Calculator
 
@@ -124,7 +125,7 @@ class Chapter19Spec extends FlatSpec with Matchers {
     c.calc("3-4+5+a+a=6") shouldBe 10
     c.calc("3-4+5+a=6+a") shouldBe 16
 
-    TestUtils.withOutput {
+    withOutput {
       c.calc("3-4+5+out=(3+3)+a")
     } shouldBe "6"
   }

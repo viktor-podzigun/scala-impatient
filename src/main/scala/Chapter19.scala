@@ -1,6 +1,7 @@
 import java.util.{Calendar, Date}
 import scala.collection.mutable
 import scala.util.parsing.combinator.RegexParsers
+import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import scala.xml._
 
 object Chapter19 {
@@ -231,12 +232,12 @@ object Chapter19 {
    *  Operator("-", Operator("-", 3, 4), 5)
    * }}}
    */
-  class ExprParser extends RegexParsers {
+  class ExprParser extends StandardTokenParsers {
 
-    val number = "[0-9]+".r
+    lexical.delimiters += ("+", "-", "*", "(", ")")
 
-    def parse(e: String): Expr = {
-      val result = parseAll(expr, e)
+    def parse(in: String): Expr = {
+      val result = phrase(expr)(new lexical.Scanner(in))
       if (!result.successful) {
         throw new RuntimeException("Parsing failed: " + result)
       }
@@ -259,7 +260,7 @@ object Chapter19 {
       case a ~ Some(b) => Operator("*", a, b)
     }
 
-    def factor: Parser[Expr] = number ^^ (n => Number(n.toInt)) |
+    def factor: Parser[Expr] = numericLit ^^ (n => Number(n.toInt)) |
       "(" ~> expr <~ ")"
   }
 
@@ -317,15 +318,15 @@ object Chapter19 {
    */
   class Calculator {
 
-    private val parser = new CalculatorParser
-    private val vars = new mutable.HashMap[String, Int]
+    protected val parser = new CalculatorParser
+    protected val vars = new mutable.HashMap[String, Int]
 
     def calc(input: String): Int = {
       vars.clear()
       eval(parser.parse(input))
     }
 
-    private def eval(expr: Expr): Int = expr match {
+    protected def eval(expr: Expr): Int = expr match {
       case Number(n) => n
       case Operator(op, left, right) => op match {
         case "+" => eval(left) + eval(right)
@@ -343,14 +344,11 @@ object Chapter19 {
 
   class CalculatorParser extends ExprParser {
 
-    val varRegex = """[^.,()+-\\*=\d][_\da-zA-Z]*""".r
+    lexical.delimiters += "="
 
-    override def term: Parser[Expr] = variable | factor ~ opt("*" ~> term) ^^ {
-      case a ~ None => a
-      case a ~ Some(b) => Operator("*", a, b)
-    }
+    override def term: Parser[Expr] = variable | super.term
 
-    def variable: Parser[Expr] = varRegex ~ opt("=" ~ (term | expr)) ^^ {
+    def variable: Parser[Expr] = ident ~ opt("=" ~ (term | expr)) ^^ {
       case v ~ None => Variable(v)
       case v ~ Some("=" ~ e) => Assignment(Variable(v), e)
     }
@@ -358,4 +356,19 @@ object Chapter19 {
 
   case class Variable(name: String) extends Expr
   case class Assignment(variable: Variable, right: Expr) extends Expr
+
+  /**
+   * Task 9:
+   *
+   * Extend the preceding exercise into a parser for a programming language that has variable
+   * assignments, `Boolean` expressions, and `if`/`else` and `while` statements.
+   */
+  class Program extends Calculator {
+
+    override protected val parser = new ProgramParser
+  }
+
+  class ProgramParser extends CalculatorParser {
+
+  }
 }
