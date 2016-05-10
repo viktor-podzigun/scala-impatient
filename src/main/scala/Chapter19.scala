@@ -1,7 +1,9 @@
 import java.util.{Calendar, Date}
 import scala.collection.mutable
 import scala.util.parsing.combinator.RegexParsers
+import scala.util.parsing.combinator.lexical.StdLexical
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
+import scala.util.parsing.input.CharArrayReader.EofCh
 import scala.xml._
 
 object Chapter19 {
@@ -237,9 +239,13 @@ object Chapter19 {
     lexical.delimiters += ("+", "-", "*", "(", ")")
 
     def parse(in: String): Expr = {
+      parseExpr(in, expr)
+    }
+
+    protected def parseExpr[T <: Expr](in: String, expr: => Parser[T]): T = {
       val result = phrase(expr)(new lexical.Scanner(in))
       if (!result.successful) {
-        throw new RuntimeException("Parsing failed: " + result)
+        throw new scala.RuntimeException("Parsing failed: " + result)
       }
 
       result.get
@@ -321,9 +327,9 @@ object Chapter19 {
     protected val parser = new CalculatorParser
     protected val vars = new mutable.HashMap[String, Int]
 
-    def calc(input: String): Int = {
+    def parseAndEval(input: String): Int = {
       vars.clear()
-      eval(parser.parse(input))
+      parser.parse(input).list.map(eval).last
     }
 
     protected def eval(expr: Expr): Int = expr match {
@@ -342,18 +348,31 @@ object Chapter19 {
     }
   }
 
-  class CalculatorParser extends ExprParser {
-
-    lexical.delimiters += "="
-
-    override def term: Parser[Expr] = variable | super.term
-
-    def variable: Parser[Expr] = ident ~ opt("=" ~ (term | expr)) ^^ {
-      case v ~ None => Variable(v)
-      case v ~ Some("=" ~ e) => Assignment(Variable(v), e)
+  class CalculatorParser extends {
+    override val lexical = new StdLexical {
+      // don't treat new line characters as whitespaces
+      override def whitespaceChar = elem("space char", ch => ch <= ' ' && ch != EofCh && ch != '\n')
     }
+  } with ExprParser {
+
+    lexical.delimiters += ("=", "\n")
+
+    override def parse(in: String): Block = {
+      parseExpr(in, block)
+    }
+
+    def block: Parser[Block] = rep1sep(assign | expr, "\n") ^^ Block
+
+    def assign: Parser[Assignment] = variable ~ "=" ~ (expr | factor) ^^ {
+      case v ~ "=" ~ e => Assignment(v, e)
+    }
+
+    def variable: Parser[Variable] = ident ^^ Variable
+
+    override def factor: Parser[Expr] = variable | super.factor
   }
 
+  case class Block(list: List[Expr]) extends Expr
   case class Variable(name: String) extends Expr
   case class Assignment(variable: Variable, right: Expr) extends Expr
 
@@ -370,5 +389,22 @@ object Chapter19 {
 
   class ProgramParser extends CalculatorParser {
 
+    lexical.reserved += ("if", "else", "while")
+    lexical.delimiters += ("<", "<=", ">", ">=", "==", "!=", "{", "}")
+
+    override def block: Parser[Block] = rep1sep(assign | expr | ifExpr, "\n") ^^ Block
+
+    def ifExpr: Parser[If] = ("if" ~> "(" ~> cond <~ ")") ~ ("{" ~> block <~ "}") ^^ {
+      case c ~ b => If(c, b)
+    }
+
+    def cond: Parser[Condition] = expr ~ ("<" | "<=" | ">" | ">=" | "==" | "!=") ~ expr ^^ {
+      case left ~ op ~ right => Condition(op, left, right)
+    }
   }
+
+  case class Condition(op: String, left: Expr, right: Expr) extends Expr
+  case class If(cond: Condition, block: Block) extends Expr
+  case class IfElse(cond: Condition, ifBlock: Block, elseBlock: Block) extends Expr
+  case class While(cond: Condition, block: Block) extends Expr
 }
