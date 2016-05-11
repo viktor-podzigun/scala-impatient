@@ -329,10 +329,11 @@ object Chapter19 {
 
     def parseAndEval(input: String): Int = {
       vars.clear()
-      parser.parse(input).list.map(eval).last
+      eval(parser.parse(input))
     }
 
     protected def eval(expr: Expr): Int = expr match {
+      case Block(list) => list.map(eval).lastOption.getOrElse(0)
       case Number(n) => n
       case Operator(op, left, right) => op match {
         case "+" => eval(left) + eval(right)
@@ -361,7 +362,7 @@ object Chapter19 {
       parseExpr(in, block)
     }
 
-    def block: Parser[Block] = rep1sep(assign | expr, "\n") ^^ Block
+    def block: Parser[Block] = repsep(assign | expr, "\n") ^^ Block
 
     def assign: Parser[Assignment] = variable ~ "=" ~ (expr | factor) ^^ {
       case v ~ "=" ~ e => Assignment(v, e)
@@ -385,6 +386,30 @@ object Chapter19 {
   class Program extends Calculator {
 
     override protected val parser = new ProgramParser
+
+    override protected def eval(expr: Expr): Int = expr match {
+      case Condition(op, left, right) =>
+        if (op match {
+          case "<" => eval(left) < eval(right)
+          case "<=" => eval(left) <= eval(right)
+          case ">" => eval(left) > eval(right)
+          case ">=" => eval(left) >= eval(right)
+          case "==" => eval(left) == eval(right)
+          case "!=" => eval(left) != eval(right)
+        }) 1
+        else 0
+      case If(cond, block) =>
+        if (eval(cond) != 0) eval(block)
+        else 0
+      case IfElse(cond, ifBlock, elseBlock) =>
+        if (eval(cond) != 0) eval(ifBlock)
+        else eval(elseBlock)
+      case While(cond, block) =>
+        while (eval(cond) != 0) eval(block)
+        0
+      case _ =>
+        super.eval(expr)
+    }
   }
 
   class ProgramParser extends CalculatorParser {
@@ -392,13 +417,23 @@ object Chapter19 {
     lexical.reserved += ("if", "else", "while")
     lexical.delimiters += ("<", "<=", ">", ">=", "==", "!=", "{", "}")
 
-    override def block: Parser[Block] = rep1sep(assign | expr | ifExpr, "\n") ^^ Block
+    override def block: Parser[Block] = rep("\n") ~> repsep(assign | expr | factor |
+      whileExpr | ifElse, rep("\n")) <~ rep("\n") ^^ Block
 
-    def ifExpr: Parser[If] = ("if" ~> "(" ~> cond <~ ")") ~ ("{" ~> block <~ "}") ^^ {
-      case c ~ b => If(c, b)
+    def ifElse: Parser[Expr] = ("if" ~> "(" ~> cond <~ ")") ~ (delim("{") ~> block <~ delim("}")) ~
+      opt("else" ~> delim("{") ~> block <~ delim("}")) ^^ {
+      case cond ~ ifBlock ~ None => If(cond, ifBlock)
+      case cond ~ ifBlock ~ Some(elseBlock) => IfElse(cond, ifBlock, elseBlock)
     }
 
-    def cond: Parser[Condition] = expr ~ ("<" | "<=" | ">" | ">=" | "==" | "!=") ~ expr ^^ {
+    def whileExpr: Parser[Expr] = ("while" ~> "(" ~> cond <~ ")") ~
+      (delim("{") ~> block <~ delim("}")) ^^ {
+      case cond ~ block => While(cond, block)
+    }
+
+    def delim(d: String): Parser[String] = rep("\n") ~> d <~ rep("\n")
+
+    def cond: Parser[Condition] = factor ~ ("<" | "<=" | ">" | ">=" | "==" | "!=") ~ factor ^^ {
       case left ~ op ~ right => Condition(op, left, right)
     }
   }

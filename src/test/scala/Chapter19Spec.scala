@@ -119,6 +119,7 @@ class Chapter19Spec extends FlatSpec with Matchers {
     val c = new Calculator
 
     //when & then
+    c.parseAndEval("") shouldBe 0
     c.parseAndEval("3-4+5+a") shouldBe 4
     c.parseAndEval("""a=6
                      |3-4+5""".stripMargin) shouldBe 4
@@ -131,6 +132,53 @@ class Chapter19Spec extends FlatSpec with Matchers {
     withOutput {
       c.parseAndEval("""a=(3+3)
                        |out=a+1""".stripMargin)
+    } shouldBe "7"
+  }
+
+  "Program" should "use variable assignments, Boolean expressions, if/else, while statements" in {
+    //given
+    val p = new Program
+
+    //when & then
+    p.parseAndEval("""a=b-6
+                     |3-4+5+a
+                     |""".stripMargin) shouldBe -2
+    p.parseAndEval("""
+                     |a=b-6
+                     |
+                     |if (1 <= 2) {
+                     |  3-4+5+a
+                     |}
+                     |else {
+                     |  5
+                     |}
+                     |""".stripMargin) shouldBe -2
+    p.parseAndEval("""a=b-6
+                     |if (1 > 2)
+                     |{
+                     |  //3-4+5+a
+                     |}
+                     |else
+                     |{
+                     |  5
+                     |}
+                     |""".stripMargin) shouldBe 5
+    p.parseAndEval("""a=b-6
+                     |if (1 > 2) {
+                     |  3-4+5+a
+                     |} else {
+                     |  a = 0
+                     |  while (a < 10) {
+                     |    a = a + 1
+                     |  }
+                     |  a
+                     |}
+                     |""".stripMargin) shouldBe 10
+    withOutput {
+      p.parseAndEval("""a=(3+3)
+                       |if (a < 10) {
+                       |  out=a+1
+                       |}""".stripMargin)
     } shouldBe "7"
   }
 
