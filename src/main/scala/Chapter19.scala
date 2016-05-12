@@ -442,4 +442,42 @@ object Chapter19 {
   case class If(cond: Condition, block: Block) extends Expr
   case class IfElse(cond: Condition, ifBlock: Block, elseBlock: Block) extends Expr
   case class While(cond: Condition, block: Block) extends Expr
+
+  /**
+   * Task 10:
+   *
+   * Add function definitions to the programming language of the preceding exercise.
+   */
+  class FuncProgram extends Program {
+
+    override protected val parser = new FuncProgramParser
+    protected val fx = new mutable.HashMap[String, FuncDef]
+
+    override protected def eval(expr: Expr): Int = expr match {
+      case f: FuncDef =>
+        // store function definition
+        fx(f.name) = f
+        0
+      case _ =>
+        super.eval(expr)
+    }
+  }
+
+  class FuncProgramParser extends ProgramParser {
+
+    lexical.reserved += "def"
+    lexical.delimiters += ","
+
+    override def block: Parser[Block] = rep("\n") ~> repsep(assign | expr | factor |
+      whileExpr | ifElse | funcDef, rep("\n")) <~ rep("\n") ^^ Block
+
+    def funcDef: Parser[Expr] = "def" ~> ident ~ ("(" ~> args <~ ")") ~
+      (delim("{") ~> block <~ delim("}")) ^^ {
+      case name ~ args ~ block => FuncDef(name, args, block)
+    }
+
+    def args: Parser[List[String]] = repsep(variable, ",") ^^ (_.map(_.name))
+  }
+
+  case class FuncDef(name: String, args: List[String], block: Block) extends Expr
 }

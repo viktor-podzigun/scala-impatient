@@ -182,6 +182,33 @@ class Chapter19Spec extends FlatSpec with Matchers {
     } shouldBe "7"
   }
 
+  "FuncProgram" should "add function definitions to program evaluator" in {
+    //given
+    val f = new FuncProgram
+
+    //when & then
+    f.parseAndEval("""
+                     |def a() {
+                     |  b-6
+                     |}
+                     |
+                     |if (1 <= 2) {
+                     |  3-4+5+a
+                     |}
+                     |else {
+                     |  5
+                     |}
+                     |""".stripMargin) shouldBe -2
+    withOutput {
+      f.parseAndEval("""
+                       |
+                       |a=(3+3)
+                       |if (a < 10) {
+                       |  out=a+1
+                       |}""".stripMargin)
+    } shouldBe "7"
+  }
+
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
     val cal = Calendar.getInstance()
     cal.set(y, m - 1, d, h, mm, s)
