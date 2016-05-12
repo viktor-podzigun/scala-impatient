@@ -187,26 +187,50 @@ class Chapter19Spec extends FlatSpec with Matchers {
     val f = new FuncProgram
 
     //when & then
+    a [RuntimeException] should be thrownBy {
+      f.parseAndEval("""a()
+                       |""".stripMargin)
+    }
+    a [RuntimeException] should be thrownBy {
+      f.parseAndEval("""def a() {
+                       |}
+                       |a(1)
+                       |""".stripMargin)
+    }
+    a [RuntimeException] should be thrownBy {
+      f.parseAndEval("""def a(b) {
+                       |}
+                       |a()
+                       |""".stripMargin)
+    }
     f.parseAndEval("""
                      |def a() {
                      |  b-6
                      |}
                      |
                      |if (1 <= 2) {
-                     |  3-4+5+a
+                     |  3-4+5+a()
                      |}
                      |else {
                      |  5
                      |}
                      |""".stripMargin) shouldBe -2
+    f.parseAndEval("""
+                     |def a(b) {
+                     |  b = b-6
+                     |  if (1 <= 2) {
+                     |    3-4+5+b
+                     |  }
+                     |}
+                     |a(1)
+                     |""".stripMargin) shouldBe -1
     withOutput {
-      f.parseAndEval("""
-                       |
-                       |a=(3+3)
-                       |if (a < 10) {
-                       |  out=a+1
-                       |}""".stripMargin)
-    } shouldBe "7"
+      f.parseAndEval("""def a(a, c) {
+                       |  out=a+c+1
+                       |}
+                       |a(3+3, 2)
+                       |""".stripMargin)
+    } shouldBe "9"
   }
 
   private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {

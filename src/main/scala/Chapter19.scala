@@ -245,7 +245,7 @@ object Chapter19 {
     protected def parseExpr[T <: Expr](in: String, expr: => Parser[T]): T = {
       val result = phrase(expr)(new lexical.Scanner(in))
       if (!result.successful) {
-        throw new scala.RuntimeException("Parsing failed: " + result)
+        throw new RuntimeException("Parsing failed: " + result)
       }
 
       result.get
@@ -325,24 +325,22 @@ object Chapter19 {
   class Calculator {
 
     protected val parser = new CalculatorParser
-    protected val vars = new mutable.HashMap[String, Int]
 
     def parseAndEval(input: String): Int = {
-      vars.clear()
-      eval(parser.parse(input))
+      eval(new mutable.HashMap[String, Int], parser.parse(input))
     }
 
-    protected def eval(expr: Expr): Int = expr match {
-      case Block(list) => list.map(eval).lastOption.getOrElse(0)
+    protected def eval(vars: mutable.HashMap[String, Int], expr: Expr): Int = expr match {
+      case Block(list) => list.map(eval(vars, _)).lastOption.getOrElse(0)
       case Number(n) => n
       case Operator(op, left, right) => op match {
-        case "+" => eval(left) + eval(right)
-        case "-" => eval(left) - eval(right)
-        case "*" => eval(left) * eval(right)
+        case "+" => eval(vars, left) + eval(vars, right)
+        case "-" => eval(vars, left) - eval(vars, right)
+        case "*" => eval(vars, left) * eval(vars, right)
       }
       case Variable(name) => vars.getOrElse(name, 0)
       case Assignment(v, e) =>
-        val res = eval(e)
+        val res = eval(vars, e)
         if (v.name == "out") print(res)
         else vars(v.name) = res
         res
@@ -387,28 +385,28 @@ object Chapter19 {
 
     override protected val parser = new ProgramParser
 
-    override protected def eval(expr: Expr): Int = expr match {
+    override protected def eval(vars: mutable.HashMap[String, Int], expr: Expr): Int = expr match {
       case Condition(op, left, right) =>
         if (op match {
-          case "<" => eval(left) < eval(right)
-          case "<=" => eval(left) <= eval(right)
-          case ">" => eval(left) > eval(right)
-          case ">=" => eval(left) >= eval(right)
-          case "==" => eval(left) == eval(right)
-          case "!=" => eval(left) != eval(right)
+          case "<" => eval(vars, left) < eval(vars, right)
+          case "<=" => eval(vars, left) <= eval(vars, right)
+          case ">" => eval(vars, left) > eval(vars, right)
+          case ">=" => eval(vars, left) >= eval(vars, right)
+          case "==" => eval(vars, left) == eval(vars, right)
+          case "!=" => eval(vars, left) != eval(vars, right)
         }) 1
         else 0
       case If(cond, block) =>
-        if (eval(cond) != 0) eval(block)
+        if (eval(vars, cond) != 0) eval(vars, block)
         else 0
       case IfElse(cond, ifBlock, elseBlock) =>
-        if (eval(cond) != 0) eval(ifBlock)
-        else eval(elseBlock)
+        if (eval(vars, cond) != 0) eval(vars, ifBlock)
+        else eval(vars, elseBlock)
       case While(cond, block) =>
-        while (eval(cond) != 0) eval(block)
+        while (eval(vars, cond) != 0) eval(vars, block)
         0
       case _ =>
-        super.eval(expr)
+        super.eval(vars, expr)
     }
   }
 
@@ -453,13 +451,28 @@ object Chapter19 {
     override protected val parser = new FuncProgramParser
     protected val fx = new mutable.HashMap[String, FuncDef]
 
-    override protected def eval(expr: Expr): Int = expr match {
-      case f: FuncDef =>
+    override protected def eval(vars: mutable.HashMap[String, Int], expr: Expr): Int = expr match {
+      case fd: FuncDef =>
         // store function definition
-        fx(f.name) = f
+        fx(fd.name) = fd
         0
+      case fc: FuncCall =>
+        val funcDefOpt = fx.get(fc.name)
+        if (funcDefOpt.isEmpty) {
+          throw new RuntimeException("function definition not found: " + fc.name)
+        }
+        val fd = funcDefOpt.get
+        if (fd.args.length != fc.params.length) {
+          throw new RuntimeException("function call with wrong arguments number: " + fc.name)
+        }
+        // pass arguments to function
+        val funcArgs = new mutable.HashMap[String, Int]
+        for ((arg, param) <- fd.args.zip(fc.params)) {
+          funcArgs(arg) = eval(vars, param)
+        }
+        eval(funcArgs, fd.block)
       case _ =>
-        super.eval(expr)
+        super.eval(vars, expr)
     }
   }
 
@@ -471,13 +484,18 @@ object Chapter19 {
     override def block: Parser[Block] = rep("\n") ~> repsep(assign | expr | factor |
       whileExpr | ifElse | funcDef, rep("\n")) <~ rep("\n") ^^ Block
 
-    def funcDef: Parser[Expr] = "def" ~> ident ~ ("(" ~> args <~ ")") ~
+    def funcDef: Parser[FuncDef] = "def" ~> ident ~ ("(" ~> repsep(ident, ",") <~ ")") ~
       (delim("{") ~> block <~ delim("}")) ^^ {
       case name ~ args ~ block => FuncDef(name, args, block)
     }
 
-    def args: Parser[List[String]] = repsep(variable, ",") ^^ (_.map(_.name))
+    def funcCall: Parser[FuncCall] = ident ~ ("(" ~> repsep(expr | factor, ",") <~ ")") ^^ {
+      case name ~ params => FuncCall(name, params)
+    }
+
+    override def factor: Parser[Expr] = funcCall | super.factor
   }
 
   case class FuncDef(name: String, args: List[String], block: Block) extends Expr
+  case class FuncCall(name: String, params: List[Expr]) extends Expr
 }
