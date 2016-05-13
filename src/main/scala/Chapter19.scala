@@ -4,6 +4,7 @@ import scala.util.parsing.combinator.RegexParsers
 import scala.util.parsing.combinator.lexical.StdLexical
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import scala.util.parsing.input.CharArrayReader.EofCh
+import scala.util.parsing.input.Positional
 import scala.xml._
 
 object Chapter19 {
@@ -90,7 +91,7 @@ object Chapter19 {
     def parse(e: String): List[Int] = {
       val result = parseAll(list, e)
       if (!result.successful) {
-        throw new RuntimeException("Parsing failed: " + result)
+        throw new IllegalArgumentException("Parsing failed: " + result)
       }
 
       result.get
@@ -114,7 +115,7 @@ object Chapter19 {
     def parse(e: String): Date = {
       val result = parseAll(dateTime, e)
       if (!result.successful) {
-        throw new RuntimeException("Parsing failed: " + result)
+        throw new IllegalArgumentException("Parsing failed: " + result)
       }
 
       result.get
@@ -142,10 +143,10 @@ object Chapter19 {
     def second: Parser[Int] = opt(":") ~> numRegex ^^ { _.toInt }
     def millis: Parser[Int] = opt(".") ~> millisRegex ^^ { _.toInt }
 
-    private def makeDate(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
+    private def makeDate(y: Int, m: Int, d: Int, hh: Int, mm: Int, ss: Int, sss: Int): Date = {
       val cal = Calendar.getInstance()
-      cal.set(y, m - 1, d, h, mm, s)
-      cal.set(Calendar.MILLISECOND, ss)
+      cal.set(y, m - 1, d, hh, mm, ss)
+      cal.set(Calendar.MILLISECOND, sss)
       cal.getTime
     }
   }
@@ -245,7 +246,7 @@ object Chapter19 {
     protected def parseExpr[T <: Expr](in: String, expr: => Parser[T]): T = {
       val result = phrase(expr)(new lexical.Scanner(in))
       if (!result.successful) {
-        throw new RuntimeException("Parsing failed: " + result)
+        throw new IllegalArgumentException("Parsing failed: " + result)
       }
 
       result.get
@@ -292,7 +293,7 @@ object Chapter19 {
     def parse(e: String): Int = {
       val result = parseAll(expr, e)
       if (!result.successful) {
-        throw new RuntimeException("Parsing failed: " + result)
+        throw new IllegalArgumentException("Parsing failed: " + result)
       }
 
       result.get
@@ -459,11 +460,13 @@ object Chapter19 {
       case fc: FuncCall =>
         val funcDefOpt = fx.get(fc.name)
         if (funcDefOpt.isEmpty) {
-          throw new RuntimeException("function definition not found: " + fc.name)
+          throw new IllegalArgumentException("function definition not found at " +
+            fc.pos + "\n" + fc.pos.longString)
         }
         val fd = funcDefOpt.get
         if (fd.args.length != fc.params.length) {
-          throw new RuntimeException("function call with wrong arguments number: " + fc.name)
+          throw new IllegalArgumentException("function call with wrong arguments number at " +
+            fc.pos + "\n" + fc.pos.longString)
         }
         // pass arguments to function
         val funcArgs = new mutable.HashMap[String, Int]
@@ -489,13 +492,14 @@ object Chapter19 {
       case name ~ args ~ block => FuncDef(name, args, block)
     }
 
-    def funcCall: Parser[FuncCall] = ident ~ ("(" ~> repsep(expr | factor, ",") <~ ")") ^^ {
+    def funcCall: Parser[FuncCall] = positioned(ident ~ ("(" ~>
+      repsep(expr | factor, ",") <~ ")") ^^ {
       case name ~ params => FuncCall(name, params)
-    }
+    })
 
     override def factor: Parser[Expr] = funcCall | super.factor
   }
 
   case class FuncDef(name: String, args: List[String], block: Block) extends Expr
-  case class FuncCall(name: String, params: List[Expr]) extends Expr
+  case class FuncCall(name: String, params: List[Expr]) extends Expr with Positional
 }

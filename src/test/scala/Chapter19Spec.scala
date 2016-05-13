@@ -187,29 +187,39 @@ class Chapter19Spec extends FlatSpec with Matchers {
     val f = new FuncProgram
 
     //when & then
-    a [RuntimeException] should be thrownBy {
+    the [IllegalArgumentException] thrownBy {
       f.parseAndEval("""a()
                        |""".stripMargin)
-    }
-    a [RuntimeException] should be thrownBy {
+    } should have message """function definition not found at 1.1
+                            |a()
+                            |
+                            |^""".stripMargin
+    the [IllegalArgumentException] thrownBy {
       f.parseAndEval("""def a() {
                        |}
                        |a(1)
                        |""".stripMargin)
-    }
-    a [RuntimeException] should be thrownBy {
+    } should have message """function call with wrong arguments number at 3.1
+                            |a(1)
+                            |
+                            |^""".stripMargin
+    the [IllegalArgumentException] thrownBy {
       f.parseAndEval("""def a(b) {
                        |}
                        |a()
                        |""".stripMargin)
-    }
+    } should have message """function call with wrong arguments number at 3.1
+                            |a()
+                            |
+                            |^""".stripMargin
     f.parseAndEval("""
                      |def a() {
                      |  b-6
                      |}
                      |
+                     |a = 3-4
                      |if (1 <= 2) {
-                     |  3-4+5+a()
+                     |  a+5+a()
                      |}
                      |else {
                      |  5
@@ -223,20 +233,23 @@ class Chapter19Spec extends FlatSpec with Matchers {
                      |  }
                      |}
                      |a(1)
-                     |""".stripMargin) shouldBe -1
+                     |a(2)
+                     |a(3)
+                     |""".stripMargin) shouldBe 1
     withOutput {
       f.parseAndEval("""def a(a, c) {
                        |  out=a+c+1
                        |}
-                       |a(3+3, 2)
+                       |a = 2
+                       |a(3+3, a)
                        |""".stripMargin)
     } shouldBe "9"
   }
 
-  private def date(y: Int, m: Int, d: Int, h: Int, mm: Int, s: Int, ss: Int): Date = {
+  private def date(y: Int, m: Int, d: Int, hh: Int, mm: Int, ss: Int, sss: Int): Date = {
     val cal = Calendar.getInstance()
-    cal.set(y, m - 1, d, h, mm, s)
-    cal.set(Calendar.MILLISECOND, ss)
+    cal.set(y, m - 1, d, hh, mm, ss)
+    cal.set(Calendar.MILLISECOND, sss)
     cal.getTime
   }
 }
