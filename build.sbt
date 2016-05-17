@@ -25,6 +25,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+  "org.scala-lang" % "scala-actors" % "2.11.5",
   "junit" % "junit" % "4.11",
   "org.hamcrest" % "hamcrest-all" % "1.3",
   "org.scala-lang" % "scala-reflect" % "2.11.7" % "test",
