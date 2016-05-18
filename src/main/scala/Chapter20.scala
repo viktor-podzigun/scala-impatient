@@ -1,4 +1,7 @@
 import scala.actors.Actor
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Promise}
+import scala.util.Random
 
 object Chapter20 {
 
@@ -9,27 +12,35 @@ object Chapter20 {
    * such as 1,000,000), and then computes the average of those numbers by distributing the work
    * over multiple actors, each of which computes the sum of the values, sending the result to
    * an actor that combines the results.
-   *
    * If you run your program on a dual-core or quad-core processor, what is the speedup over
    * a single-threaded solution?
+   *
+   * Solution:
+   *
+   * For this simple task, on my machine, single-threaded solution was two times faster then
+   * actors solution.
+   * Starting actors takes more time then calculating the average of random numbers.
    */
   object RandCalc {
 
     val MaxWorkers = 10
     val NumPerWorker = 50000
 
-    def calcAverageFor(count: Int): Double = {
-      val proc = new RandProcessor()
-      proc.start()
+    def calcAverageFor(count: Int, useActors: Boolean): Double = {
+      if (useActors) {
+        val proc = new RandProcessor()
+        proc.start()
 
-      val futureResult = proc !! RandMsgProcess(count)
-      futureResult() match {
-        case RandMsgResult(average) => average
+        val futureResult = proc.process(count)
+        Await.result(futureResult, Duration.Inf)
+      }
+      else {
+        calcAverage(0 until count)
       }
     }
 
     def calcAverage(range: Range): Double = {
-      range.sum / range.size
+      range.map(_ => Random.nextDouble()).sum / range.size
     }
   }
   
@@ -39,9 +50,15 @@ object Chapter20 {
   
   class RandProcessor() extends Actor {
 
-    private var count = 0
+    private var workerCount = 0
     private var processedCount = 0
     private var currAverage = 0.0
+    private val resultPromise = Promise[Double]()
+
+    def process(count: Int): concurrent.Future[Double] = {
+      this ! RandMsgProcess(count)
+      resultPromise.future
+    }
 
     def act(): Unit = {
       loop {
@@ -69,14 +86,12 @@ object Chapter20 {
       }).toList
     }
 
-    private def startWorkers(n: Int): Unit = {
-      this.count = n
-
-      var workerCount = count / RandCalc.NumPerWorker
+    private def startWorkers(numCount: Int): Unit = {
+      workerCount = numCount / RandCalc.NumPerWorker
       if (workerCount == 0) workerCount = 1
       else if (workerCount > RandCalc.MaxWorkers) workerCount = RandCalc.MaxWorkers
 
-      for (range <- getRanges(count, workerCount)) {
+      for (range <- getRanges(numCount, workerCount)) {
         val worker = new RandWorker()
         worker.start()
         worker ! RandMsgCalc(range)
@@ -87,8 +102,8 @@ object Chapter20 {
       processedCount += 1
       currAverage += average
       
-      if (processedCount >= count) {
-        reply(RandMsgResult(currAverage / processedCount))
+      if (processedCount >= workerCount) {
+        resultPromise.success(currAverage / processedCount)
         exit()
       }
     }
