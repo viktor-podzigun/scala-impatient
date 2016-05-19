@@ -1,4 +1,4 @@
-
+import java.io.File
 
 object Utils {
 
@@ -9,5 +9,10 @@ object Utils {
     }
 
     process(args(0))
+  }
+
+  def getFileExt(file: File): String = {
+    val name = file.getName
+    name.substring(name.lastIndexOf('.') + 1)
   }
 }

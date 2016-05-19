@@ -1,4 +1,4 @@
-import java.io.{ByteArrayOutputStream, File, PrintWriter}
+import java.io.{ByteArrayOutputStream, File, FileOutputStream, PrintWriter}
 import scala.collection.JavaConversions.seqAsJavaList
 import scala.collection.mutable
 import scala.io.Source
@@ -68,7 +68,30 @@ object TestUtils {
       writer.close()
     }
   }
-  
+
+  def resourceToTmpFile(resourcePath: String): File = {
+    val resourceFile = new File(resourcePath)
+    val file = File.createTempFile(resourceFile.getName, "." + Utils.getFileExt(resourceFile))
+    file.deleteOnExit()
+
+    val in = getClass.getResourceAsStream(resourcePath)
+    val out = new FileOutputStream(file)
+    try {
+      val buf = new Array[Byte](2048)
+      var len = in.read(buf)
+      while (len > 0) {
+        out.write(buf, 0, len)
+
+        len = in.read(buf)
+      }
+
+      file
+    }
+    finally {
+      out.close()
+    }
+  }
+
   def withOutput(block: => Unit): String = {
     val out = new ByteArrayOutputStream()
     Console.withOut(out)(block)

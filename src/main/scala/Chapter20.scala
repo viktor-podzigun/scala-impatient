@@ -1,3 +1,7 @@
+import java.awt.Color
+import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
 import scala.actors.Actor
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
@@ -118,6 +122,41 @@ object Chapter20 {
           exit()
         case msg =>
           throw new IllegalStateException("Unknown message: " + msg)
+      }
+    }
+  }
+
+  /**
+   * Task 2:
+   *
+   * Write a program that reads in a large image into a `BufferedImage`, using
+   * `javax.imageio.ImageIO.read`. Use multiple actors, each of which inverts the colors in
+   * a strip of the image. When all strips have been inverted, write the result.
+   */
+  object ImageProgram {
+
+    def invert(srcFile: File, dstFile: File) {
+      val bufferedImage = ImageIO.read(srcFile)
+      invertImage(bufferedImage)
+      ImageIO.write(bufferedImage, Utils.getFileExt(srcFile), dstFile)
+    }
+
+    private def invertImage(src: BufferedImage): Unit = {
+      for (x <- 0 until src.getWidth) {
+        val colors = new Array[Int](src.getHeight)
+        for (y <- 0 until src.getHeight) {
+          colors(y) = src.getRGB(x, y)
+        }
+
+        for (i <- colors.indices) {
+          var col = new Color(colors(i), true)
+          col = new Color(255 - col.getRed, 255 - col.getGreen, 255 - col.getBlue)
+          colors(i) = col.getRGB
+        }
+
+        for (y <- colors.indices) {
+          src.setRGB(x, y, colors(y))
+        }
       }
     }
   }
