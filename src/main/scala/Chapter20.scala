@@ -3,6 +3,7 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import scala.actors.Actor
+import scala.collection.immutable.Seq
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
 import scala.util.Random
@@ -47,11 +48,13 @@ object Chapter20 {
       range.map(_ => Random.nextDouble()).sum / range.size
     }
   }
-  
+
   case class RandMsgProcess(n: Int)
+
   case class RandMsgCalc(range: Range)
+
   case class RandMsgResult(average: Double)
-  
+
   class RandProcessor() extends Actor {
 
     private var workerCount = 0
@@ -105,7 +108,7 @@ object Chapter20 {
     private def procResult(average: Double): Unit = {
       processedCount += 1
       currAverage += average
-      
+
       if (processedCount >= workerCount) {
         resultPromise.success(currAverage / processedCount)
         exit()
@@ -135,27 +138,127 @@ object Chapter20 {
    */
   object ImageProgram {
 
-    def invert(srcFile: File, dstFile: File) {
-      val bufferedImage = ImageIO.read(srcFile)
-      invertImage(bufferedImage)
-      ImageIO.write(bufferedImage, Utils.getFileExt(srcFile), dstFile)
+    val MaxWorkers = 10
+
+    def invert(srcFile: File, dstFile: File): Unit = {
+      val proc = new ImageProcessor()
+      proc.start()
+
+      val futureResult = proc.process(srcFile, dstFile)
+      Await.result(futureResult, Duration.Inf)
+    }
+    
+    def loadImage(srcFile: File): BufferedImage = ImageIO.read(srcFile)
+
+    def saveImage(bufferedImage: BufferedImage, dstFile: File): Unit = {
+      ImageIO.write(bufferedImage, Utils.getFileExt(dstFile), dstFile)
     }
 
-    private def invertImage(src: BufferedImage): Unit = {
-      for (x <- 0 until src.getWidth) {
-        val colors = new Array[Int](src.getHeight)
-        for (y <- 0 until src.getHeight) {
-          colors(y) = src.getRGB(x, y)
-        }
+    def getStrip(image: BufferedImage, stripIndex: Int): Seq[Int] = {
+      val strip = new Array[Int](image.getHeight)
+      for (y <- 0 until image.getHeight) {
+        strip(y) = image.getRGB(stripIndex, y)
+      }
 
-        for (i <- colors.indices) {
-          var col = new Color(colors(i), true)
-          col = new Color(255 - col.getRed, 255 - col.getGreen, 255 - col.getBlue)
-          colors(i) = col.getRGB
-        }
+      strip.toIndexedSeq
+    }
 
-        for (y <- colors.indices) {
-          src.setRGB(x, y, colors(y))
+    def setStrip(image: BufferedImage, stripIndex: Int, strip: Seq[Int]): Unit = {
+      for (y <- strip.indices) {
+        image.setRGB(stripIndex, y, strip(y))
+      }
+    }
+
+    def invertStrip(strip: Seq[Int]): Seq[Int] = {
+      for (rgba <- strip) yield {
+        var col = new Color(rgba, true)
+        col = new Color(255 - col.getRed, 255 - col.getGreen, 255 - col.getBlue)
+        col.getRGB
+      }
+    }
+  }
+
+  case class ImageMsgProcess(srcFile: File, dstFile: File)
+
+  case class ImageMsgInvertStrip(stripIndex: Int, strip: Seq[Int])
+
+  case class ImageMsgInvertResult(stripIndex: Int, invertedStrip: Seq[Int])
+
+  case class ImageMsgProcessEnd()
+  
+  class ImageProcessor() extends Actor {
+
+    private var stripCount = 0
+    private var processedCount = 0
+    private var image: BufferedImage = null
+    private var resultFile: File = null
+    private val resultPromise = Promise[Unit]()
+
+    def process(srcFile: File, dstFile: File): concurrent.Future[Unit] = {
+      this ! ImageMsgProcess(srcFile, dstFile)
+      resultPromise.future
+    }
+
+    def act(): Unit = {
+      loop {
+        react {
+          case ImageMsgProcess(srcFile, dstFile) =>
+            procStart(srcFile, dstFile)
+          case ImageMsgInvertResult(stripIndex, invertedStrip) =>
+            procResult(stripIndex, invertedStrip)
+          case msg =>
+            throw new IllegalStateException("Unknown message: " + msg)
+        }
+      }
+    }
+
+    private def procStart(srcFile: File, dstFile: File): Unit = {
+      image = ImageProgram.loadImage(srcFile)
+      stripCount = image.getWidth
+      resultFile = dstFile
+
+      // start workers
+      val workers = for (i <- 0 until ImageProgram.MaxWorkers) yield {
+        val worker = new ImageWorker()
+        worker.start()
+        worker
+      }
+
+      // send invert strip messages to workers
+      for (x <- 0 until stripCount) {
+        workers(x % workers.length) ! ImageMsgInvertStrip(x, ImageProgram.getStrip(image, x))
+      }
+
+      // stop workers
+      for (worker <- workers) {
+        worker ! ImageMsgProcessEnd
+      }
+    }
+    
+    private def procResult(stripIndex: Int, invertedStrip: Seq[Int]): Unit = {
+      processedCount += 1
+      ImageProgram.setStrip(image, stripIndex, invertedStrip)
+
+      if (processedCount >= stripCount) {
+        ImageProgram.saveImage(image, resultFile)
+
+        resultPromise.success(Unit)
+        exit()
+      }
+    }
+  }
+
+  class ImageWorker() extends Actor {
+
+    def act(): Unit = {
+      loop {
+        react {
+          case ImageMsgInvertStrip(stripIndex, strip) =>
+            reply(ImageMsgInvertResult(stripIndex, ImageProgram.invertStrip(strip)))
+          case ImageMsgProcessEnd =>
+            exit()
+          case msg =>
+            throw new IllegalStateException("Unknown message: " + msg)
         }
       }
     }
