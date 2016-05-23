@@ -37,4 +37,16 @@ class Chapter20Spec extends FlatSpec with Matchers {
       }
     }
   }
+
+  "WordsProgram" should "count words that match a given regex in all files and subdirectories" in {
+    //given
+    val dirPath = "src/main/"
+    val fileExtensions = List("txt", "html", "xhtml")
+
+    //when
+    val result: Int = WordsProgram.calcMatchedWords(dirPath, fileExtensions: _*)
+
+    //then
+    result shouldBe 3
+  }
 }

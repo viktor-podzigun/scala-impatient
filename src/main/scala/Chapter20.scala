@@ -6,6 +6,7 @@ import scala.actors.Actor
 import scala.collection.immutable.Seq
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
+import scala.io.Source
 import scala.util.Random
 
 object Chapter20 {
@@ -261,6 +262,29 @@ object Chapter20 {
             throw new IllegalStateException("Unknown message: " + msg)
         }
       }
+    }
+  }
+
+  /**
+   * Task 3:
+   *
+   * Write a program that counts how many words match a given regular expression in all files of
+   * all subdirectories of a given directory. Have one actor per file, one actor that traverses
+   * the subdirectories, and one actor to accumulate the results.
+   */
+  object WordsProgram {
+
+    val wordRegex = "text".r
+
+    def calcMatchedWords(dirPath: String, fileExtensions: String*): Int = {
+      var count = 0
+      for (file <- Utils.listAllFiles(dirPath, fileExtensions: _*)) {
+        for (line <- Source.fromFile(file).getLines()) {
+          wordRegex.findAllIn(line).foreach(_ => count += 1)
+        }
+      }
+
+      count
     }
   }
 }
