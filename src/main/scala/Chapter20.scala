@@ -1,8 +1,8 @@
 import java.awt.Color
 import java.awt.image.BufferedImage
-import java.io.File
+import java.io.{File, IOException}
 import javax.imageio.ImageIO
-import scala.actors.Actor
+import scala.actors.{Actor, OutputChannel}
 import scala.collection.immutable.Seq
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
@@ -277,14 +277,156 @@ object Chapter20 {
     val wordRegex = "text".r
 
     def calcMatchedWords(dirPath: String, fileExtensions: String*): Int = {
-      var count = 0
-      for (file <- Utils.listAllFiles(dirPath, fileExtensions: _*)) {
-        for (line <- Source.fromFile(file).getLines()) {
-          wordRegex.findAllIn(line).foreach(_ => count += 1)
+      val futureResult = new WordsProcessor().process(dirPath, fileExtensions: _*)
+      Await.result(futureResult, Duration.Inf)
+
+//      var count = 0
+//      for (file <- Utils.listAllFiles(dirPath, fileExtensions: _*)) {
+//        for (line <- Source.fromFile(file).getLines()) {
+//          wordRegex.findAllIn(line).foreach(_ => count += 1)
+//        }
+//      }
+//
+//      count
+    }
+  }
+
+  case class WordsMsgProcess(dirPath: String, fileExtensions: String*)
+
+  case class WordsMsgProcessEnd()
+
+  case class WordsMsgDir(dirPath: String)
+
+  case class WordsMsgFile(filePath: String)
+
+  case class WordsMsgFileResult(wordsCount: Int)
+
+  class WordsProcessor() extends Actor {
+
+    private var processEnd = false
+    private var wordsCount = 0
+    private var fileCount = 0
+    private var processedCount = 0
+    private val resultPromise = Promise[Int]()
+
+    def process(dirPath: String, fileExtensions: String*): concurrent.Future[Int] = {
+      start()
+      this ! WordsMsgProcess(dirPath, fileExtensions: _*)
+      resultPromise.future
+    }
+
+    def act(): Unit = {
+      loop {
+        react {
+          case msg: WordsMsgProcess =>
+            startDirWorker(msg)
+          case msg: WordsMsgFile =>
+            fileCount += 1
+            startFileWorker(msg)
+          case WordsMsgFileResult(count) =>
+            processedCount += 1
+            wordsCount += count
+            checkEnd()
+          case _: WordsMsgProcessEnd =>
+            processEnd = true
+            checkEnd()
+          case msg =>
+            throw new IllegalStateException("Unknown message: " + msg)
         }
       }
+    }
 
-      count
+    def checkEnd(): Unit = {
+      if (processedCount >= fileCount && processEnd) {
+        resultPromise.success(wordsCount)
+        exit()
+      }
+    }
+
+    def startDirWorker(msg: WordsMsgProcess): Unit = {
+      val dirWorker = new WordsDirWorker()
+      dirWorker.start()
+      dirWorker ! msg
+    }
+
+    def startFileWorker(msg: WordsMsgFile): Unit = {
+      val fileWorker = new WordsFileWorker()
+      fileWorker.start()
+      fileWorker ! msg
+    }
+  }
+
+  class WordsDirWorker() extends Actor {
+
+    private var fileExtensions: scala.Seq[String] = null
+    private var processor: OutputChannel[Any] = null
+    private var dirCount = 1 // allow process the root directory
+
+    def act(): Unit = {
+      loop {
+        react {
+          case WordsMsgProcess(dirPath, fileExtensions @ _*) =>
+            this.fileExtensions = fileExtensions
+            this.processor = sender
+            this ! WordsMsgDir(dirPath)
+          case WordsMsgDir(dirPath) =>
+            dirCount -= 1
+            processDir(dirPath)
+            if (dirCount == 0) {
+              processor ! WordsMsgProcessEnd()
+              exit()
+            }
+          case msg =>
+            throw new IllegalStateException("Unknown message: " + msg)
+        }
+      }
+    }
+    
+    def processDir(dirPath: String): Unit = {
+      val dir = new File(dirPath)
+      require(dir.isDirectory, s"Given path should represent directory: $dirPath")
+
+      val files = dir.listFiles()
+      if (files == null) {
+        throw new IOException(s"Cannot read directory content: $dir")
+      }
+
+      for (file <- files) {
+        if (file.isDirectory) {
+          // process new directory in this actor
+          dirCount += 1
+          this ! WordsMsgDir(file.getPath)
+        }
+        else if (fileExtensions.isEmpty || fileExtensions.contains(Utils.getFileExt(file))) {
+          // notify processor about new file
+          processor ! WordsMsgFile(file.getPath)
+        }
+      }
+    }
+  }
+
+  class WordsFileWorker() extends Actor {
+
+    def act(): Unit = {
+      react {
+        case WordsMsgFile(filePath) =>
+          processFile(filePath)
+          exit()
+        case msg =>
+          throw new IllegalStateException("Unknown message: " + msg)
+      }
+    }
+
+    def processFile(filePath: String): Unit = {
+      val file = new File(filePath)
+      require(file.isFile, s"Given path should represent file: $filePath")
+
+      var wordsCount = 0
+      for (line <- Source.fromFile(file).getLines()) {
+        WordsProgram.wordRegex.findAllIn(line).foreach(_ => wordsCount += 1)
+      }
+
+      reply(WordsMsgFileResult(wordsCount))
     }
   }
 }
