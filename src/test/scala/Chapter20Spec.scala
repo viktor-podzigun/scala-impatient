@@ -38,15 +38,30 @@ class Chapter20Spec extends FlatSpec with Matchers {
     }
   }
 
-  "WordsProgram" should "count words that match a given regex in all files and subdirectories" in {
+  "WordsCountProgram" should "count matched words in all files and subdirectories" in {
     //given
     val dirPath = "src/main/"
     val fileExtensions = List("txt", "html", "xhtml")
 
     //when
-    val result: Int = WordsProgram.calcMatchedWords(dirPath, fileExtensions: _*)
+    val result: Int = WordsCountProgram.calcMatchedWords(dirPath, fileExtensions: _*)
 
     //then
     result shouldBe 3
+  }
+
+  "WordsPrintProgram" should "print matched words in all files and subdirectories" in {
+    //given
+    val dirPath = "src/main/"
+    val fileExtensions = List("txt", "html", "xhtml")
+
+    //when
+    val result: String = WordsPrintProgram.printMatchedWords(dirPath, fileExtensions: _*)
+
+    //then
+    result shouldBe """text
+                      |text
+                      |text
+                      |""".stripMargin
   }
 }

@@ -4,10 +4,12 @@ import java.io.{File, IOException}
 import javax.imageio.ImageIO
 import scala.actors.{Actor, OutputChannel}
 import scala.collection.immutable.Seq
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
 import scala.io.Source
 import scala.util.Random
+import scala.util.matching.Regex
 
 object Chapter20 {
 
@@ -272,12 +274,17 @@ object Chapter20 {
    * all subdirectories of a given directory. Have one actor per file, one actor that traverses
    * the subdirectories, and one actor to accumulate the results.
    */
-  object WordsProgram {
+  object WordsCountProgram {
 
-    val wordRegex = "text".r
+    private val wordRegex = "text".r
 
     def calcMatchedWords(dirPath: String, fileExtensions: String*): Int = {
-      val futureResult = new WordsProcessor().process(dirPath, fileExtensions: _*)
+      val futureResult = new WordsProcessor(
+        WordsParams(wordRegex, dirPath, fileExtensions.toIndexedSeq),
+        0,
+        (count: Int, file, words) => count + words.length
+      ).process()
+
       Await.result(futureResult, Duration.Inf)
 
 //      var count = 0
@@ -291,7 +298,9 @@ object Chapter20 {
     }
   }
 
-  case class WordsMsgProcess(dirPath: String, fileExtensions: String*)
+  case class WordsParams(wordRegex: Regex, dirPath: String, fileExtensions: Seq[String])
+
+  case class WordsMsgProcess()
 
   case class WordsMsgProcessEnd()
 
@@ -299,19 +308,21 @@ object Chapter20 {
 
   case class WordsMsgFile(filePath: String)
 
-  case class WordsMsgFileResult(wordsCount: Int)
+  case class WordsMsgFileResult(file: File, words: Seq[String])
 
-  class WordsProcessor() extends Actor {
+  class WordsProcessor[T](params: WordsParams,
+                          resultInit: T,
+                          resultProc: (T, File, Seq[String]) => T) extends Actor {
 
     private var processEnd = false
-    private var wordsCount = 0
+    private var result: T = resultInit
     private var fileCount = 0
     private var processedCount = 0
-    private val resultPromise = Promise[Int]()
+    private val resultPromise = Promise[T]()
 
-    def process(dirPath: String, fileExtensions: String*): concurrent.Future[Int] = {
+    def process(): concurrent.Future[T] = {
       start()
-      this ! WordsMsgProcess(dirPath, fileExtensions: _*)
+      this ! WordsMsgProcess()
       resultPromise.future
     }
 
@@ -323,9 +334,9 @@ object Chapter20 {
           case msg: WordsMsgFile =>
             fileCount += 1
             startFileWorker(msg)
-          case WordsMsgFileResult(count) =>
+          case WordsMsgFileResult(file, words) =>
             processedCount += 1
-            wordsCount += count
+            result = resultProc(result, file, words)
             checkEnd()
           case _: WordsMsgProcessEnd =>
             processEnd = true
@@ -338,37 +349,35 @@ object Chapter20 {
 
     def checkEnd(): Unit = {
       if (processedCount >= fileCount && processEnd) {
-        resultPromise.success(wordsCount)
+        resultPromise.success(result)
         exit()
       }
     }
 
     def startDirWorker(msg: WordsMsgProcess): Unit = {
-      val dirWorker = new WordsDirWorker()
+      val dirWorker = new WordsDirWorker(params)
       dirWorker.start()
       dirWorker ! msg
     }
 
     def startFileWorker(msg: WordsMsgFile): Unit = {
-      val fileWorker = new WordsFileWorker()
+      val fileWorker = new WordsFileWorker(params)
       fileWorker.start()
       fileWorker ! msg
     }
   }
 
-  class WordsDirWorker() extends Actor {
+  class WordsDirWorker(params: WordsParams) extends Actor {
 
-    private var fileExtensions: scala.Seq[String] = null
     private var processor: OutputChannel[Any] = null
     private var dirCount = 1 // allow process the root directory
 
     def act(): Unit = {
       loop {
         react {
-          case WordsMsgProcess(dirPath, fileExtensions @ _*) =>
-            this.fileExtensions = fileExtensions
+          case _: WordsMsgProcess =>
             this.processor = sender
-            this ! WordsMsgDir(dirPath)
+            this ! WordsMsgDir(params.dirPath)
           case WordsMsgDir(dirPath) =>
             dirCount -= 1
             processDir(dirPath)
@@ -397,7 +406,9 @@ object Chapter20 {
           dirCount += 1
           this ! WordsMsgDir(file.getPath)
         }
-        else if (fileExtensions.isEmpty || fileExtensions.contains(Utils.getFileExt(file))) {
+        else if (params.fileExtensions.isEmpty ||
+          params.fileExtensions.contains(Utils.getFileExt(file))) {
+
           // notify processor about new file
           processor ! WordsMsgFile(file.getPath)
         }
@@ -405,7 +416,7 @@ object Chapter20 {
     }
   }
 
-  class WordsFileWorker() extends Actor {
+  class WordsFileWorker(params: WordsParams) extends Actor {
 
     def act(): Unit = {
       react {
@@ -421,12 +432,34 @@ object Chapter20 {
       val file = new File(filePath)
       require(file.isFile, s"Given path should represent file: $filePath")
 
-      var wordsCount = 0
+      val words = new ArrayBuffer[String]()
       for (line <- Source.fromFile(file).getLines()) {
-        WordsProgram.wordRegex.findAllIn(line).foreach(_ => wordsCount += 1)
+        for (word <- params.wordRegex.findAllIn(line)) {
+          words += word
+        }
       }
 
-      reply(WordsMsgFileResult(wordsCount))
+      reply(WordsMsgFileResult(file, words.toIndexedSeq))
+    }
+  }
+
+  /**
+   * Task 4:
+   *
+   * Modify the program of the preceding exercise to display all matching words.
+   */
+  object WordsPrintProgram {
+
+    private val wordRegex = "text".r
+
+    def printMatchedWords(dirPath: String, fileExtensions: String*): String = {
+      val futureResult = new WordsProcessor(
+        WordsParams(wordRegex, dirPath, fileExtensions.toIndexedSeq),
+        new StringBuilder(),
+        (result: StringBuilder, file, words) => result ++= words.mkString ++= "\n"
+      ).process()
+
+      Await.result(futureResult, Duration.Inf).toString()
     }
   }
 }
