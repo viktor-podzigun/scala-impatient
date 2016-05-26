@@ -1,8 +1,10 @@
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.{File, IOException}
+import java.util
 import javax.imageio.ImageIO
 import scala.actors.{Actor, OutputChannel}
+import scala.collection.JavaConverters.mapAsScalaMapConverter
 import scala.collection.immutable.Seq
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration.Duration
@@ -460,6 +462,47 @@ object Chapter20 {
       ).process()
 
       Await.result(futureResult, Duration.Inf).toString()
+    }
+  }
+
+  /**
+   * Task 5:
+   *
+   * Modify the program of the preceding exercise to display all matching words, each with
+   * a list of all files containing it.
+   */
+  object WordsPrintFilesProgram {
+
+    private val wordRegex = "text".r
+
+    def printMatchedWordsWithFiles(dirPath: String, fileExtensions: String*): String = {
+      val futureResult = new WordsProcessor(
+        WordsParams(wordRegex, dirPath, fileExtensions.toIndexedSeq),
+        new ArrayBuffer[(File, Seq[String])](),
+        (result: ArrayBuffer[(File, Seq[String])], file, words) => result += file -> words
+      ).process()
+
+      val result: ArrayBuffer[(File, Seq[String])] = Await.result(futureResult, Duration.Inf)
+
+      // map words to files, use sorted map to get stable output
+      val wordToFiles = new util.TreeMap[String, List[String]]().asScala
+      for ((file, words) <- result; word <- words) {
+        val files = wordToFiles.getOrElse(word, Nil)
+        wordToFiles(word) = files :+ file.getPath
+      }
+
+      // sort the files to get stable output
+      for ((word, files) <- wordToFiles) {
+        wordToFiles(word) = files.sorted
+      }
+
+      // get the output
+      val out = new StringBuilder()
+      for ((word, files) <- wordToFiles) {
+        out ++= "found \"" ++= word ++= "\" in\n" ++= files.mkString("\n") ++= "\n\n"
+      }
+
+      out.toString()
     }
   }
 }

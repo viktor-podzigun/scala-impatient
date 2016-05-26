@@ -64,4 +64,22 @@ class Chapter20Spec extends FlatSpec with Matchers {
                       |text
                       |""".stripMargin
   }
+
+  "WordsPrintFilesProgram" should "print matched words in all files and subdirectories" in {
+    //given
+    val dirPath = "src/main/"
+    val fileExtensions = List("txt", "html", "xhtml")
+
+    //when
+    val result: String = WordsPrintFilesProgram.printMatchedWordsWithFiles(dirPath,
+      fileExtensions: _*)
+
+    //then
+    result shouldBe """found "text" in
+                      |src/main/resources/Chapter16Task04.html
+                      |src/main/resources/Chapter16Task10.xhtml
+                      |src/main/resources/myfile.txt
+                      |
+                      |""".stripMargin
+  }
 }
