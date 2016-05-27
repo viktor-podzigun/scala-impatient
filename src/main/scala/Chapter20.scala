@@ -6,6 +6,7 @@ import javax.imageio.ImageIO
 import scala.actors.{Actor, OutputChannel}
 import scala.collection.JavaConverters.mapAsScalaMapConverter
 import scala.collection.immutable.Seq
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
@@ -503,6 +504,110 @@ object Chapter20 {
       }
 
       out.toString()
+    }
+  }
+
+  /**
+   * Task 6:
+   *
+   * Write a program that constructs 100 actors that use a `while(true)/receive` loop,
+   * calling `println(Thread.currentThread)` when they receive a 'Hello message,
+   * and 100 actors that do the same with `loop/react`. Start them all,
+   * and send them all a message.
+   * How many threads are occupied by the first kind, and how many by the second kind?
+   *
+   * Solution:
+   *
+   * The result is impressive, the numbers are the following:
+   * {{{
+   * whileReceiveActorsCount: 100
+   * loopReactActorsCount: 1
+   * }}}
+   */
+  object ThreadActorsProgram {
+
+    val actorsCount = 100
+
+    def calcActorThreads(whileReceiveActors: Boolean): Int = {
+      val futureResult = new ThreadActorsProcessor(whileReceiveActors).process()
+      Await.result(futureResult, Duration.Inf)
+    }
+  }
+
+  case class ThreadMsgProcess()
+  
+  case class ThreadMsgHello()
+
+  case class ThreadMsgThreadId(threadId: Long)
+
+  class ThreadActorsProcessor(whileReceiveActors: Boolean) extends Actor {
+
+    private val threadIds = mutable.HashSet[Long]()
+    private var processedCount = 0
+    private val resultPromise = Promise[Int]()
+
+    def process(): concurrent.Future[Int] = {
+      start()
+      this ! ThreadMsgProcess()
+      resultPromise.future
+    }
+
+    override def act(): Unit = {
+      loop {
+        react {
+          case _: ThreadMsgProcess =>
+            startActors()
+          case ThreadMsgThreadId(threadId) =>
+            procResult(threadId)
+        }
+      }
+    }
+    
+    def startActors(): Unit = {
+      for (_ <- 0 until ThreadActorsProgram.actorsCount) {
+        val actor =
+          if (whileReceiveActors) new ThreadWhileReceiveActor()
+          else new ThreadLoopReactActor()
+
+        actor.start()
+        actor ! ThreadMsgHello()
+      }
+    }
+    
+    def procResult(threadId: Long): Unit = {
+      threadIds += threadId
+      processedCount += 1
+      
+      if (processedCount >= ThreadActorsProgram.actorsCount) {
+        resultPromise.success(threadIds.size)
+        exit()
+      }
+    }
+  }
+
+  class ThreadWhileReceiveActor extends Actor {
+
+    override def act(): Unit = {
+      while (true) {
+        receive {
+          case _: ThreadMsgHello =>
+            //println(Thread.currentThread)
+            reply(ThreadMsgThreadId(Thread.currentThread().getId))
+        }
+      }
+    }
+  }
+
+  class ThreadLoopReactActor extends Actor {
+
+    override def act(): Unit = {
+      loop {
+        react {
+          case _: ThreadMsgHello =>
+            //println(Thread.currentThread)
+            reply(ThreadMsgThreadId(Thread.currentThread().getId))
+        }
+      }
     }
   }
 }

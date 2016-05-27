@@ -82,4 +82,16 @@ class Chapter20Spec extends FlatSpec with Matchers {
                       |
                       |""".stripMargin
   }
+
+  "ThreadActorsProgram" should "print threads count of different type of actors" in {
+    //when
+    val whileReceiveActorsCount = ThreadActorsProgram.calcActorThreads(whileReceiveActors = true)
+    println(s"whileReceiveActorsCount: $whileReceiveActorsCount")
+
+    val loopReactActorsCount = ThreadActorsProgram.calcActorThreads(whileReceiveActors = false)
+    println(s"loopReactActorsCount: $loopReactActorsCount")
+
+    //then
+    whileReceiveActorsCount should be > loopReactActorsCount
+  }
 }
