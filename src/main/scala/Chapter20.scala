@@ -3,7 +3,7 @@ import java.awt.image.BufferedImage
 import java.io.{File, IOException}
 import java.util
 import javax.imageio.ImageIO
-import scala.actors.{Actor, OutputChannel}
+import scala.actors.{Actor, Exit, OutputChannel, UncaughtException}
 import scala.collection.JavaConverters.mapAsScalaMapConverter
 import scala.collection.immutable.Seq
 import scala.collection.mutable
@@ -317,10 +317,10 @@ object Chapter20 {
                           resultInit: T,
                           resultProc: (T, File, Seq[String]) => T) extends Actor {
 
+    protected var processedCount = 0
+    private var fileCount = 0
     private var processEnd = false
     private var result: T = resultInit
-    private var fileCount = 0
-    private var processedCount = 0
     private val resultPromise = Promise[T]()
 
     def process(): concurrent.Future[T] = {
@@ -331,23 +331,25 @@ object Chapter20 {
 
     def act(): Unit = {
       loop {
-        react {
-          case msg: WordsMsgProcess =>
-            startDirWorker(msg)
-          case msg: WordsMsgFile =>
-            fileCount += 1
-            startFileWorker(msg)
-          case WordsMsgFileResult(file, words) =>
-            processedCount += 1
-            result = resultProc(result, file, words)
-            checkEnd()
-          case _: WordsMsgProcessEnd =>
-            processEnd = true
-            checkEnd()
-          case msg =>
-            throw new IllegalStateException("Unknown message: " + msg)
-        }
+        react(processMsg())
       }
+    }
+
+    protected def processMsg(): PartialFunction[Any, Unit] = {
+      case msg: WordsMsgProcess =>
+        startDirWorker(msg)
+      case msg: WordsMsgFile =>
+        fileCount += 1
+        startFileWorker(msg)
+      case WordsMsgFileResult(file, words) =>
+        processedCount += 1
+        result = resultProc(result, file, words)
+        checkEnd()
+      case _: WordsMsgProcessEnd =>
+        processEnd = true
+        checkEnd()
+      case msg =>
+        throw new IllegalStateException("Unknown message: " + msg)
     }
 
     def checkEnd(): Unit = {
@@ -363,10 +365,11 @@ object Chapter20 {
       dirWorker ! msg
     }
 
-    def startFileWorker(msg: WordsMsgFile): Unit = {
+    def startFileWorker(msg: WordsMsgFile): WordsFileWorker = {
       val fileWorker = new WordsFileWorker(params)
       fileWorker.start()
       fileWorker ! msg
+      fileWorker
     }
   }
 
@@ -608,6 +611,71 @@ object Chapter20 {
             reply(ThreadMsgThreadId(Thread.currentThread().getId))
         }
       }
+    }
+  }
+
+  /**
+   * Task 7:
+   *
+   * Add a supervisor to the program of exercise 3 that monitors the file reading actors
+   * and logs any that exit with an `IOException`. Try triggering the exception by removing
+   * files that have been scheduled for processing.
+   */
+  object WordsSupervisorProgram {
+
+    private val wordRegex = "text".r
+
+    def calcMatchedWords(dirPath: String, fileExtensions: String*): Int = {
+      val supervisorProcessor = new WordsSupervisorProcessor(
+        WordsParams(wordRegex, dirPath, fileExtensions.toIndexedSeq),
+        0,
+        (count: Int, file, words) => count + words.length
+      )
+
+      // run process and wait for result
+      val result = Await.result(supervisorProcessor.process(), Duration.Inf)
+
+      // get possible errors and log them on main thread
+      println(supervisorProcessor.getErrors)
+      result
+    }
+  }
+
+  class WordsSupervisorProcessor[T](params: WordsParams,
+                                    resultInit: T,
+                                    resultProc: (T, File, Seq[String]) => T
+                                     ) extends WordsProcessor[T](params, resultInit, resultProc) {
+
+    private val errors = new StringBuilder()
+
+    def getErrors: String = errors.toString()
+
+    override protected def processMsg(): PartialFunction[Any, Unit] = {
+      case msg: WordsMsgProcess =>
+        trapExit = true
+        super.processMsg().apply(msg)
+      case Exit(linked, UncaughtException(_, _, _, _, cause)) =>
+        processedCount += 1
+        errors.append(cause) ++= "\n"
+        checkEnd()
+      case Exit(linked, reason) =>
+        if (reason != 'normal) {
+          processedCount += 1
+          errors.append(reason) ++= "\n"
+          checkEnd()
+        }
+      case msg =>
+        super.processMsg().apply(msg)
+    }
+
+    override def startFileWorker(msg: WordsMsgFile): WordsFileWorker = {
+      val fileWorker = if (msg.filePath.endsWith(".txt"))
+        super.startFileWorker(WordsMsgFile(msg.filePath + "-not-exist"))
+      else
+        super.startFileWorker(msg)
+
+      link(fileWorker)
+      fileWorker
     }
   }
 }

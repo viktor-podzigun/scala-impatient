@@ -94,4 +94,21 @@ class Chapter20Spec extends FlatSpec with Matchers {
     //then
     whileReceiveActorsCount should be > loopReactActorsCount
   }
+
+  "WordsSupervisorProgram" should "supervise file workers and log any Exception(s)" in {
+    //given
+    val dirPath = "src/main/"
+    val fileExtensions = List("txt", "html", "xhtml")
+
+    //when
+    var result: Int = 0
+    val error = TestUtils.withOutput {
+      result = WordsSupervisorProgram.calcMatchedWords(dirPath, fileExtensions: _*)
+    }
+
+    //then
+    result shouldBe 2
+    error shouldBe "java.lang.IllegalArgumentException: requirement failed: " +
+      "Given path should represent file: src/main/resources/myfile.txt-not-exist\n\n"
+  }
 }
