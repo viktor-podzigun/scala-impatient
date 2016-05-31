@@ -3,7 +3,7 @@ import java.awt.image.BufferedImage
 import java.io.{File, IOException}
 import java.util
 import javax.imageio.ImageIO
-import scala.actors.{Actor, Exit, OutputChannel, UncaughtException}
+import scala.actors._
 import scala.collection.JavaConverters.mapAsScalaMapConverter
 import scala.collection.immutable.Seq
 import scala.collection.mutable
@@ -676,6 +676,79 @@ object Chapter20 {
 
       link(fileWorker)
       fileWorker
+    }
+  }
+
+  /**
+   * Task 8:
+   *
+   * Show how an actor-based program can deadlock when one sends synchronous messages.
+   */
+  object DeadlockProgram {
+
+    val seconds = 3
+
+    def run(): Int = {
+      val futureResult = new DeadlockProcessor().process()
+      Await.result(futureResult, Duration.Inf)
+    }
+  }
+
+  case class DeadlockMsgProcess()
+
+  case class DeadlockMsgSync()
+
+  case class DeadlockMsgResult(result: Int)
+
+  class DeadlockProcessor extends Actor {
+
+    private val resultPromise = Promise[Int]()
+
+    def process(): concurrent.Future[Int] = {
+      start()
+      this ! DeadlockMsgProcess()
+      resultPromise.future
+    }
+
+    override def act(): Unit = {
+      loop {
+        react {
+          case _: DeadlockMsgProcess =>
+            val actor = new DeadlockActor(this)
+            actor.start()
+            // send synchronous message to actor
+            actor !? DeadlockMsgSync() match {
+              case DeadlockMsgResult(result) =>
+                resultPromise.success(result)
+                exit()
+            }
+          case _: DeadlockMsgSync =>
+            reply(DeadlockMsgResult(5))
+        }
+      }
+    }
+  }
+
+  class DeadlockActor(parent: Actor) extends Actor {
+
+    override def act(): Unit = {
+      loop {
+        react {
+          case _: DeadlockMsgSync =>
+            // ask parent actor for data synchronously and wait some time
+            val optionResult = parent !? (DeadlockProgram.seconds * 1000L, DeadlockMsgSync())
+            if (optionResult.isDefined) {
+              optionResult.get match {
+                case DeadlockMsgResult(result) =>
+                  reply(DeadlockMsgResult(result * 10))
+              }
+            }
+            else {
+              // timeout, no data
+              reply(DeadlockMsgResult(-1))
+            }
+        }
+      }
     }
   }
 }

@@ -97,4 +97,10 @@ object TestUtils {
     Console.withOut(out)(block)
     out.toString
   }
+
+  def withTiming(block: => Unit): Long = {
+    val start = System.currentTimeMillis()
+    block
+    System.currentTimeMillis() - start
+  }
 }

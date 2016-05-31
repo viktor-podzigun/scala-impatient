@@ -111,4 +111,16 @@ class Chapter20Spec extends FlatSpec with Matchers {
     error shouldBe "java.lang.IllegalArgumentException: requirement failed: " +
       "Given path should represent file: src/main/resources/myfile.txt-not-exist\n\n"
   }
+
+  "DeadlockProgram" should "deadlock on synchronous messages" in {
+    //when
+    var result: Int = 0
+    val millis = TestUtils.withTiming {
+      result = DeadlockProgram.run()
+    }
+
+    //then
+    result shouldBe -1
+    millis should be > 3000L
+  }
 }
