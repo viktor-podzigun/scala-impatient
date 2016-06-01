@@ -14,6 +14,7 @@ import scala.io.Source
 import scala.util.Random
 import scala.util.matching.Regex
 
+//noinspection ScalaDeprecation
 object Chapter20 {
 
   /**
@@ -330,8 +331,8 @@ object Chapter20 {
     }
 
     def act(): Unit = {
-      loop {
-        react(processMsg())
+      while (true) {
+        receive(processMsg())
       }
     }
 
@@ -379,8 +380,8 @@ object Chapter20 {
     private var dirCount = 1 // allow process the root directory
 
     def act(): Unit = {
-      loop {
-        react {
+      while (true) {
+        receive {
           case _: WordsMsgProcess =>
             this.processor = sender
             this ! WordsMsgDir(params.dirPath)
@@ -425,7 +426,7 @@ object Chapter20 {
   class WordsFileWorker(params: WordsParams) extends Actor {
 
     def act(): Unit = {
-      react {
+      receive {
         case WordsMsgFile(filePath) =>
           processFile(filePath)
           exit()
@@ -445,7 +446,11 @@ object Chapter20 {
         }
       }
 
-      reply(WordsMsgFileResult(file, words.toIndexedSeq))
+      sendResult(file, words.toIndexedSeq)
+    }
+
+    def sendResult(file: File, words: Seq[String]): Unit = {
+      reply(WordsMsgFileResult(file, words))
     }
   }
 
@@ -749,6 +754,56 @@ object Chapter20 {
             }
         }
       }
+    }
+  }
+
+  /**
+   * Task 9:
+   *
+   * Produce a faulty implementation of the program in exercise 3, in which the actors update
+   * a shared counter. Can you demonstrate that the program acts incorrectly?
+   */
+  object SharedCounterProgram {
+
+    private val wordRegex = "text".r
+    var counter = 0
+
+    def calcMatchedWords(dirPath: String, fileExtensions: String*): Int = {
+      val supervisorProcessor = new SharedCounterProcessor(
+        WordsParams(wordRegex, dirPath, fileExtensions.toIndexedSeq),
+        0,
+        (count: Int, file, words) => count + words.length
+      )
+
+      Await.result(supervisorProcessor.process(), Duration.Inf)
+    }
+  }
+
+  class SharedCounterProcessor[T](params: WordsParams,
+                                  resultInit: T,
+                                  resultProc: (T, File, Seq[String]) => T
+                                   ) extends WordsProcessor[T](params, resultInit, resultProc) {
+
+    override def startFileWorker(msg: WordsMsgFile): WordsFileWorker = {
+      val fileWorker = new SharedCounterFileWorker(params)
+      fileWorker.start()
+      fileWorker ! msg
+      fileWorker
+    }
+  }
+
+  class SharedCounterFileWorker(params: WordsParams) extends WordsFileWorker(params) {
+
+    override def sendResult(file: File, words: Seq[String]): Unit = {
+      val counter = SharedCounterProgram.counter
+
+      // introduce some delay to allow other threads update the counter
+      Thread.sleep(200)
+
+      //NOT SAFE: updating shared counter from multiple threads !!!
+      SharedCounterProgram.counter = counter + words.length
+
+      super.sendResult(file: File, words: Seq[String])
     }
   }
 }

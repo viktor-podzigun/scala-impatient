@@ -123,4 +123,18 @@ class Chapter20Spec extends FlatSpec with Matchers {
     result shouldBe -1
     millis should be > 3000L
   }
+
+  "SharedCounterProgram" should "update a shared counter" in {
+    //given
+    val dirPath = "src/main/"
+    val fileExtensions = List("txt", "html", "xhtml")
+
+    //when
+    SharedCounterProgram.counter = 0
+    val result: Int = SharedCounterProgram.calcMatchedWords(dirPath, fileExtensions: _*)
+
+    //then
+    result shouldBe 3
+    SharedCounterProgram.counter should not be result
+  }
 }
