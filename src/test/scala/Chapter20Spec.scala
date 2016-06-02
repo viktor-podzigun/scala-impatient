@@ -137,4 +137,15 @@ class Chapter20Spec extends FlatSpec with Matchers {
     result shouldBe 3
     SharedCounterProgram.counter should not be result
   }
+
+  "ChannelCalc" should "use channels to compute the average of random numbers" in {
+    //given
+    val n = 1000000
+
+    //when
+    val average: Double = ChannelCalc.calcAverageFor(n)
+
+    //then
+    average should be > 0.0
+  }
 }

@@ -64,7 +64,7 @@ object Chapter20 {
 
   class RandProcessor() extends Actor {
 
-    private var workerCount = 0
+    protected var workerCount = 0
     private var processedCount = 0
     private var currAverage = 0.0
     private val resultPromise = Promise[Double]()
@@ -87,7 +87,7 @@ object Chapter20 {
       }
     }
 
-    private def getRanges(untilNum: Int, count: Int): List[Range] = {
+    protected def getRanges(untilNum: Int, count: Int): List[Range] = {
       require(untilNum >= count, "untilNum >= count")
 
       val numPerRange = math.max(untilNum / count, untilNum % count)
@@ -100,10 +100,16 @@ object Chapter20 {
       }).toList
     }
 
-    private def startWorkers(numCount: Int): Unit = {
-      workerCount = numCount / RandCalc.NumPerWorker
+    protected def getWorkerCount(numCount: Int): Int = {
+      var workerCount = numCount / RandCalc.NumPerWorker
       if (workerCount == 0) workerCount = 1
       else if (workerCount > RandCalc.MaxWorkers) workerCount = RandCalc.MaxWorkers
+
+      workerCount
+    }
+
+    private def startWorkers(numCount: Int): Unit = {
+      workerCount = getWorkerCount(numCount)
 
       for (range <- getRanges(numCount, workerCount)) {
         val worker = new RandWorker()
@@ -112,7 +118,7 @@ object Chapter20 {
       }
     }
 
-    private def procResult(average: Double): Unit = {
+    protected def procResult(average: Double): Unit = {
       processedCount += 1
       currAverage += average
 
@@ -804,6 +810,58 @@ object Chapter20 {
       SharedCounterProgram.counter = counter + words.length
 
       super.sendResult(file: File, words: Seq[String])
+    }
+  }
+
+  /**
+   * Task 10:
+   *
+   * Rewrite the program of exercise 1 by using channels for communication.
+   */
+  object ChannelCalc {
+
+    def calcAverageFor(count: Int): Double = {
+      val proc = new ChannelProcessor()
+      proc.start()
+
+      val futureResult = proc.process(count)
+      Await.result(futureResult, Duration.Inf)
+    }
+  }
+
+  class ChannelProcessor() extends RandProcessor {
+
+    override def act(): Unit = {
+      react {
+        case RandMsgProcess(num) =>
+          doProcess(num)
+      }
+    }
+
+    private def doProcess(numCount: Int): Unit = {
+      workerCount = getWorkerCount(numCount)
+
+      val resultChannel = new Channel[Double]
+
+      // start actors
+      for (range <- getRanges(numCount, workerCount)) {
+        Actor.actor {
+          val channel = new Channel[Range]
+          channel ! range
+          channel.react {
+            case r =>
+              resultChannel ! RandCalc.calcAverage(r)
+          }
+        }
+      }
+
+      // process results from the actors
+      loop {
+        resultChannel.react {
+          case average =>
+            procResult(average)
+        }
+      }
     }
   }
 }
