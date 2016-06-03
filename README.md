@@ -21,7 +21,7 @@ My solutions to the exercises from the excellent [Scala for the Impatient](https
 18. [Advanced types](src/main/scala/Chapter18.scala) => [tests](src/test/scala/Chapter18Spec.scala)
 19. [Parsing](src/main/scala/Chapter19.scala) => [tests](src/test/scala/Chapter19Spec.scala)
 20. [Actors](src/main/scala/Chapter20.scala) => [tests](src/test/scala/Chapter20Spec.scala)
-21. Implicits
+21. [Implicits](src/main/scala/Chapter21.scala) => [tests](src/test/scala/Chapter21Spec.scala)
 22. Delimited continuations
 
 Almost all solutions are covered with corresponding tests.
