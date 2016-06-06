@@ -1,3 +1,4 @@
+import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 
@@ -29,4 +30,23 @@ object Chapter21 {
 
   // as of Scala 2.11.x not needed any more, since we use implicit class
   //implicit def int2PercentAdder(value: Int): PercentAdder = new PercentAdder(value)
+
+  /**
+   * Task 3:
+   *
+   * Define a `!` operator that computes the factorial of an integer. For example,
+   * `5!` is `120`. You will need an enrichment class and an implicit conversion.
+   */
+  implicit class Int2Factorial(private val value: Int) {
+
+    def ! : Int = {
+      @tailrec
+      def fact(acc: Int, n: Int): Int = {
+        if (n == 1) acc
+        else fact(acc * n, n - 1)
+      }
+
+      fact(1, value)
+    }
+  }
 }
