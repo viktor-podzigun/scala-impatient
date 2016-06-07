@@ -114,9 +114,8 @@ class Chapter20Spec extends FlatSpec with Matchers {
 
   "DeadlockProgram" should "deadlock on synchronous messages" in {
     //when
-    var result: Int = 0
-    val millis = TestUtils.withTiming {
-      result = DeadlockProgram.run()
+    val (millis, result: Int) = TestUtils.withTiming {
+      DeadlockProgram.run()
     }
 
     //then

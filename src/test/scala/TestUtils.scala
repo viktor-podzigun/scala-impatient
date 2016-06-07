@@ -93,14 +93,19 @@ object TestUtils {
   }
 
   def withOutput(block: => Unit): String = {
-    val out = new ByteArrayOutputStream()
-    Console.withOut(out)(block)
-    out.toString
+    val (out, _) = withOutputAndResult(block)
+    out
   }
 
-  def withTiming(block: => Unit): Long = {
+  def withOutputAndResult[T](block: => T): (String, T) = {
+    val out = new ByteArrayOutputStream()
+    val result = Console.withOut(out)(block)
+    (out.toString, result)
+  }
+
+  def withTiming[T](block: => T): (Long, T) = {
     val start = System.currentTimeMillis()
-    block
-    System.currentTimeMillis() - start
+    val result = block
+    (System.currentTimeMillis() - start, result)
   }
 }

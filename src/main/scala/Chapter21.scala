@@ -1,4 +1,5 @@
 import scala.annotation.tailrec
+import scala.io.StdIn
 import scala.language.implicitConversions
 
 
@@ -49,4 +50,55 @@ object Chapter21 {
       fact(1, value)
     }
   }
+
+  /**
+   * Task 4:
+   *
+   * Some people are fond of "fluent APIs" that read vaguely like English sentences.
+   * Create such an API for reading integers, floating-point numbers, and strings from the console.
+   * For example:
+   * {{{
+   * Read in aString askingFor "Your name" and
+   *   anInt askingFor "Your age" and
+   *   aDouble askingFor "Your weight".
+   * }}}
+   */
+  def Read: FluentReader = new FluentReader
+
+  class FluentReader {
+
+    private var data: List[(String, Any)] = List()
+
+    private var nextType: FluentFieldType = aString
+
+    def getData: List[(String, Any)] = data
+
+    def in(fieldType: FluentFieldType): FluentReader = {
+      nextType = fieldType
+      this
+    }
+
+    def and(fieldType: FluentFieldType): FluentReader = in(fieldType)
+
+    def askingFor(fieldName: String): FluentReader = {
+      print(fieldName + ": ")
+
+      val value = nextType match {
+        case _: aString.type => StdIn.readLine()
+        case _: anInt.type => StdIn.readInt()
+        case _: aDouble.type => StdIn.readDouble()
+      }
+
+      data = data :+ (fieldName, value)
+      this
+    }
+  }
+
+  sealed trait FluentFieldType
+
+  object aString extends FluentFieldType
+
+  object anInt extends FluentFieldType
+
+  object aDouble extends FluentFieldType
 }
