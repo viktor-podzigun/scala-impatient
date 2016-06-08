@@ -1,4 +1,5 @@
 import Chapter11.Fraction
+import java.awt.Point
 import scala.annotation.tailrec
 import scala.io.StdIn
 import scala.language.implicitConversions
@@ -120,5 +121,17 @@ object Chapter21 {
   implicit class RichFraction(self: Fraction) extends Ordered[Fraction] {
 
     override def compare(that: Fraction): Int = (self - that).num
+  }
+
+  /**
+   * Task 6:
+   *
+   * Compare objects of the `class java.awt.Point` by lexicographic comparison.
+   */
+  implicit class RichPoint(self: Point) extends Ordered[Point] {
+
+    override def compare(that: Point): Int =
+      if (self.x == that.x) self.y - that.y
+      else self.x - that.x
   }
 }

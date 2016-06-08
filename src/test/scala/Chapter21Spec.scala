@@ -1,6 +1,7 @@
 import Chapter11.Fraction
 import Chapter21._
 import TestUtils.withOutputAndResult
+import java.awt.Point
 import java.io.StringReader
 import org.scalatest.{FlatSpec, Matchers}
 import scala.language.postfixOps
@@ -44,5 +45,12 @@ class Chapter21Spec extends FlatSpec with Matchers {
     smaller(Fraction(1, 7), Fraction(2, 9)) shouldBe Fraction(1, 7)
     smaller(Fraction(1, 7), Fraction(1, 7)) shouldBe Fraction(1, 7)
     smaller(Fraction(0, 7), Fraction(0, 9)) shouldBe Fraction(0, 9)
+  }
+
+  "RichPoint" should "compare java.awt.Point objects by lexicographic comparison" in {
+    //when & then
+    new Point(1, 1) shouldBe new Point(1, 1)
+    new Point(1, 1) should be < new Point(2, 1)
+    new Point(1, 1) should be < new Point(1, 2)
   }
 }
