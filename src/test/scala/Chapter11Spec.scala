@@ -16,6 +16,15 @@ class Chapter11Spec extends FlatSpec with Matchers {
     (Fraction(1, 2) - Fraction(1, 2)).toString shouldBe "0/1"
     (Fraction(1, 2) * Fraction(1, 2)).toString shouldBe "1/4"
     (Fraction(1, 2) / Fraction(1, 2)).toString shouldBe "1/1"
+    (Fraction(1, 7) - Fraction(2, 9)).toString shouldBe "-5/63"
+
+    //equals
+    Fraction(15, -6) == Fraction(15, -6) shouldBe true
+    Fraction(15, -6) == Fraction(-15, 6) shouldBe true
+    Fraction(15, 6) == Fraction(-15, 6) shouldBe false
+    //noinspection ComparingUnrelatedTypes
+    Fraction(15, 6).equals("") shouldBe false
+    Fraction(15, 6) == null shouldBe false
   }
 
   "Money" should "be normalized and has operations +, -, ==, <" in {

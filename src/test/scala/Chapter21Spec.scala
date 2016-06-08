@@ -1,3 +1,4 @@
+import Chapter11.Fraction
 import Chapter21._
 import TestUtils.withOutputAndResult
 import java.io.StringReader
@@ -36,5 +37,12 @@ class Chapter21Spec extends FlatSpec with Matchers {
                                              |(Your weight,80.0)""".stripMargin
 
     out shouldBe """Your name: Your age: Your weight: """.stripMargin
+  }
+
+  "smaller" should "work with Fraction instances" in {
+    //when & then
+    smaller(Fraction(1, 7), Fraction(2, 9)) shouldBe Fraction(1, 7)
+    smaller(Fraction(1, 7), Fraction(1, 7)) shouldBe Fraction(1, 7)
+    smaller(Fraction(0, 7), Fraction(0, 9)) shouldBe Fraction(0, 9)
   }
 }

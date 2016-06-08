@@ -48,9 +48,9 @@ object Chapter11 {
    */
   class Fraction private(n: Int, d: Int) {
 
-    private val num: Int = if (d == 0) 1 else n * sign(d) / gcd(n, d)
+    val num: Int = if (d == 0) 1 else n * sign(d) / gcd(n, d)
 
-    private val den: Int = if (d == 0) 0 else d * sign(d) / gcd(n, d)
+    val den: Int = if (d == 0) 0 else d * sign(d) / gcd(n, d)
 
     private def sign(a: Int) =
       if (a > 0) 1
@@ -71,8 +71,20 @@ object Chapter11 {
     def /(other: Fraction): Fraction = Fraction(num * other.den, den * other.num)
 
     private def sumOp(other: Fraction, op: (Int, Int) => Int): Fraction = {
-      val div = gcd(den, other.den)
-      Fraction(op(num * (div / den), other.num * (div / other.den)), div)
+      Fraction(op(num * other.den, den * other.num), den * other.den)
+    }
+
+    override def equals(that: Any): Boolean = that match {
+      case that: Fraction => num == that.num && den == that.den
+      case _ => false
+    }
+
+    override def hashCode: Int = {
+      val prime = 31
+      var result = 1
+      result = prime * result + num
+      result = prime * result + den
+      result
     }
 
     override def toString = num + "/" + den

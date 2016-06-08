@@ -1,3 +1,4 @@
+import Chapter11.Fraction
 import scala.annotation.tailrec
 import scala.io.StdIn
 import scala.language.implicitConversions
@@ -101,4 +102,23 @@ object Chapter21 {
   object anInt extends FluentFieldType
 
   object aDouble extends FluentFieldType
+
+  /**
+   * Task 5:
+   *
+   * Provide the machinery that is needed to compute
+   * {{{
+   * smaller(Fraction(1, 7), Fraction(2, 9))
+   * }}}
+   * in Section 21.6, "Implicit Conversions with Implicit Parameters," on page 310.
+   * Supply a `class RichFraction` that extends `Ordered[Fraction]`.
+   */
+  def smaller[T](a: T, b: T)(implicit order: T => Ordered[T]): T =
+    if (order(a) < b) a
+    else b
+
+  implicit class RichFraction(self: Fraction) extends Ordered[Fraction] {
+
+    override def compare(that: Fraction): Int = (self - that).num
+  }
 }
