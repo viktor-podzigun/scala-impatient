@@ -1,5 +1,5 @@
 ### Scala for the Impatient
-My solutions to the exercises from the excellent [Scala for the Impatient](https://www.lightbend.com/resources/e-book/scala-for-the-impatient) book.
+My solutions to the exercises from the excellent [Scala for the Impatient](http://horstmann.com/scala/) book.
 
 1. The Basics
 2. Control Structures and Functions
