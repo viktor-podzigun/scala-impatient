@@ -31,7 +31,7 @@ object Chapter21 {
     def +%(percent: Int): Int = value + ((value * percent) / 100d).toInt
   }
 
-  // as of Scala 2.11.x not needed any more, since we use implicit class
+  // as of Scala 2.11.x not needed any more, since we can use implicit class
   //implicit def int2PercentAdder(value: Int): PercentAdder = new PercentAdder(value)
 
   /**
@@ -65,6 +65,14 @@ object Chapter21 {
    *   aDouble askingFor "Your weight".
    * }}}
    */
+  sealed trait FluentFieldType
+
+  object aString extends FluentFieldType
+
+  object anInt extends FluentFieldType
+
+  object aDouble extends FluentFieldType
+
   def Read: FluentReader = new FluentReader
 
   class FluentReader {
@@ -96,14 +104,6 @@ object Chapter21 {
     }
   }
 
-  sealed trait FluentFieldType
-
-  object aString extends FluentFieldType
-
-  object anInt extends FluentFieldType
-
-  object aDouble extends FluentFieldType
-
   /**
    * Task 5:
    *
@@ -128,10 +128,39 @@ object Chapter21 {
    *
    * Compare objects of the `class java.awt.Point` by lexicographic comparison.
    */
-  implicit class RichPoint(self: Point) extends Ordered[Point] {
+  implicit class LexicographicPointOrdering(self: Point) extends Ordered[Point] {
 
     override def compare(that: Point): Int =
       if (self.x == that.x) self.y - that.y
       else self.x - that.x
+  }
+
+  /**
+   * Task 7:
+   *
+   * Continue the previous exercise, comparing two points according to their distance to
+   * the origin. How can you switch between the two orderings?
+   *
+   * Solution:
+   *
+   * We can switch between the two orderings by importing appropriate `implicit class`:
+   * {{{
+   * import Chapter21.LexicographicPointOrdering
+   * }}}
+   * or
+   * {{{
+   * import Chapter21.DistancePointOrdering
+   * }}}
+   */
+  implicit class DistancePointOrdering(self: Point) extends Ordered[Point] {
+
+    override def compare(that: Point): Int = {
+      val d1 = self.distance(0, 0)
+      val d2 = that.distance(0, 0)
+
+      if (d1 < d2) -1
+      else if (d1 > d2) 1
+      else 0
+    }
   }
 }
