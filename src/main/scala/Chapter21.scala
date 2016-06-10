@@ -163,4 +163,53 @@ object Chapter21 {
       else 0
     }
   }
+
+  /**
+   * Task 8:
+   *
+   * Use the `implicitly` command in the REPL to summon the implicit objects described in
+   * Section 21.5, "Implicit Parameters," on page 309 and
+   * Section 21.6, "Implicit Conversions with Implicit Parameters," on page 310.
+   * What objects do you get?
+   *
+   * Solution:
+   *
+   * To start the REPL console, start the following command in the project root directory:
+   * {{{
+   * activator console
+   * }}}
+   * Here is the REPL output:
+   * {{{
+   * scala> import Chapter21._
+   * import Chapter21._
+   *
+   * scala> import Chapter11.Fraction
+   * import Chapter11.Fraction
+   *
+   * scala> implicitly[Delimiters]
+   * res0: Chapter21.Delimiters = Delimiters(<<,>>)
+   *
+   * scala> implicitly[Ordered[Fraction]]
+   * <console>:15: error: could not find implicit value for parameter e: Ordered[Chapter11.Fraction]
+   *        implicitly[Ordered[Fraction]]
+   *                  ^
+   *
+   * scala> implicitly[Ordering[Fraction]]
+   * res2: Ordering[Chapter11.Fraction] = Chapter21$FractionOrdering@3af82646
+   *
+   * }}}
+   * For the second case, `implicitly[Ordered[Fraction]]`, it didn't work, since there is no
+   * appropriate implicit value defined. And our `implicit class RichFraction` is not suitable
+   * since it requires an input parameter.
+   */
+  case class Delimiters(left: String, right: String)
+
+  implicit val quoteDelimiters = Delimiters("<<", ">>")
+
+  class FractionOrdering extends Ordering[Fraction] {
+
+    override def compare(x: Fraction, y: Fraction): Int = x.compare(y)
+  }
+
+  implicit val fractionOrdering = new FractionOrdering
 }
