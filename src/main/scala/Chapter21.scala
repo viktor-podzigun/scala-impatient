@@ -212,4 +212,37 @@ object Chapter21 {
   }
 
   implicit val fractionOrdering = new FractionOrdering
+
+  /**
+   * Task 9:
+   *
+   * Look up the `=:=` object in `Predef.scala`. Explain how it works.
+   *
+   * Solution:
+   *
+   * It is defined like this:
+   * {{{
+   *   sealed abstract class =:=[From, To] extends (From => To) with Serializable
+   *   private[this] final val singleton_=:= = new =:=[Any,Any] { def apply(x: Any): Any = x }
+   *   object =:= {
+   *     implicit def tpEquals[A]: A =:= A = singleton_=:=.asInstanceOf[A =:= A]
+   *   }
+   * }}}
+   * So, `=:=` is a `Function` class with one argument and with one singleton instance and
+   * implicit conversion method `tpEquals`, defined in its companion object.
+   * When it is used as implicit evidence parameter:
+   * {{{
+   * def someMethod[A, B](obj: A)(implicit ev: A =:= B): Unit = {
+   *   //can call methods, defined in B
+   *   obj.methodInB()
+   * }
+   * }}}
+   * compiler sees that implicit argument is a function with one parameter, so it calls it
+   * {{{
+   * ev(obj).methodInB()
+   * }}}
+   * to convert instance from one type `A` to the given type (`B` in this case).
+   * In this way compiler can check/prove that instance confirms to the given constraint
+   * (`=:=` equal types, in this case).
+   */
 }
