@@ -1,6 +1,7 @@
 import Chapter11.Fraction
 import java.awt.Point
 import scala.annotation.tailrec
+import scala.collection.immutable.IndexedSeq
 import scala.io.StdIn
 import scala.language.implicitConversions
 
@@ -245,4 +246,29 @@ object Chapter21 {
    * In this way compiler can check/prove that instance confirms to the given constraint
    * (`=:=` equal types, in this case).
    */
+
+  /**
+   * Task 10:
+   *
+   * The result of `"abc".map(_.toUpper)` is a `String`, but the result of `"abc".map(_.toInt)`
+   * is a Vector. Find out why.
+   *
+   * Solution:
+   *
+   * Since `CanBuildFrom` factory trait for `String` is defined in the `WrappedString` companion
+   * object like this:
+   * {{{
+   * implicit def canBuildFrom: CanBuildFrom[WrappedString, Char, WrappedString]
+   * }}}
+   * it can build result `String` collection only for `Char` elements.
+   * For other element types, like `Int`, as defined in the `IndexedSeq` companion object
+   * {{{
+   * def newBuilder[A]: Builder[A, IndexedSeq[A]] = Vector.newBuilder[A]
+   * }}}
+   * `Vector` is the current default implementation.
+   */
+  def stringMapTest(): Unit = {
+    val str: String = "abc".map(_.toUpper)
+    val seq: IndexedSeq[Int] = "abc".map(_.toInt)
+  }
 }
