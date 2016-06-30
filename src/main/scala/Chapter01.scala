@@ -60,4 +60,25 @@ object Chapter01 {
    *             ^
    * }}}
    */
+
+  /**
+   * Task 4:
+   *
+   * Scala lets you multiply a string with a number - try out `"crazy" * 3` in the REPL.
+   * What does this operation do? Where can you find it in `Scaladoc`?
+   *
+   * Solution:
+   *
+   * This operation concatenates the given string to itself the given number of times:
+   * {{{
+   * scala> "crazy" * 3
+   * res3: String = crazycrazycrazy
+   * }}}
+   * It can be found in `Scaladoc` by searching for `StringOps` class, it has the following
+   * method:
+   * {{{
+   * def *(n: Int): String
+   * Return the current string concatenated n times.
+   * }}}
+   */
 }
