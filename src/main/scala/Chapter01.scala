@@ -44,4 +44,20 @@ object Chapter01 {
    * res2: Double = 4.440892098500626E-16
    * }}}
    */
+
+  /**
+   * Task 3:
+   *
+   * Are the res variables `val` or `var` ?
+   *
+   * Solution:
+   *
+   * They are `val`:
+   * {{{
+   * scala> res2 = 1.0
+   * <console>:13: error: reassignment to val
+   *        res2 = 1.0
+   *             ^
+   * }}}
+   */
 }
