@@ -81,4 +81,17 @@ object Chapter01 {
    * Return the current string concatenated n times.
    * }}}
    */
+
+  /**
+   * Task 5:
+   *
+   * What does `10 max 2` mean? In which class is the `max` method defined?
+   *
+   * Solution:
+   *
+   * It compares two integer values and returns the maximum value.
+   * The `max` method is defined in `RichInt` class.
+   * The `Int` value `10` is first converted to a `RichInt` and then the `max` method is called
+   * on that value.
+   */
 }
