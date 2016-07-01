@@ -94,4 +94,11 @@ object Chapter01 {
    * The `Int` value `10` is first converted to a `RichInt` and then the `max` method is called
    * on that value.
    */
+
+  /**
+   * Task 6:
+   *
+   * Using `BigInt`, compute `2^^1024`.
+   */
+  def computeBigInt(): BigInt = BigInt(2).pow(1024)
 }
