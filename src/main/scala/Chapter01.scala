@@ -1,4 +1,4 @@
-
+import scala.math.BigInt
 
 object Chapter01 {
 
@@ -108,10 +108,19 @@ object Chapter01 {
    * What do you need to `import` so that you can get a random prime as
    * `probablePrime(100, Random)`, without any qualifiers before `probablePrime` and `Random`?
    */
-  def task7(): Unit = {
+  def task7(): BigInt = {
     import scala.BigInt._
     import scala.util._
 
     probablePrime(100, Random)
   }
+
+  /**
+   * Task 8:
+   *
+   * One way to create random file or directory names is to produce a random `BigInt`
+   * and convert it to base `36`, yielding a `string` such as "qsnvbevtomcj38o06kul".
+   * Poke around `Scaladoc` to find a way of doing this in Scala.
+   */
+  def randomFileName(): String = util.Random.alphanumeric.take(20).mkString.toLowerCase
 }
