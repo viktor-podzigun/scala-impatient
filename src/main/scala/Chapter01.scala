@@ -101,4 +101,17 @@ object Chapter01 {
    * Using `BigInt`, compute `2^^1024`.
    */
   def computeBigInt(): BigInt = BigInt(2).pow(1024)
+
+  /**
+   * Task 7:
+   *
+   * What do you need to `import` so that you can get a random prime as
+   * `probablePrime(100, Random)`, without any qualifiers before `probablePrime` and `Random`?
+   */
+  def task7(): Unit = {
+    import scala.BigInt._
+    import scala.util._
+
+    probablePrime(100, Random)
+  }
 }
