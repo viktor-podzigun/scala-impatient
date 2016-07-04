@@ -138,4 +138,28 @@ object Chapter01 {
     val last = str(str.length - 1)
     val last2 = str.last
   }
+
+  /**
+   * Task 10:
+   *
+   * What do the `take`, `drop`, `takeRight`, and `dropRight` string functions do?
+   * What advantage or disadvantage do they have over using `substring`?
+   *
+   * Solution:
+   *
+   * The advantage is that they don't throw `IndexOutOfBoundsException`.
+   * See examples below:
+   */
+  def task10(): Unit = {
+    val str = "Some string"
+
+    val first10 = str.take(15) // "Some string", no IndexOutOfBoundsException exception !
+    val empty = "".drop(5) // "", no IndexOutOfBoundsException exception !
+
+    val take = str.take(4) // "Some"
+    val drop = str.drop(5) // "string"
+
+    val takeRight = str.takeRight(6) // "string"
+    val dropRight = str.dropRight(7) // "Some"
+  }
 }
