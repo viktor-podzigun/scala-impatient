@@ -123,4 +123,19 @@ object Chapter01 {
    * Poke around `Scaladoc` to find a way of doing this in Scala.
    */
   def randomFileName(): String = util.Random.alphanumeric.take(20).mkString.toLowerCase
+
+  /**
+   * Task 9:
+   *
+   * How do you get the first character of a string in Scala? The last character?
+   */
+  def task9(): Unit = {
+    val str = "Some string"
+
+    val first = str(0)
+    val first2 = str.head
+
+    val last = str(str.length - 1)
+    val last2 = str.last
+  }
 }
