@@ -2,7 +2,7 @@
 My solutions to the exercises from the excellent [Scala for the Impatient](http://horstmann.com/scala/) book.
 
 1. [The Basics](src/main/scala/Chapter01.scala) => [tests](src/test/scala/Chapter01Spec.scala)
-2. Control Structures and Functions
+2. [Control Structures and Functions](src/main/scala/Chapter02.scala) => [tests](src/test/scala/Chapter02Spec.scala)
 3. [Working with Arrays](src/main/scala/Chapter03.scala) => [tests](src/test/scala/Chapter03Spec.scala)
 4. [Maps and Tuples](src/main/scala/Chapter04.scala) => [tests](src/test/scala/Chapter04Spec.scala)
 5. [Classes](src/main/scala/Chapter05.scala) ([task 5 java](src/main/java/Chapter05Car.java)) => [tests](src/test/scala/Chapter05Spec.scala)
