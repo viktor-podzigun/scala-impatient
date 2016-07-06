@@ -34,4 +34,18 @@ class Chapter02Spec extends FlatSpec with Matchers {
       Chapter02Task4.javaForLoop()
     }
   }
+
+  "countdown" should "print the numbers from n to 0" in {
+    //when & then
+    withOutput(countdown(3)) shouldBe """3
+                                        |2
+                                        |1
+                                        |0
+                                        |""".stripMargin
+
+    withOutput(countdown(0)) shouldBe """0
+                                        |""".stripMargin
+
+    withOutput(countdown(-1)) shouldBe ""
+  }
 }

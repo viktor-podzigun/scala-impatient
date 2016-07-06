@@ -47,4 +47,11 @@ object Chapter02 {
    * }}}
    */
   def task4(): Unit = for (i <- 10 to (0, -1)) println(i)
+
+  /**
+   * Task 5:
+   *
+   * Write a procedure `countdown(n: Int)` that prints the numbers from n to 0.
+   */
+  def countdown(n: Int): Unit = for (i <- n to (0, -1)) println(i)
 }
