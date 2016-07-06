@@ -24,6 +24,7 @@ object Chapter02 {
    * The value of an empty block expression `{}` is `()` and it's type is `scala.Unit`.
    * Which is equivalent to `java.lang.Void`.
    */
+  def task2(): Unit = {}
 
   /**
    * Task 3:
@@ -36,4 +37,14 @@ object Chapter02 {
     var x: Unit = ()
     x = y = 1
   }
+
+  /**
+   * Task 4:
+   *
+   * Write a `Scala` equivalent for the `Java` loop
+   * {{{
+   * for (int i = 10; i >= 0; i--) System.out.println(i);
+   * }}}
+   */
+  def task4(): Unit = for (i <- 10 to (0, -1)) println(i)
 }
