@@ -24,4 +24,16 @@ object Chapter02 {
    * The value of an empty block expression `{}` is `()` and it's type is `scala.Unit`.
    * Which is equivalent to `java.lang.Void`.
    */
+
+  /**
+   * Task 3:
+   *
+   * Come up with one situation where the assignment `x = y = 1` is valid in Scala.
+   * (Hint: Pick a suitable type for `x`.)
+   */
+  def task3(): Unit = {
+    var y: Int = 0
+    var x: Unit = ()
+    x = y = 1
+  }
 }
