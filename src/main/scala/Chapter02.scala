@@ -54,4 +54,17 @@ object Chapter02 {
    * Write a procedure `countdown(n: Int)` that prints the numbers from n to 0.
    */
   def countdown(n: Int): Unit = for (i <- n to (0, -1)) println(i)
+
+  /**
+   * Task 6:
+   *
+   * Write a `for` loop for computing the product of the Unicode codes of all letters
+   * in a string. For example, the product of the characters in "Hello" is 825152896.
+   */
+  def product(str: String): Int = {
+    var result = 1
+    for (c <- str) result *= c.toInt
+
+    result
+  }
 }

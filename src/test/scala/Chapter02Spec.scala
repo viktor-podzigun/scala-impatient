@@ -48,4 +48,9 @@ class Chapter02Spec extends FlatSpec with Matchers {
 
     withOutput(countdown(-1)) shouldBe ""
   }
+
+  "product" should "compute the product of the Unicode codes of all letters in a string" in {
+    //when & then
+    product("Hello") shouldBe 825152896
+  }
 }
