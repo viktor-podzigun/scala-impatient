@@ -83,4 +83,17 @@ object Chapter02 {
    * in the preceding exercises.
    */
   def product(s : String): Int = productLoop(s)
+
+  /**
+   * Task 9:
+   *
+   * Make the function of the preceding exercise a recursive function.
+   */
+  def productRecursive(s : String): Int = {
+    if (s.isEmpty) {
+      return 1
+    }
+
+    s.head.toInt * productLoop(s.tail)
+  }
 }

@@ -63,4 +63,9 @@ class Chapter02Spec extends FlatSpec with Matchers {
     //when & then
     product("Hello") shouldBe 825152896
   }
+
+  "productRecursive" should "compute product of Unicode codes letters in string recursively" in {
+    //when & then
+    productRecursive("Hello") shouldBe 825152896
+  }
 }
