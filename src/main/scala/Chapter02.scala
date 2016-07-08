@@ -1,4 +1,4 @@
-
+import scala.math.Numeric.IntIsIntegral
 
 object Chapter02 {
 
@@ -61,10 +61,18 @@ object Chapter02 {
    * Write a `for` loop for computing the product of the Unicode codes of all letters
    * in a string. For example, the product of the characters in "Hello" is 825152896.
    */
-  def product(str: String): Int = {
+  def productLoop(str: String): Int = {
     var result = 1
     for (c <- str) result *= c.toInt
 
     result
   }
+
+  /**
+   * Task 7:
+   *
+   * Solve the preceding exercise without writing a loop.
+   * (Hint: Look at the `StringOps` Scaladoc.)
+   */
+  def productNoLoop(str: String): Int = str.map(_.toInt).product
 }
