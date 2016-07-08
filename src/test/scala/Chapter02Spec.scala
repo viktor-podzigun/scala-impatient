@@ -58,4 +58,9 @@ class Chapter02Spec extends FlatSpec with Matchers {
     //when & then
     productNoLoop("Hello") shouldBe 825152896
   }
+
+  "product" should "compute product of Unicode codes letters in string" in {
+    //when & then
+    product("Hello") shouldBe 825152896
+  }
 }

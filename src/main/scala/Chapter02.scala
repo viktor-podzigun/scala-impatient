@@ -61,9 +61,9 @@ object Chapter02 {
    * Write a `for` loop for computing the product of the Unicode codes of all letters
    * in a string. For example, the product of the characters in "Hello" is 825152896.
    */
-  def productLoop(str: String): Int = {
+  def productLoop(s: String): Int = {
     var result = 1
-    for (c <- str) result *= c.toInt
+    for (c <- s) result *= c.toInt
 
     result
   }
@@ -74,5 +74,13 @@ object Chapter02 {
    * Solve the preceding exercise without writing a loop.
    * (Hint: Look at the `StringOps` Scaladoc.)
    */
-  def productNoLoop(str: String): Int = str.map(_.toInt).product
+  def productNoLoop(s: String): Int = s.map(_.toInt).product
+
+  /**
+   * Task 8:
+   *
+   * Write a function `product(s : String)` that computes the product, as described
+   * in the preceding exercises.
+   */
+  def product(s : String): Int = productLoop(s)
 }
