@@ -68,4 +68,29 @@ class Chapter02Spec extends FlatSpec with Matchers {
     //when & then
     productRecursive("Hello") shouldBe 825152896
   }
+
+  "pow" should "compute x^n recursively" in {
+    //when & then
+    pow(-2, 0) shouldBe 1.0
+    pow(1, 0) shouldBe 1.0
+    pow(0, 0) shouldBe 1.0
+    pow(1, 0) shouldBe 1.0
+    pow(2, 0) shouldBe 1.0
+    pow(1, 2) shouldBe 1.0
+    pow(1, 3) shouldBe 1.0
+    pow(2, -2) shouldBe 0.25
+    pow(2, -1) shouldBe 0.5
+    pow(2, 0) shouldBe 1.0
+    pow(2, 1) shouldBe 2.0
+    pow(2, 2) shouldBe 4.0
+    pow(2, 3) shouldBe 8.0
+    pow(2, 4) shouldBe 16.0
+    pow(3, 0) shouldBe 1.0
+    pow(3, 1) shouldBe 3.0
+    pow(3, 2) shouldBe 9.0
+    pow(5, 0) shouldBe 1.0
+    pow(5, 1) shouldBe 5.0
+    pow(5, 2) shouldBe 25.0
+    pow(5, 3) shouldBe 125.0
+  }
 }
